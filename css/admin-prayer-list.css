@@ -1,0 +1,1432 @@
+/* ========================================
+   ADMIN PRAYER LIST
+======================================== */
+
+:root {
+    --dark-brown: #3e2723;
+    --primary-brown: #6f4e37;
+    --medium-brown: #8b5e3c;
+    --light-brown: #a67b5b;
+
+    --cream: #f8f3ed;
+    --background: #f5f1ec;
+    --white: #ffffff;
+
+    --text-dark: #2d241f;
+    --text-muted: #7b7069;
+
+    --success: #39734a;
+    --success-bg: #e7f4eb;
+    --active-bg: #f8eadf;
+}
+
+
+/* ========================================
+   RESET
+======================================== */
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+
+    font-family:
+        "Poppins",
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    color: var(--text-dark);
+
+    background:
+        linear-gradient(
+            135deg,
+            #f7efe9 0%,
+            #fdf8f3 100%
+        );
+}
+
+
+/* ========================================
+   MOBILE TOPBAR
+======================================== */
+
+.mobile-topbar {
+    height: 64px;
+
+    background-color:
+        var(--dark-brown);
+
+    color: var(--white);
+
+    display: flex;
+
+    align-items: center;
+
+    padding: 0 16px;
+
+    position: fixed;
+
+    top: 0;
+    left: 0;
+    right: 0;
+
+    z-index: 1040;
+
+    box-shadow:
+        0 3px 15px
+        rgba(0, 0, 0, 0.12);
+}
+
+
+/* ========================================
+   MOBILE MENU BUTTON
+======================================== */
+
+.sidebar-toggle {
+    width: 42px;
+    height: 42px;
+
+    padding: 0;
+
+    border: 0;
+
+    border-radius: 9px;
+
+    color: var(--white);
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 23px;
+
+    background:
+        rgba(255, 255, 255, 0.08);
+}
+
+.sidebar-toggle:hover,
+.sidebar-toggle:focus {
+    color: var(--white);
+
+    background:
+        rgba(255, 255, 255, 0.15);
+
+    box-shadow: none;
+}
+
+
+/* ========================================
+   MOBILE BRAND
+======================================== */
+
+.mobile-brand {
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    margin-left: 12px;
+
+    font-size: 15px;
+
+    font-weight: 600;
+}
+
+.mobile-brand i {
+    font-size: 19px;
+
+    color: #d9b99b;
+}
+
+
+/* ========================================
+   DESKTOP SIDEBAR
+======================================== */
+
+.desktop-sidebar {
+    position: fixed;
+
+    top: 0;
+    left: 0;
+    bottom: 0;
+
+    width: 260px;
+
+    background-color:
+        var(--dark-brown);
+
+    color: var(--white);
+
+    flex-direction: column;
+
+    z-index: 1100;
+
+    box-shadow:
+        4px 0 20px
+        rgba(0, 0, 0, 0.08);
+}
+
+
+/* ========================================
+   SIDEBAR BRAND
+======================================== */
+
+.sidebar-brand {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 23px 20px;
+
+    border-bottom:
+        1px solid
+        rgba(255, 255, 255, 0.08);
+}
+
+
+.sidebar-logo {
+    width: 38px;
+    height: 34px;
+
+    min-width: 38px;
+
+    border-radius: 9px;
+
+    background-color:
+        var(--primary-brown);
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    color: var(--white);
+
+    font-size: 14px;
+
+    font-weight: 700;
+}
+
+
+.sidebar-text-badge {
+    letter-spacing: 0.5px;
+}
+
+
+.sidebar-brand h5 {
+    margin: 0;
+
+    color: var(--white);
+
+    font-size: 15px;
+
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+
+
+.sidebar-brand small {
+    display: block;
+
+    margin-top: 2px;
+
+    color:
+        rgba(255, 255, 255, 0.55);
+
+    font-size: 11px;
+}
+
+
+/* ========================================
+   SIDEBAR MENU
+======================================== */
+
+.sidebar-menu {
+    flex: 1;
+
+    padding: 25px 14px;
+
+    overflow-y: auto;
+
+    overflow-x: hidden;
+}
+
+
+.sidebar-menu::-webkit-scrollbar {
+    width: 4px;
+}
+
+.sidebar-menu::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar-menu::-webkit-scrollbar-thumb {
+    background:
+        rgba(255, 255, 255, 0.15);
+
+    border-radius: 10px;
+}
+
+
+/* ========================================
+   SIDEBAR LABEL
+======================================== */
+
+.sidebar-label {
+    margin:
+        0 12px 10px;
+
+    color:
+        rgba(255, 255, 255, 0.4);
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    letter-spacing: 1px;
+}
+
+
+/* ========================================
+   SIDEBAR LINKS
+======================================== */
+
+.sidebar-link {
+    display: flex;
+
+    align-items: center;
+
+    width: 100%;
+
+    gap: 13px;
+
+    padding: 12px 14px;
+
+    margin-bottom: 5px;
+
+    border-radius: 8px;
+
+    color:
+        rgba(255, 255, 255, 0.7);
+
+    text-decoration: none;
+
+    font-size: 14px;
+
+    font-weight: 500;
+
+    line-height: 1.2;
+
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease;
+}
+
+
+.sidebar-link i {
+    width: 20px;
+
+    min-width: 20px;
+
+    text-align: center;
+
+    font-size: 17px;
+}
+
+
+.sidebar-link span {
+    white-space: nowrap;
+}
+
+
+.sidebar-link:hover {
+    color: var(--white);
+
+    background-color:
+        rgba(255, 255, 255, 0.08);
+}
+
+
+.sidebar-link.active {
+    color: var(--white);
+
+    background-color:
+        var(--primary-brown);
+
+    font-weight: 600;
+}
+
+
+/* ========================================
+   SIDEBAR FOOTER
+======================================== */
+
+.sidebar-footer {
+    padding: 18px 20px;
+
+    border-top:
+        1px solid
+        rgba(255, 255, 255, 0.08);
+
+    color:
+        rgba(255, 255, 255, 0.45);
+
+    font-size: 11px;
+
+    line-height: 1.5;
+}
+
+
+/* ========================================
+   MOBILE SIDEBAR
+======================================== */
+
+.mobile-sidebar {
+    width: 280px !important;
+
+    background-color:
+        var(--dark-brown);
+
+    color: var(--white);
+
+    border: 0;
+}
+
+
+/* ========================================
+   MOBILE SIDEBAR HEADER
+======================================== */
+
+.mobile-sidebar .offcanvas-header {
+    padding:
+        20px;
+
+    border-bottom:
+        1px solid
+        rgba(255, 255, 255, 0.08);
+}
+
+
+.mobile-sidebar .offcanvas-header h6 {
+    color: var(--white);
+
+    font-size: 14px;
+}
+
+
+.mobile-sidebar .offcanvas-header small {
+    color:
+        rgba(255, 255, 255, 0.55);
+
+    font-size: 10px;
+}
+
+
+.mobile-sidebar .btn-close {
+    filter: invert(1);
+
+    opacity: 0.8;
+}
+
+
+/* ========================================
+   MOBILE SIDEBAR BODY
+======================================== */
+
+.mobile-sidebar .offcanvas-body {
+    padding:
+        25px 14px;
+
+    overflow-y: auto;
+}
+
+
+.mobile-sidebar .sidebar-label {
+    color:
+        rgba(255, 255, 255, 0.4);
+}
+
+
+.mobile-sidebar .sidebar-link {
+    color:
+        rgba(255, 255, 255, 0.7);
+}
+
+
+.mobile-sidebar .sidebar-link:hover {
+    color: var(--white);
+
+    background-color:
+        rgba(255, 255, 255, 0.08);
+}
+
+
+.mobile-sidebar .sidebar-link.active {
+    color: var(--white);
+
+    background-color:
+        var(--primary-brown);
+}
+
+
+/* ========================================
+   SMALL SIDEBAR LOGO
+======================================== */
+
+.small-logo {
+    width: 36px;
+
+    height: 32px;
+
+    min-width: 36px;
+
+    font-size: 13px;
+}
+
+
+/* ========================================
+   MAIN CONTENT
+======================================== */
+
+.admin-prayer-main {
+    margin-left: 260px;
+
+    min-height: 100vh;
+
+    padding: 35px;
+}
+
+
+/* ========================================
+   PAGE HEADER
+======================================== */
+
+.admin-prayer-header {
+    margin-bottom: 25px;
+}
+
+
+.admin-eyebrow {
+    margin:
+        0 0 6px;
+
+    color:
+        var(--light-brown);
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    letter-spacing: 1px;
+}
+
+
+.admin-prayer-header h2 {
+    margin:
+        0 0 6px;
+
+    color:
+        var(--text-dark);
+
+    font-size: 28px;
+
+    font-weight: 700;
+}
+
+
+.admin-prayer-header p {
+    font-size: 14px;
+
+    line-height: 1.6;
+}
+
+
+/* ========================================
+   STAT CARD
+======================================== */
+
+.admin-prayer-stat-card {
+    height: 100%;
+
+    background-color:
+        var(--white);
+
+    border:
+        1px solid
+        rgba(62, 39, 35, 0.05);
+
+    border-radius: 13px;
+
+    padding: 18px 20px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    box-shadow:
+        0 4px 15px
+        rgba(62, 39, 35, 0.04);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.admin-prayer-stat-card:hover {
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 7px 20px
+        rgba(62, 39, 35, 0.07);
+}
+
+
+/* ========================================
+   STAT ICON
+======================================== */
+
+.admin-prayer-stat-icon {
+    width: 44px;
+    height: 44px;
+
+    min-width: 44px;
+
+    border-radius: 11px;
+
+    background-color:
+        var(--cream);
+
+    color:
+        var(--primary-brown);
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 18px;
+}
+
+
+.admin-prayer-stat-icon.checked {
+    background-color:
+        var(--success-bg);
+
+    color:
+        var(--success);
+}
+
+
+/* ========================================
+   STAT TEXT
+======================================== */
+
+.admin-prayer-stat-card p {
+    margin:
+        0 0 2px;
+
+    color:
+        var(--text-muted);
+
+    font-size: 12px;
+}
+
+
+.admin-prayer-stat-card h3 {
+    margin: 0;
+
+    color:
+        var(--text-dark);
+
+    font-size: 24px;
+
+    font-weight: 700;
+}
+
+
+/* ========================================
+   MAIN SECTION CARD
+======================================== */
+
+.admin-section-card {
+    background-color:
+        var(--white);
+
+    border:
+        1px solid
+        rgba(62, 39, 35, 0.05);
+
+    border-radius: 15px;
+
+    padding: 22px;
+
+    box-shadow:
+        0 5px 18px
+        rgba(62, 39, 35, 0.05);
+}
+
+
+/* ========================================
+   SECTION HEADER
+======================================== */
+
+.admin-section-header {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 15px;
+
+    margin-bottom: 18px;
+}
+
+
+.admin-section-header h5 {
+    margin:
+        0 0 4px;
+
+    color:
+        var(--text-dark);
+
+    font-size: 20px;
+
+    font-weight: 700;
+}
+
+
+.admin-section-header p {
+    margin: 0;
+
+    color:
+        var(--text-muted);
+
+    font-size: 13px;
+}
+
+
+/* ========================================
+   LOADING
+======================================== */
+
+.admin-prayer-loading {
+    min-height: 220px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color:
+        var(--text-muted);
+}
+
+
+.admin-prayer-loading .spinner-border {
+    width: 28px;
+    height: 28px;
+
+    color:
+        var(--primary-brown);
+
+    margin-bottom: 12px;
+}
+
+
+.admin-prayer-loading p {
+    margin: 0;
+
+    font-size: 13px;
+}
+
+
+/* ========================================
+   PRAYER LIST
+======================================== */
+
+.admin-prayer-list {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 0;
+}
+
+
+/* ========================================
+   STATUS SECTION
+======================================== */
+
+.admin-prayer-status-section {
+    border:
+        1px solid
+        rgba(62, 39, 35, 0.07);
+
+    border-radius: 12px;
+
+    overflow: hidden;
+
+    margin-bottom: 20px;
+}
+
+
+.admin-prayer-section-heading {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 12px;
+
+    padding: 14px 16px;
+
+    background-color:
+        var(--cream);
+
+    border-bottom:
+        1px solid
+        rgba(62, 39, 35, 0.07);
+}
+
+
+.admin-prayer-section-heading h3 {
+    margin: 0;
+
+    color:
+        var(--text-dark);
+
+    font-size: 15px;
+
+    font-weight: 700;
+}
+
+
+.admin-prayer-section-heading h3 i {
+    margin-right: 7px;
+
+    color:
+        var(--primary-brown);
+}
+
+
+.admin-prayer-section-heading span {
+    min-width: 26px;
+
+    padding: 3px 8px;
+
+    border-radius: 999px;
+
+    background-color:
+        var(--white);
+
+    color:
+        var(--primary-brown);
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    text-align: center;
+}
+
+
+.admin-prayer-section-list {
+    padding:
+        0 16px;
+}
+
+
+/* ========================================
+   PRAYER ITEM
+======================================== */
+
+.admin-prayer-item {
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 17px 0;
+
+    border-bottom:
+        1px solid
+        rgba(62, 39, 35, 0.07);
+}
+
+
+.admin-prayer-item:last-child {
+    border-bottom: 0;
+}
+
+
+/* ========================================
+   PRAYER MAIN
+======================================== */
+
+.admin-prayer-item-main {
+    min-width: 0;
+
+    flex: 1;
+}
+
+
+/* ========================================
+   PRAYER HEADER
+======================================== */
+
+.admin-prayer-item-header {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    margin-bottom: 8px;
+}
+
+
+.admin-prayer-icon {
+    width: 34px;
+    height: 34px;
+
+    min-width: 34px;
+
+    border-radius: 9px;
+
+    background-color:
+        var(--cream);
+
+    color:
+        var(--primary-brown);
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 14px;
+}
+
+
+.admin-prayer-item-label {
+    color:
+        var(--text-dark);
+
+    font-size: 13px;
+
+    font-weight: 700;
+}
+
+
+/* ========================================
+   PRAYER TEXT
+======================================== */
+
+.admin-prayer-text {
+    margin:
+        0 0 8px;
+
+    color:
+        var(--text-dark);
+
+    font-size: 14px;
+
+    line-height: 1.65;
+
+    white-space: pre-wrap;
+
+    overflow-wrap: anywhere;
+
+    word-break: break-word;
+}
+
+
+/* ========================================
+   DATE
+======================================== */
+
+.admin-prayer-date {
+    display: flex;
+
+    align-items: center;
+
+    gap: 5px;
+
+    color:
+        var(--text-muted);
+
+    font-size: 12px;
+}
+
+
+.admin-prayer-date i {
+    color:
+        var(--light-brown);
+
+    font-size: 12px;
+}
+
+
+/* ========================================
+   STATUS
+======================================== */
+
+.admin-prayer-status {
+    flex-shrink: 0;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 6px;
+
+    padding: 6px 10px;
+
+    border-radius: 999px;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+
+
+.admin-prayer-status.active {
+    background-color:
+        var(--active-bg);
+
+    color:
+        var(--primary-brown);
+}
+
+
+.admin-prayer-status.answered {
+    background-color:
+        var(--success-bg);
+
+    color:
+        var(--success);
+}
+
+
+/* ========================================
+   ANSWERED DATE
+======================================== */
+
+.admin-prayer-answered-date {
+    margin-top: 5px;
+
+    color:
+        var(--success);
+
+    font-size: 12px;
+
+    font-weight: 500;
+}
+
+
+/* ========================================
+   EMPTY
+======================================== */
+
+.admin-prayer-empty {
+    padding:
+        45px 20px;
+
+    text-align: center;
+
+    background-color:
+        var(--background);
+
+    border-radius: 12px;
+}
+
+
+.admin-prayer-empty-icon {
+    width: 58px;
+    height: 58px;
+
+    margin:
+        0 auto 14px;
+
+    border-radius: 16px;
+
+    background-color:
+        var(--cream);
+
+    color:
+        var(--light-brown);
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 24px;
+}
+
+
+.admin-prayer-empty h4 {
+    margin:
+        0 0 6px;
+
+    color:
+        var(--text-dark);
+
+    font-size: 17px;
+
+    font-weight: 700;
+}
+
+
+.admin-prayer-empty p {
+    margin: 0;
+
+    color:
+        var(--text-muted);
+
+    font-size: 13px;
+
+    line-height: 1.6;
+}
+
+
+/* ========================================
+   ERROR
+======================================== */
+
+.admin-prayer-error {
+    padding:
+        40px 20px;
+
+    text-align: center;
+
+    background-color:
+        #fdf2f2;
+
+    border-radius: 12px;
+
+    color:
+        #8a4545;
+}
+
+
+.admin-prayer-error i {
+    font-size: 28px;
+
+    margin-bottom: 10px;
+}
+
+
+.admin-prayer-error h4 {
+    margin:
+        0 0 6px;
+
+    font-size: 17px;
+}
+
+
+.admin-prayer-error p {
+    margin: 0;
+
+    font-size: 13px;
+
+    line-height: 1.6;
+}
+
+
+/* ========================================
+   TABLET
+======================================== */
+
+@media (max-width: 991.98px) {
+
+    .admin-prayer-main {
+        margin-left: 0;
+
+        padding:
+            90px 25px 30px;
+    }
+
+}
+
+
+/* ========================================
+   SMALL TABLET
+======================================== */
+
+@media (max-width: 767.98px) {
+
+    .admin-prayer-main {
+        padding:
+            85px 20px 25px;
+    }
+
+
+    .admin-section-card {
+        padding: 18px;
+    }
+
+
+    .admin-section-header {
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        gap: 5px;
+    }
+
+
+    .admin-section-header h5 {
+        font-size: 18px;
+    }
+
+
+    .admin-prayer-item {
+        gap: 14px;
+    }
+
+}
+
+
+/* ========================================
+   MOBILE
+======================================== */
+
+@media (max-width: 575.98px) {
+
+    .mobile-topbar {
+        height: 60px;
+    }
+
+
+    .mobile-brand {
+        font-size: 14px;
+    }
+
+
+    .admin-prayer-main {
+        padding:
+            78px 15px 20px;
+    }
+
+
+    /* Header */
+
+    .admin-prayer-header {
+        margin-bottom: 20px;
+    }
+
+
+    .admin-eyebrow {
+        font-size: 9px;
+    }
+
+
+    .admin-prayer-header h2 {
+        font-size: 22px;
+
+        line-height: 1.3;
+    }
+
+
+    .admin-prayer-header p {
+        font-size: 13px;
+
+        line-height: 1.5;
+    }
+
+
+    /* Section */
+
+    .admin-section-card {
+        padding:
+            16px 14px;
+
+        border-radius: 13px;
+    }
+
+
+    .admin-section-header {
+        margin-bottom: 15px;
+    }
+
+
+    .admin-section-header h5 {
+        font-size: 17px;
+    }
+
+
+    .admin-section-header p {
+        font-size: 12px;
+
+        line-height: 1.5;
+    }
+
+
+    /* Prayer */
+
+    .admin-prayer-item {
+        flex-direction: column;
+
+        align-items: stretch;
+
+        gap: 10px;
+
+        padding:
+            15px 0;
+    }
+
+
+    .admin-prayer-item-header {
+        gap: 9px;
+
+        margin-bottom: 7px;
+    }
+
+
+    .admin-prayer-icon {
+        width: 32px;
+        height: 32px;
+
+        min-width: 32px;
+
+        font-size: 13px;
+    }
+
+
+    .admin-prayer-item-label {
+        font-size: 12px;
+    }
+
+
+    .admin-prayer-text {
+        font-size: 13px;
+
+        line-height: 1.6;
+    }
+
+
+    .admin-prayer-date {
+        font-size: 11px;
+    }
+
+
+    .admin-prayer-status {
+        align-self: flex-start;
+
+        padding:
+            6px 10px;
+
+        font-size: 10px;
+    }
+
+
+    .admin-prayer-answered-date {
+        font-size: 11px;
+    }
+
+
+    /* Empty */
+
+    .admin-prayer-empty {
+        padding:
+            35px 15px;
+    }
+
+
+    .admin-prayer-empty-icon {
+        width: 52px;
+        height: 52px;
+
+        font-size: 21px;
+    }
+
+
+    .admin-prayer-empty h4 {
+        font-size: 16px;
+    }
+
+
+    .admin-prayer-empty p {
+        font-size: 12px;
+    }
+
+}
+
+
+/* ========================================
+   EXTRA SMALL
+======================================== */
+
+@media (max-width: 380px) {
+
+    .mobile-brand {
+        font-size: 13px;
+    }
+
+
+    .admin-prayer-main {
+        padding:
+            75px 12px 18px;
+    }
+
+
+    .admin-section-card {
+        padding:
+            14px 12px;
+    }
+
+
+    .admin-prayer-header h2 {
+        font-size: 20px;
+    }
+
+
+    .admin-prayer-stat-card {
+        padding: 14px;
+    }
+
+
+    .admin-prayer-stat-icon {
+        width: 40px;
+        height: 40px;
+
+        min-width: 40px;
+
+        font-size: 16px;
+    }
+
+
+    .admin-prayer-stat-card h3 {
+        font-size: 21px;
+    }
+
+}

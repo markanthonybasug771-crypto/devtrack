@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>About | DevTrack Admin</title>
+
+
+    <!-- Bootstrap -->
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+
+    <!-- Bootstrap Icons -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    >
+
+
+    <!-- SweetAlert2 -->
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/sweetalert2@11"
+    ></script>
+
+
+    <!-- Main CSS -->
+
+    <link
+        rel="stylesheet"
+        href="./css/style.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="./css/admin.css"
+    >
+
+</head>
+
+
+<body class="about-page">
+
+
+    <!-- ================================= -->
+    <!-- MOBILE TOPBAR -->
+    <!-- ================================= -->
+
+    <nav class="mobile-topbar d-lg-none">
+
+        <button
+            class="btn sidebar-toggle"
+            type="button"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#mobileSidebar"
+        >
+
+            <i class="bi bi-list"></i>
+
+        </button>
+
+
+        <div class="mobile-brand">
+
+            <div class="sidebar-logo sidebar-text-badge">
+                DT
+            </div>
+
+            <span>
+                DevTrack
+            </span>
+
+        </div>
+
+    </nav>
+
+
+
+    <!-- ================================= -->
+    <!-- DESKTOP SIDEBAR -->
+    <!-- ================================= -->
+
+    <aside class="desktop-sidebar d-none d-lg-flex">
+
+        <div class="sidebar-brand">
+
+            <div class="sidebar-logo sidebar-text-badge">
+                DT
+            </div>
+
+
+            <div>
+
+                <h5>
+                    Devotional Tracker
+                </h5>
+
+                <small>
+                    Admin Panel
+                </small>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="sidebar-menu">
+
+            <p class="sidebar-label">
+                MAIN MENU
+            </p>
+
+
+            <!-- DASHBOARD -->
+
+            <a
+                href="admin-dashboard.html"
+                class="sidebar-link"
+            >
+
+                <i class="bi bi-grid-1x2-fill"></i>
+
+                <span>
+                    Dashboard
+                </span>
+
+            </a>
+
+
+            <!-- DEVOTIONS -->
+
+            <a
+                href="admin-devotions.html"
+                class="sidebar-link"
+            >
+
+                <i class="bi bi-journal-text"></i>
+
+                <span>
+                    Devotions
+                </span>
+
+            </a>
+
+
+            <!-- USERS -->
+
+            <a
+                href="admin-users.html"
+                class="sidebar-link"
+            >
+
+                <i class="bi bi-people-fill"></i>
+
+                <span>
+                    Users
+                </span>
+
+            </a>
+
+
+            <!-- PRAYER REQUESTS -->
+
+            <a
+                href="admin-prayers.html"
+                class="sidebar-link"
+            >
+
+                <i class="bi bi-chat-heart-fill"></i>
+
+                <span>
+                    Prayer Requests
+                </span>
+
+            </a>
+
+            <a
+                href="admin-prayer-list.html"
+                class="sidebar-link"
+            >
+
+                <i class="bi bi-feather"></i>
+
+                <span>
+                    Prayer Requests List
+                </span>
+
+            </a>
+
+            <a
+    href="admin-playlist.html"
+    class="sidebar-link"
+>
+
+    <i class="bi bi-music-note-list"></i>
+
+    <span>
+        Playlist
+    </span>
+
+</a>
+
+
+
+            <!-- SETTINGS -->
+
+            <a
+                href="admin-settings.html"
+                class="sidebar-link"
+            >
+
+                <i class="bi bi-gear-fill"></i>
+
+                <span>
+                    Settings
+                </span>
+
+            </a>
+
+
+            <!-- ABOUT -->
+
+            <a
+                href="admin-about.html"
+                class="sidebar-link active"
+            >
+
+                <i class="bi bi-info-circle-fill"></i>
+
+                <span>
+                    About
+                </span>
+
+            </a>
+
+
+            <p class="sidebar-label mt-4">
+                ACCOUNT
+            </p>
+
+
+            <!-- LOGOUT -->
+
+            <a
+                href="#"
+                class="sidebar-link"
+                id="logoutBtn"
+            >
+
+                <i class="bi bi-box-arrow-right"></i>
+
+                <span>
+                    Logout
+                </span>
+
+            </a>
+
+        </div>
+
+
+
+        <div class="sidebar-footer">
+
+            <small>
+                Devotional Tracker
+            </small>
+
+            <br>
+
+            <small>
+                Admin Panel
+            </small>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- ================================= -->
+    <!-- MOBILE SIDEBAR -->
+    <!-- ================================= -->
+
+    <div
+        class="offcanvas offcanvas-start mobile-sidebar"
+        tabindex="-1"
+        id="mobileSidebar"
+    >
+
+        <div class="offcanvas-header">
+
+            <div class="d-flex align-items-center gap-2">
+
+                <div class="sidebar-logo sidebar-text-badge small-logo">
+                    DT
+                </div>
+
+
+                <div>
+
+                    <h6 class="mb-0 fw-bold">
+                        Devotional Tracker
+                    </h6>
+
+                    <small>
+                        Admin Panel
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="offcanvas"
+            ></button>
+
+        </div>
+
+
+
+        <div class="offcanvas-body">
+
+            <p class="sidebar-label">
+                MAIN MENU
+            </p>
+
+
+            <!-- DASHBOARD -->
+
+            <a
+                href="admin-dashboard.html"
+                class="sidebar-link"
+            >
+
+                <i class="bi bi-grid-1x2-fill"></i>
+
+                <span>
+                    Dashboard
+                </span>
+
+            </a>
+
+
+            <!-- DEVOTIONS -->
+
+            <a
+                href="admin-devotions.html"
+                class="sidebar-link"
+            >
+
+                <i class="bi bi-journal-text"></i>
+
+                <span>
+                    Devotions
+                </span>
+
+            </a>
+
+
+            <!-- USERS -->
+
+            <a
+                href="admin-users.html"
+                class="sidebar-link"
+            >
+
+                <i class="bi bi-people-fill"></i>
+
+                <span>
+                    Users
+                </span>
+
+            </a>
+
+
+            <!-- PRAYER REQUESTS -->
+
+            <a
+                href="admin-prayers.html"
+                class="sidebar-link"
+            >
+
+                <i class="bi bi-chat-heart-fill"></i>
+
+                <span>
+                    Prayer Requests
+                </span>
+
+            </a>
+
+            <a
+                href="admin-prayer-list.html"
+                class="sidebar-link"
+            >
+
+                <i class="bi bi-feather"></i>
+
+                <span>
+                    Prayer Requests List
+                </span>
+
+            </a>
+
+            <a
+    href="admin-playlist.html"
+    class="sidebar-link"
+>
+
+    <i class="bi bi-music-note-list"></i>
+
+    <span>
+        Playlist
+    </span>
+
+</a>
+
+
+            <!-- SETTINGS -->
+
+            <a
+                href="admin-settings.html"
+                class="sidebar-link"
+            >
+
+                <i class="bi bi-gear-fill"></i>
+
+                <span>
+                    Settings
+                </span>
+
+            </a>
+
+
+            <!-- ABOUT -->
+
+            <a
+                href="admin-about.html"
+                class="sidebar-link active"
+            >
+
+                <i class="bi bi-info-circle-fill"></i>
+
+                <span>
+                    About
+                </span>
+
+            </a>
+
+
+            <p class="sidebar-label mt-4">
+                ACCOUNT
+            </p>
+
+
+            <!-- LOGOUT -->
+
+            <a
+                href="#"
+                class="sidebar-link"
+                id="mobileLogoutBtn"
+            >
+
+                <i class="bi bi-box-arrow-right"></i>
+
+                <span>
+                    Logout
+                </span>
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ================================= -->
+    <!-- MAIN CONTENT -->
+    <!-- ================================= -->
+
+    <main class="main-content">
+
+
+        <!-- PAGE HEADER -->
+
+        <div class="page-header">
+
+            <div>
+
+                <h2>
+                    About DevTrack
+                </h2>
+
+                <p>
+                    Learn more about the Devotional Tracker
+                    and its purpose for the CLG-Laoag Music Team.
+                </p>
+
+            </div>
+
+
+            <div class="profile-badge">
+
+                <i class="bi bi-stars"></i>
+
+                Built with purpose
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ================================= -->
+        <!-- ABOUT CARD -->
+        <!-- ================================= -->
+
+        <div class="about-card">
+
+
+            <!-- HERO -->
+
+            <div class="about-hero">
+
+                <span class="small-label">
+                    OUR PURPOSE
+                </span>
+
+
+                <h3>
+                    DevTrack is a digital devotional companion
+                    made for the CLG-Laoag Music Team.
+                </h3>
+
+
+                <p>
+                    It was created to give every member an
+                    easy and meaningful way to reflect on
+                    God’s Word, document their personal
+                    devotions, and stay encouraged as one
+                    community.
+                </p>
+
+            </div>
+
+
+
+            <!-- ABOUT GRID -->
+
+            <div class="about-grid">
+
+
+                <!-- WHAT IS IT FOR -->
+
+                <div class="about-panel">
+
+                    <h4>
+
+                        <i class="bi bi-question-circle me-2"></i>
+
+                        What is it for?
+
+                    </h4>
+
+
+                    <p>
+                        This system serves as a simple online
+                        space where Music Team members can
+                        write their daily devotions, keep
+                        track of their spiritual growth,
+                        and share prayer needs with the team.
+                    </p>
+
+                </div>
+
+
+
+                <!-- WHY CREATED -->
+
+                <div class="about-panel">
+
+                    <h4>
+
+                        <i class="bi bi-lightbulb me-2"></i>
+
+                        Why was it created?
+
+                    </h4>
+
+
+                    <p>
+                        It was built to help the team stay
+                        consistent in their quiet time with
+                        God, especially during busy ministry
+                        seasons. Instead of relying on
+                        scattered notes or forgotten habits,
+                        this platform brings everything into
+                        one place.
+                    </p>
+
+                </div>
+
+
+
+                <!-- WHEN CREATED -->
+
+                <div class="about-panel">
+
+                    <h4>
+
+                        <i class="bi bi-calendar-event me-2"></i>
+
+                        When was it created?
+
+                    </h4>
+
+
+                    <p>
+                        The system was created as a practical
+                        solution for the Music Team’s
+                        devotional journey, designed to
+                        support everyday spiritual discipline
+                        and unity within the ministry.
+                    </p>
+
+                </div>
+
+
+
+                <!-- WHO IS IT FOR -->
+
+                <div class="about-panel">
+
+                    <h4>
+
+                        <i class="bi bi-people me-2"></i>
+
+                        Who is it for?
+
+                    </h4>
+
+
+                    <p>
+                        It is made specifically for the
+                        members of the CLG-Laoag Music Team,
+                        helping them grow closer to God,
+                        encourage one another, and remain
+                        spiritually connected in their service.
+                    </p>
+
+                </div>
+
+
+
+                <!-- ADMIN ROLE -->
+
+                <div class="about-panel">
+
+                    <h4>
+
+                        <i class="bi bi-shield-check me-2"></i>
+
+                        What is the Admin Panel for?
+
+                    </h4>
+
+
+                    <p>
+                        The Admin Panel allows authorized
+                        leaders to manage users, review
+                        devotional entries, monitor prayer
+                        requests, and help provide spiritual
+                        encouragement and accountability
+                        within the Music Team.
+                    </p>
+
+                </div>
+
+
+
+                <!-- FEATURES -->
+
+                <div class="about-panel">
+
+                    <h4>
+
+                        <i class="bi bi-stars me-2"></i>
+
+                        What can DevTrack do?
+
+                    </h4>
+
+
+                    <p>
+                        DevTrack provides devotional
+                        journaling, prayer request tracking,
+                        devotional review, user management,
+                        and other tools designed to support
+                        the spiritual growth of the Music Team.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+
+    <!-- ================================= -->
+    <!-- BOOTSTRAP JS -->
+    <!-- ================================= -->
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    ></script>
+
+
+
+    <!-- ================================= -->
+    <!-- ADMIN ABOUT JS -->
+    <!-- ================================= -->
+
+    <script type="module">
+
+        import { auth } from "./js/firebase.js";
+
+        import {
+            signOut
+        } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+
+        // ========================================
+        // LOGOUT BUTTONS
+        // ========================================
+
+        const logoutBtn =
+            document.getElementById("logoutBtn");
+
+        const mobileLogoutBtn =
+            document.getElementById("mobileLogoutBtn");
+
+
+        // ========================================
+        // LOGOUT FUNCTION
+        // ========================================
+
+        async function handleLogout(event) {
+
+            event.preventDefault();
+
+
+            const result =
+                await Swal.fire({
+
+                    title: "Logout?",
+
+                    text: "Are you sure you want to logout?",
+
+                    icon: "question",
+
+                    showCancelButton: true,
+
+                    confirmButtonText: "Yes, Logout",
+
+                    cancelButtonText: "Cancel",
+
+                    reverseButtons: true,
+
+                    confirmButtonColor: "#6f4e37",
+
+                    cancelButtonColor: "#6c757d"
+
+                });
+
+
+            if (!result.isConfirmed) {
+                return;
+            }
+
+
+            try {
+
+                await signOut(auth);
+
+
+                await Swal.fire({
+
+                    icon: "success",
+
+                    title: "Logged Out",
+
+                    text: "You have been successfully logged out.",
+
+                    timer: 1200,
+
+                    showConfirmButton: false
+
+                });
+
+
+                window.location.href =
+                    "./index.html";
+
+
+            } catch (error) {
+
+                console.error(
+                    "Logout error:",
+                    error
+                );
+
+
+                Swal.fire({
+
+                    icon: "error",
+
+                    title: "Logout Failed",
+
+                    text:
+                        "Something went wrong while logging out. Please try again."
+
+                });
+
+            }
+
+        }
+
+
+        // ========================================
+        // DESKTOP LOGOUT
+        // ========================================
+
+        if (logoutBtn) {
+
+            logoutBtn.addEventListener(
+                "click",
+                handleLogout
+            );
+
+        }
+
+
+        // ========================================
+        // MOBILE LOGOUT
+        // ========================================
+
+        if (mobileLogoutBtn) {
+
+            mobileLogoutBtn.addEventListener(
+                "click",
+                handleLogout
+            );
+
+        }
+
+    </script>
+<script type="module" src="./js/transition.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,3619 @@
+:root {
+    --dark-brown: #3e2723;
+    --primary-brown: #6f4e37;
+    --medium-brown: #8b5e3c;
+    --light-brown: #a67b5b;
+    --cream: #f8f3ed;
+    --background: #f5f1ec;
+    --white: #ffffff;
+    --text-dark: #2d241f;
+    --text-muted: #7b7069;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    color: var(--text-dark);
+}
+
+
+/* ============================= */
+/* LOGIN PAGE */
+/* ============================= */
+
+.login-page {
+    background-color: var(--background);
+}
+
+
+/* ============================= */
+/* LEFT BRAND SECTION */
+/* ============================= */
+
+.login-brand-section {
+    background: linear-gradient(
+        135deg,
+        var(--dark-brown),
+        var(--primary-brown)
+    );
+
+    color: var(--white);
+
+    align-items: center;
+    justify-content: center;
+
+    position: relative;
+
+    overflow: hidden;
+}
+
+
+/* Decorative circles */
+
+.login-brand-section::before {
+    content: "";
+    position: absolute;
+
+    width: 350px;
+    height: 350px;
+
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.05);
+
+    top: -120px;
+    left: -120px;
+}
+
+.login-brand-section::after {
+    content: "";
+    position: absolute;
+
+    width: 450px;
+    height: 450px;
+
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.04);
+
+    bottom: -200px;
+    right: -150px;
+}
+
+
+/* Brand content */
+
+.brand-content {
+    position: relative;
+
+    z-index: 2;
+
+    text-align: center;
+
+    max-width: 500px;
+
+    padding: 40px;
+}
+
+
+.brand-icon {
+    width: auto;
+    min-width: 72px;
+    height: 44px;
+
+    border-radius: 14px;
+
+    background-color: rgba(255, 255, 255, 0.12);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: 0 auto 25px;
+
+    padding: 0 10px;
+}
+
+.brand-text-badge {
+    color: var(--white);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+}
+
+
+.brand-content h1 {
+    font-size: 42px;
+
+    font-weight: 700;
+
+    margin-bottom: 15px;
+}
+
+
+.brand-content > p {
+    font-size: 18px;
+
+    color: rgba(255, 255, 255, 0.8);
+
+    line-height: 1.6;
+}
+
+
+/* ============================= */
+/* VERSE */
+/* ============================= */
+
+.brand-verse {
+    margin-top: 60px;
+
+    padding: 25px;
+
+    border-left: 3px solid var(--light-brown);
+
+    background-color: rgba(255, 255, 255, 0.06);
+
+    text-align: left;
+}
+
+
+.brand-verse i {
+    font-size: 25px;
+}
+
+
+.brand-verse p {
+    font-size: 17px;
+
+    font-style: italic;
+
+    line-height: 1.6;
+
+    margin: 8px 0;
+}
+
+
+.brand-verse span {
+    font-size: 14px;
+
+    color: rgba(255, 255, 255, 0.7);
+}
+
+
+/* ============================= */
+/* LOGIN CARD */
+/* ============================= */
+
+.login-card {
+    width: 100%;
+
+    max-width: 460px;
+
+    padding: 40px;
+}
+
+
+.login-title {
+    font-size: 32px;
+
+    font-weight: 700;
+
+    margin-bottom: 8px;
+}
+
+
+.login-subtitle {
+    color: var(--text-muted);
+
+    margin-bottom: 0;
+}
+
+
+/* ============================= */
+/* FORM */
+/* ============================= */
+
+.form-label {
+    font-weight: 600;
+
+    font-size: 14px;
+}
+
+
+.input-group-text {
+    background-color: var(--white);
+
+    border-right: 0;
+
+    color: var(--primary-brown);
+}
+
+
+.form-control {
+    height: 48px;
+
+    border-color: #ddd4cc;
+}
+
+
+.input-group .form-control {
+    border-left: 0;
+}
+
+
+.form-control:focus {
+    border-color: var(--light-brown);
+
+    box-shadow: 0 0 0 0.2rem rgba(111, 78, 55, 0.15);
+}
+
+
+.input-group:focus-within .input-group-text {
+    border-color: var(--light-brown);
+}
+
+
+/* ============================= */
+/* PASSWORD TOGGLE */
+/* ============================= */
+
+.password-toggle {
+    border: 1px solid #ddd4cc;
+
+    border-left: 0;
+
+    background-color: var(--white);
+
+    color: var(--primary-brown);
+}
+
+
+.password-toggle:hover {
+    color: var(--dark-brown);
+
+    background-color: var(--cream);
+}
+
+
+/* ============================= */
+/* LOGIN BUTTON */
+/* ============================= */
+
+.btn-login {
+    height: 50px;
+
+    background-color: var(--primary-brown);
+
+    color: var(--white);
+
+    border: none;
+
+    font-weight: 600;
+
+    border-radius: 8px;
+
+    transition: 0.2s ease;
+}
+
+
+.btn-login:hover {
+    background-color: var(--dark-brown);
+
+    color: var(--white);
+
+    transform: translateY(-1px);
+}
+
+
+.btn-login:disabled {
+    background-color: var(--light-brown);
+
+    cursor: not-allowed;
+
+    transform: none;
+}
+
+
+/* ============================= */
+/* SIGN UP */
+/* ============================= */
+
+.signup-text {
+    color: var(--text-muted);
+
+    font-size: 14px;
+}
+
+
+.signup-text a {
+    color: var(--primary-brown);
+
+    font-weight: 600;
+
+    text-decoration: none;
+}
+
+
+.signup-text a:hover {
+    color: var(--dark-brown);
+
+    text-decoration: underline;
+}
+
+
+/* ============================= */
+/* MOBILE BRAND */
+/* ============================= */
+
+.mobile-brand-icon {
+    width: auto;
+    min-width: 64px;
+    height: 38px;
+
+    border-radius: 12px;
+
+    background-color: var(--primary-brown);
+
+    color: var(--white);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: 0 auto 15px;
+    padding: 0 10px;
+}
+
+.mobile-brand-text-badge {
+    font-size: 11px;
+    letter-spacing: 1.2px;
+}
+
+
+/* ============================= */
+/* RESPONSIVE */
+/* ============================= */
+
+@media (max-width: 991px) {
+
+    .login-card {
+        padding: 30px 25px;
+    }
+
+}
+
+
+@media (max-width: 575px) {
+
+    .login-card {
+        padding: 25px 20px;
+    }
+
+    .login-title {
+        font-size: 28px;
+    }
+
+}
+
+/* ============================= */
+/* SIGNUP PAGE */
+/* ============================= */
+
+.signup-page {
+    background-color: var(--background);
+    min-height: 100vh;
+}
+
+
+.signup-card {
+    background-color: var(--white);
+
+    width: 100%;
+    max-width: 720px;
+
+    padding: 40px;
+
+    border-radius: 18px;
+
+    box-shadow: 0 10px 35px rgba(62, 39, 35, 0.08);
+}
+
+
+.signup-icon {
+    width: 70px;
+    height: 70px;
+
+    border-radius: 20px;
+
+    background-color: var(--primary-brown);
+
+    color: var(--white);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: 0 auto 18px;
+
+    font-size: 30px;
+}
+
+
+.signup-title {
+    font-size: 30px;
+
+    font-weight: 700;
+
+    margin-bottom: 7px;
+
+    color: var(--text-dark);
+}
+
+
+.signup-subtitle {
+    color: var(--text-muted);
+
+    margin-bottom: 0;
+}
+
+
+/* Signup inputs */
+
+.signup-card .form-control,
+.signup-card .form-select {
+    height: 48px;
+
+    border-color: #ddd4cc;
+}
+
+
+.signup-card .form-control:focus,
+.signup-card .form-select:focus {
+
+    border-color: var(--light-brown);
+
+    box-shadow:
+        0 0 0 0.2rem rgba(111, 78, 55, 0.15);
+}
+
+
+.signup-card .input-group-text {
+    min-width: 46px;
+
+    justify-content: center;
+}
+
+
+/* Mobile */
+
+@media (max-width: 767px) {
+
+    .signup-page {
+        padding: 10px 0;
+    }
+
+
+    .signup-card {
+
+        padding: 28px 20px;
+
+        border-radius: 14px;
+
+        box-shadow: 0 5px 20px rgba(62, 39, 35, 0.07);
+    }
+
+
+    .signup-title {
+        font-size: 25px;
+    }
+
+
+    .signup-subtitle {
+        font-size: 14px;
+    }
+
+
+    .signup-icon {
+        width: 60px;
+        height: 60px;
+
+        font-size: 26px;
+
+        border-radius: 17px;
+    }
+
+}
+
+/* ================================= */
+/* DASHBOARD */
+/* ================================= */
+
+.dashboard-page {
+    background-color: var(--background);
+    min-height: 100vh;
+}
+
+
+/* ================================= */
+/* DESKTOP SIDEBAR */
+/* ================================= */
+
+.desktop-sidebar {
+    position: fixed;
+
+    top: 0;
+    left: 0;
+    bottom: 0;
+
+    width: 260px;
+
+    background-color: var(--dark-brown);
+
+    color: var(--white);
+
+    display: flex;
+
+    flex-direction: column;
+
+    z-index: 1000;
+}
+
+
+.sidebar-brand {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 24px 20px;
+
+    border-bottom:
+        1px solid rgba(255, 255, 255, 0.08);
+}
+
+
+.sidebar-logo {
+    width: auto;
+    min-width: 34px;
+    height: 30px;
+
+    border-radius: 9px;
+
+    background-color: var(--primary-brown);
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+
+    flex-shrink: 0;
+    padding: 0 8px;
+    color: var(--white);
+}
+
+
+.sidebar-brand h5 {
+    font-size: 15px;
+
+    margin: 0;
+
+    font-weight: 700;
+}
+
+
+.sidebar-brand small {
+    color: rgba(255, 255, 255, 0.55);
+}
+
+
+/* Sidebar menu */
+
+.sidebar-menu {
+    padding: 25px 14px;
+
+    flex: 1;
+}
+
+
+.sidebar-label {
+    font-size: 10px;
+
+    font-weight: 700;
+
+    letter-spacing: 1px;
+
+    color: rgba(255, 255, 255, 0.4);
+
+    margin:
+        0 12px 10px;
+}
+
+
+.sidebar-link {
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+
+    padding: 12px 14px;
+
+    margin-bottom: 5px;
+
+    border-radius: 8px;
+
+    color: rgba(255, 255, 255, 0.7);
+
+    text-decoration: none;
+
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.2;
+
+    transition: background-color 0.2s ease, color 0.2s ease;
+    transform: none;
+}
+
+
+.sidebar-link i {
+    font-size: 17px;
+
+    width: 20px;
+
+    text-align: center;
+}
+
+
+.sidebar-link:hover,
+.sidebar-link:focus-visible {
+    color: var(--white);
+
+    background-color:
+        rgba(255, 255, 255, 0.08);
+}
+
+
+.sidebar-link.active {
+    color: var(--white);
+
+    background-color: var(--primary-brown);
+
+    font-weight: 500;
+}
+
+
+.sidebar-footer {
+    padding: 18px 20px;
+
+    border-top:
+        1px solid rgba(255, 255, 255, 0.08);
+
+    color: rgba(255, 255, 255, 0.4);
+
+    font-size: 11px;
+}
+
+
+/* ================================= */
+/* MAIN CONTENT */
+/* ================================= */
+
+.dashboard-content {
+    margin-left: 260px;
+
+    padding: 35px;
+
+    min-height: 100vh;
+}
+
+
+.dashboard-header {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin-bottom: 25px;
+}
+
+
+.dashboard-date {
+    color: var(--text-muted);
+
+    font-size: 13px;
+
+    margin-bottom: 5px;
+}
+
+
+.dashboard-header h2 {
+    font-size: 28px;
+
+    font-weight: 700;
+
+    margin-bottom: 5px;
+}
+
+
+.dashboard-subtitle {
+    color: var(--text-muted);
+
+    margin-bottom: 0;
+
+    font-size: 14px;
+}
+
+
+.user-avatar {
+    width: 52px;
+    height: 52px;
+
+    border-radius: 50%;
+
+    background-color: var(--primary-brown);
+
+    color: var(--white);
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 22px;
+}
+
+
+/* ================================= */
+/* ENCOURAGEMENT */
+/* ================================= */
+
+.encouragement-card {
+    background:
+        linear-gradient(
+            135deg,
+            var(--dark-brown),
+            var(--primary-brown)
+        );
+
+    color: var(--white);
+
+    border-radius: 15px;
+
+    padding: 25px;
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 18px;
+
+    box-shadow:
+        0 8px 25px rgba(62, 39, 35, 0.12);
+}
+
+
+.encouragement-icon {
+    width: 45px;
+    height: 45px;
+
+    border-radius: 12px;
+
+    background-color:
+        rgba(255, 255, 255, 0.12);
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+}
+
+
+.encouragement-label {
+    font-size: 10px;
+
+    font-weight: 700;
+
+    letter-spacing: 1px;
+
+    color:
+        rgba(255, 255, 255, 0.6);
+
+    margin-bottom: 7px;
+}
+
+
+.encouragement-card h4 {
+    font-size: 18px;
+
+    line-height: 1.5;
+
+    margin-bottom: 5px;
+}
+
+
+.encouragement-card small {
+    color:
+        rgba(255, 255, 255, 0.65);
+}
+
+
+/* ================================= */
+/* DASHBOARD CARDS */
+/* ================================= */
+
+.dashboard-card {
+    background-color: var(--white);
+
+    border-radius: 13px;
+
+    padding: 20px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    border:
+        1px solid rgba(62, 39, 35, 0.05);
+
+    box-shadow:
+        0 4px 15px rgba(62, 39, 35, 0.04);
+}
+
+
+.card-icon {
+    width: 45px;
+    height: 45px;
+
+    border-radius: 12px;
+
+    background-color: var(--cream);
+
+    color: var(--primary-brown);
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 20px;
+}
+
+
+.dashboard-card small {
+    color: var(--text-muted);
+
+    font-size: 12px;
+}
+
+
+.dashboard-card h3 {
+    font-size: 25px;
+
+    font-weight: 700;
+
+    margin: 2px 0 0;
+}
+
+
+/* ================================= */
+/* START DEVOTION */
+/* ================================= */
+
+.start-devotion-card {
+    background-color: var(--white);
+
+    border-radius: 15px;
+
+    padding: 25px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    border:
+        1px solid rgba(62, 39, 35, 0.05);
+
+    box-shadow:
+        0 4px 15px rgba(62, 39, 35, 0.04);
+}
+
+
+.small-label {
+    font-size: 10px;
+
+    font-weight: 700;
+
+    letter-spacing: 1px;
+
+    color: var(--light-brown);
+}
+
+
+.start-devotion-card h3 {
+    font-size: 20px;
+
+    margin: 7px 0;
+
+    font-weight: 700;
+}
+
+
+.start-devotion-card p {
+    color: var(--text-muted);
+
+    font-size: 14px;
+
+    margin: 0;
+}
+
+
+/* ================================= */
+/* MOBILE TOPBAR */
+/* ================================= */
+
+.mobile-topbar {
+    height: 65px;
+
+    background-color: var(--dark-brown);
+
+    color: var(--white);
+
+    display: flex;
+
+    align-items: center;
+
+    padding: 0 18px;
+
+    position: sticky;
+
+    top: 0;
+
+    z-index: 999;
+}
+
+
+.sidebar-toggle {
+    color: var(--white);
+
+    font-size: 24px;
+
+    padding: 0;
+
+    margin-right: 12px;
+}
+
+
+.sidebar-toggle:hover {
+    color: var(--white);
+}
+
+
+.mobile-brand {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    font-size: 15px;
+
+    font-weight: 600;
+}
+
+
+/* ================================= */
+/* MOBILE SIDEBAR */
+/* ================================= */
+
+.mobile-sidebar {
+    background-color: var(--dark-brown);
+
+    color: var(--white);
+
+    width: 280px !important;
+}
+
+
+.mobile-sidebar .offcanvas-header {
+    border-bottom:
+        1px solid rgba(255, 255, 255, 0.08);
+}
+
+
+.mobile-sidebar .btn-close {
+    filter: invert(1);
+
+    opacity: 0.7;
+}
+
+
+.mobile-sidebar .sidebar-link {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+
+.mobile-sidebar .sidebar-link.active {
+    color: var(--white);
+    background-color: var(--primary-brown);
+}
+
+
+.small-logo {
+    width: 38px;
+    height: 38px;
+
+    font-size: 17px;
+}
+
+
+/* ================================= */
+/* RESPONSIVE */
+/* ================================= */
+
+@media (max-width: 991px) {
+
+    .dashboard-content {
+        margin-left: 0;
+
+        padding: 25px 20px;
+    }
+
+
+    .dashboard-header h2 {
+        font-size: 24px;
+    }
+
+}
+
+
+@media (max-width: 575px) {
+
+    .dashboard-content {
+        padding: 20px 15px;
+    }
+
+
+    .dashboard-header {
+        margin-bottom: 20px;
+    }
+
+
+    .dashboard-header h2 {
+        font-size: 22px;
+    }
+
+
+    .dashboard-subtitle {
+        font-size: 13px;
+    }
+
+
+    .user-avatar {
+        width: 45px;
+        height: 45px;
+
+        font-size: 19px;
+    }
+
+
+    .encouragement-card {
+        padding: 20px;
+
+        gap: 12px;
+    }
+
+
+    .encouragement-card h4 {
+        font-size: 16px;
+    }
+
+
+    .start-devotion-card {
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+
+    .start-devotion-card .btn {
+        width: 100%;
+    }
+
+}
+
+/* ================================= */
+/* PRAYER REQUESTS */
+/* ================================= */
+
+.prayer-section {
+    background-color: var(--white);
+    border-radius: 14px;
+    padding: 18px 20px;
+    border: 1px solid rgba(62, 39, 35, 0.05);
+    box-shadow: 0 3px 12px rgba(62, 39, 35, 0.04);
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.section-header h3 {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 4px 0 0;
+}
+
+.empty-prayer {
+    text-align: center;
+    padding: 18px 12px;
+    border-radius: 10px;
+    background-color: var(--background);
+    color: var(--text-muted);
+}
+
+.empty-prayer i {
+    font-size: 28px;
+    color: var(--light-brown);
+    display: block;
+    margin-bottom: 6px;
+}
+
+.empty-prayer p {
+    margin: 0;
+    font-size: 14px;
+}
+
+.prayer-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.prayer-bullet-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 8px 0;
+    border-top: 1px solid rgba(62, 39, 35, 0.08);
+}
+
+.prayer-bullet-item:first-child {
+    padding-top: 0;
+    border-top: 0;
+}
+
+.prayer-bullet {
+    color: var(--primary-brown);
+    font-weight: 700;
+    line-height: 1.5;
+    margin-top: 1px;
+}
+
+.prayer-bullet-item .prayer-text {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin: 0;
+    white-space: pre-wrap;
+}
+
+@media (max-width: 575px) {
+    .prayer-section {
+        padding: 20px 15px;
+    }
+
+    .section-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .section-header .btn {
+        width: 100%;
+    }
+
+    .section-header h3 {
+        font-size: 18px;
+    }
+}
+
+/* ================================= */
+/* ADMIN DASHBOARD */
+/* ================================= */
+
+.admin-page {
+    background: linear-gradient(135deg, #f7efe9 0%, #fdf8f3 100%);
+    min-height: 100vh;
+}
+
+.admin-shell {
+    min-height: 100vh;
+    display: flex;
+}
+
+.admin-sidebar {
+    width: 280px;
+    background: var(--dark-brown);
+    color: var(--white);
+    display: flex;
+    flex-direction: column;
+    padding: 24px 18px;
+    gap: 20px;
+}
+
+.admin-sidebar .sidebar-brand {
+    padding: 0;
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+    padding-bottom: 18px;
+}
+
+.admin-sidebar-body {
+    flex: 1;
+}
+
+.admin-greeting {
+    background: rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 18px;
+}
+
+.admin-greeting h4 {
+    margin: 4px 0 8px;
+    font-size: 1.1rem;
+}
+
+.admin-greeting p {
+    margin: 0;
+    font-size: 0.92rem;
+    color: rgba(255,255,255,0.75);
+}
+
+.admin-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.admin-nav-btn {
+    width: 100%;
+    border: 0;
+    border-radius: 10px;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: transparent;
+    color: rgba(255,255,255,0.8);
+    text-align: left;
+    transition: all 0.2s ease;
+}
+
+.admin-nav-btn:hover,
+.admin-nav-btn.active {
+    background: rgba(255,255,255,0.12);
+    color: var(--white);
+}
+
+.admin-sidebar-footer {
+    border-top: 1px solid rgba(255,255,255,0.12);
+    padding-top: 16px;
+}
+
+.admin-main {
+    flex: 1;
+    padding: 28px;
+}
+
+.admin-view {
+    display: none;
+}
+
+.admin-view.active {
+    display: block;
+}
+
+.admin-view-header {
+    margin-bottom: 18px;
+}
+
+.admin-view-header h2 {
+    margin-top: 4px;
+    font-size: 1.6rem;
+    color: var(--text-dark);
+}
+
+.admin-panel-card {
+    background: var(--white);
+    border-radius: 18px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(62,39,35,0.06);
+    border: 1px solid rgba(62,39,35,0.06);
+    margin-bottom: 16px;
+}
+
+.admin-panel-card.admin-prayer-card {
+    background: linear-gradient(135deg, rgba(111,78,55,0.06), rgba(255,255,255,0.95));
+}
+
+.admin-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.admin-panel-header h4 {
+    margin: 0 0 4px;
+    font-size: 1.05rem;
+}
+
+.admin-panel-header p {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 0.92rem;
+}
+
+.admin-stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.admin-stat-card {
+    background: var(--white);
+    border: 1px solid rgba(62,39,35,0.08);
+    border-radius: 16px;
+    padding: 14px 16px;
+    box-shadow: 0 8px 20px rgba(62,39,35,0.05);
+}
+
+.admin-stat-card h4 {
+    margin: 0 0 4px;
+    font-size: 1.2rem;
+    color: var(--primary-brown);
+}
+
+.admin-stat-card p {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.admin-summary-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+
+.summary-pill {
+    min-width: 96px;
+    background: var(--cream);
+    color: var(--primary-brown);
+    border-radius: 999px;
+    padding: 10px 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 0.9rem;
+}
+
+.summary-pill strong {
+    font-size: 1rem;
+}
+
+.admin-devotional-list,
+.admin-user-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.devotional-review-card,
+.user-management-card {
+    border: 1px solid rgba(62,39,35,0.08);
+    border-radius: 14px;
+    padding: 14px;
+    background: var(--background);
+}
+
+.devotional-review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.devotional-review-header h5,
+.user-management-card h5 {
+    margin: 0 0 2px;
+    font-size: 1rem;
+}
+
+.devotional-review-header p,
+.user-management-card p {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.devotional-status {
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.devotional-status.passed {
+    background: #dff7e9;
+    color: #1f7d4f;
+}
+
+.devotional-status.pending {
+    background: #fde7c8;
+    color: #a15b00;
+}
+
+.devotional-review-body {
+    display: grid;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.devotional-review-body strong {
+    display: block;
+    color: var(--primary-brown);
+    margin-bottom: 2px;
+}
+
+.devotional-review-body p {
+    margin: 0;
+    color: var(--text-muted);
+    white-space: pre-wrap;
+}
+
+.devotional-review-footer {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.user-management-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-chip {
+    background: var(--cream);
+    color: var(--primary-brown);
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.admin-prayer-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.admin-prayer-form textarea {
+    resize: vertical;
+    min-height: 110px;
+}
+
+.empty-state-card {
+    padding: 20px;
+    text-align: center;
+    color: var(--text-muted);
+    background: var(--background);
+    border-radius: 12px;
+}
+
+.dashboard-page,
+.admin-page {
+    background: linear-gradient(135deg, #f7efe9 0%, #fdf8f3 100%);
+    color: var(--text-dark);
+}
+
+@media (max-width: 992px) {
+    .admin-shell {
+        flex-direction: column;
+    }
+
+    .admin-sidebar {
+        width: 100%;
+    }
+
+    .admin-main {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 575px) {
+    .admin-panel-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .admin-main {
+        padding: 16px;
+    }
+
+    .admin-stats-row {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .devotional-review-header,
+    .user-management-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+/* ================================= */
+/* DEVOTIONALS PAGE */
+/* ================================= */
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 260px;
+    background-color: var(--dark-brown);
+    color: var(--white);
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+}
+
+.sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 24px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sidebar-brand h5 {
+    font-size: 15px;
+    margin: 0;
+    font-weight: 700;
+}
+
+.sidebar-brand small {
+    color: rgba(255, 255, 255, 0.55);
+}
+
+.sidebar-menu {
+    padding: 25px 14px;
+    flex: 1;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 12px 14px;
+    margin-bottom: 5px;
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.2;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    transform: none;
+}
+
+.sidebar-link i {
+    font-size: 17px;
+    width: 20px;
+    text-align: center;
+}
+
+.sidebar-link:hover,
+.sidebar-link:focus-visible {
+    color: var(--white);
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.sidebar-link.active {
+    color: var(--white);
+    background-color: var(--primary-brown);
+    font-weight: 500;
+}
+
+.sidebar-divider {
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.08);
+    margin: 18px 0;
+}
+
+.sidebar-section-title {
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.55);
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+    padding-left: 14px;
+}
+
+.main-content {
+    margin-left: 260px;
+    padding: 35px;
+    min-height: 100vh;
+    background-color: var(--background);
+}
+
+.mobile-navbar {
+    display: none;
+    position: sticky;
+    top: 0;
+    z-index: 1050;
+    background-color: var(--white);
+    padding: 12px 20px;
+    align-items: center;
+    gap: 18px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+@media (max-width: 991px) {
+    .mobile-navbar {
+        display: flex;
+    }
+}
+
+.mobile-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--dark-brown);
+}
+
+.mobile-brand .brand-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    background-color: var(--cream);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-brown);
+}
+
+.mobile-menu-btn {
+    width: 48px;
+    height: 48px;
+    border: none;
+    border-radius: 12px;
+    background-color: var(--cream);
+    color: var(--dark-brown);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+.page-header h2 {
+    font-size: 30px;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.page-header p {
+    color: var(--text-muted);
+    margin: 0;
+}
+
+#myDevotionalsList {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+}
+
+.devotional-card {
+    background-color: var(--white);
+    border-radius: 18px;
+    border: 1px solid rgba(62, 39, 35, 0.08);
+    box-shadow: 0 12px 30px rgba(62, 39, 35, 0.08);
+    padding: 24px;
+}
+
+.devotional-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.devotional-format {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background-color: var(--cream);
+    color: var(--dark-brown);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.devotional-meta {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin: 0;
+}
+
+.devotional-card-content {
+    display: grid;
+    gap: 14px;
+}
+
+.devotional-detail h5 {
+    font-size: 14px;
+    margin: 0 0 6px;
+    color: var(--dark-brown);
+}
+
+.devotional-detail p {
+    color: var(--text-muted);
+    margin: 0;
+    line-height: 1.7;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 50px 30px;
+    background-color: var(--white);
+    border-radius: 18px;
+    border: 1px solid rgba(62, 39, 35, 0.08);
+    box-shadow: 0 8px 24px rgba(62, 39, 35, 0.07);
+}
+
+.empty-state-icon {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 18px;
+    border-radius: 18px;
+    background-color: var(--cream);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-brown);
+    font-size: 28px;
+}
+
+.empty-state h4 {
+    margin-bottom: 10px;
+}
+
+.empty-state p {
+    color: var(--text-muted);
+    margin: 0;
+    line-height: 1.8;
+}
+
+@media (max-width: 991px) {
+    .main-content {
+        margin-left: 0;
+        padding: 25px;
+    }
+
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+
+/* ================================= */
+/* DEVOTIONAL MODAL */
+/* ================================= */
+
+.devotional-modal {
+    border: none;
+
+    border-radius: 15px;
+
+    overflow: hidden;
+}
+
+
+.devotional-modal .modal-header {
+    background-color: var(--cream);
+
+    border-bottom:
+        1px solid rgba(62, 39, 35, 0.08);
+}
+
+
+.devotional-modal .modal-title {
+    color: var(--dark-brown);
+
+    font-weight: 700;
+}
+
+
+.devotional-modal .form-control,
+.devotional-modal .form-select {
+    border-color: #ddd4cc;
+}
+
+
+.devotional-modal .form-control:focus,
+.devotional-modal .form-select:focus {
+
+    border-color: var(--light-brown);
+
+    box-shadow:
+        0 0 0 0.2rem rgba(111, 78, 55, 0.15);
+}
+
+
+.devotional-field {
+    margin-bottom: 20px;
+}
+
+
+.devotional-field:last-child {
+    margin-bottom: 0;
+}
+
+
+.devotional-field strong {
+    color: var(--dark-brown);
+}
+
+
+.format-description {
+    padding: 14px 16px;
+
+    background-color: var(--cream);
+
+    border-left:
+        4px solid var(--primary-brown);
+
+    border-radius: 8px;
+
+    color: var(--text-muted);
+
+    font-size: 13px;
+
+    line-height: 1.6;
+}
+
+
+.devotional-note {
+    padding: 12px 15px;
+
+    border-radius: 8px;
+
+    background-color: #f8f5f2;
+
+    color: var(--text-muted);
+
+    font-size: 12px;
+}
+
+
+@media (max-width: 575px) {
+
+    .devotional-modal {
+        border-radius: 12px;
+    }
+
+
+    .devotional-modal .modal-body {
+        padding: 20px 15px;
+    }
+
+
+    .devotional-modal .modal-footer {
+        padding: 15px;
+
+        flex-direction: column-reverse;
+    }
+
+
+    .devotional-modal .modal-footer .btn {
+        width: 100%;
+    }
+
+}
+
+/* ================================= */
+/* PROFILE PAGE */
+/* ================================= */
+
+.profile-page {
+    background-color: var(--background);
+    min-height: 100vh;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    margin-bottom: 30px;
+}
+
+.profile-header h2 {
+    font-size: 30px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.profile-header p {
+    color: var(--text-muted);
+    margin: 0;
+    max-width: 560px;
+}
+
+.profile-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 28px;
+}
+
+.profile-card,
+.profile-form-card {
+    background-color: var(--white);
+    border-radius: 20px;
+    border: 1px solid rgba(62, 39, 35, 0.08);
+    box-shadow: 0 12px 30px rgba(62, 39, 35, 0.08);
+    padding: 28px;
+}
+
+.profile-summary {
+    display: grid;
+    gap: 20px;
+}
+
+.profile-summary-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.profile-avatar {
+    width: 72px;
+    height: 72px;
+    border-radius: 22px;
+    display: grid;
+    place-items: center;
+    color: var(--white);
+    background: linear-gradient(135deg, var(--primary-brown), var(--light-brown));
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.profile-name {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.profile-role {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+.profile-detail {
+    display: grid;
+    gap: 14px;
+}
+
+.profile-detail-item {
+    display: grid;
+    gap: 8px;
+}
+
+.profile-detail-item strong {
+    font-size: 13px;
+    color: var(--dark-brown);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+}
+
+.profile-detail-item span {
+    font-size: 15px;
+    color: var(--text-muted);
+}
+
+.profile-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background-color: var(--cream);
+    color: var(--dark-brown);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.profile-form-card .form-label {
+    font-weight: 600;
+}
+
+.profile-form .form-control,
+.profile-form .form-select {
+    border-color: #ddd4cc;
+}
+
+.profile-form .form-control:focus,
+.profile-form .form-select:focus {
+    border-color: var(--light-brown);
+    box-shadow: 0 0 0 0.2rem rgba(111, 78, 55, 0.15);
+}
+
+.profile-form-field {
+    margin-bottom: 18px;
+}
+
+.profile-form-field:last-child {
+    margin-bottom: 0;
+}
+
+.profile-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 14px;
+    margin-top: 10px;
+}
+
+.profile-actions .btn-secondary {
+    background-color: #f3ece6;
+    color: var(--dark-brown);
+    border: 1px solid transparent;
+}
+
+.about-page {
+    background-color: var(--background);
+    min-height: 100vh;
+}
+
+.about-card {
+    background-color: var(--white);
+    border-radius: 24px;
+    border: 1px solid rgba(62, 39, 35, 0.08);
+    box-shadow: 0 16px 40px rgba(62, 39, 35, 0.08);
+    padding: 32px;
+}
+
+.about-hero {
+    margin-bottom: 28px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid rgba(62, 39, 35, 0.08);
+}
+
+.about-hero h3 {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 8px 0 12px;
+    color: var(--dark-brown);
+}
+
+.about-hero p {
+    margin: 0;
+    color: var(--text-muted);
+    line-height: 1.7;
+    max-width: 780px;
+}
+
+.about-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.about-panel {
+    background: linear-gradient(135deg, #fffdfb, #f5ece5);
+    border: 1px solid rgba(62, 39, 35, 0.08);
+    border-radius: 18px;
+    padding: 22px;
+}
+
+.about-panel h4 {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--dark-brown);
+    margin-bottom: 10px;
+}
+
+.about-panel p {
+    margin: 0;
+    color: var(--text-muted);
+    line-height: 1.7;
+}
+
+.profile-actions .btn-secondary:hover {
+    background-color: #e8e0d6;
+}
+
+.profile-note {
+    padding: 18px;
+    background-color: var(--cream);
+    border-radius: 14px;
+    color: var(--text-muted);
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+@media (max-width: 991px) {
+    .profile-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 575px) {
+    .profile-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .profile-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+
+
+/* ========================================
+   MY DEVOTION FOR TODAY
+======================================== */
+
+#todayDevotionContainer {
+    width: 100%;
+    max-width: 100%;
+}
+
+
+/* ========================================
+   MAIN DEVOTION CARD
+======================================== */
+
+#todayDevotionContainer .dashboard-card {
+    width: 100%;
+    max-width: 100%;
+
+    /* IMPORTANT:
+       Force normal vertical layout */
+    display: block !important;
+
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+
+/* ========================================
+   DEVOTION HEADER
+   Title LEFT / Share RIGHT
+======================================== */
+
+#todayDevotionContainer
+.d-flex.justify-content-between {
+    display: flex !important;
+
+    flex-direction: row !important;
+
+    justify-content: space-between !important;
+
+    align-items: flex-start !important;
+
+    width: 100%;
+
+    gap: 20px;
+
+    margin-bottom: 24px;
+}
+
+
+/* Left side of header */
+
+#todayDevotionContainer
+.d-flex.justify-content-between > div:first-child {
+    flex: 1 1 auto;
+
+    min-width: 0;
+}
+
+
+/* ========================================
+   SHARE BUTTON
+======================================== */
+
+#todayDevotionContainer
+#shareTodaysDevotion {
+
+    flex: 0 0 auto;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    white-space: nowrap;
+
+    padding: 8px 16px;
+
+    border-radius: 8px;
+
+    font-weight: 500;
+
+}
+
+
+/* ========================================
+   ALL DEVOTION SECTIONS
+   FORCE THEM VERTICAL
+======================================== */
+
+/* Scripture */
+
+#todayDevotionContainer
+.dashboard-card > .mb-4 {
+
+    display: block !important;
+
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+    margin-left: 0 !important;
+
+    margin-right: 0 !important;
+
+    box-sizing: border-box;
+}
+
+
+/* Observation / Lesson */
+
+#todayDevotionContainer
+.dashboard-card > div {
+
+    box-sizing: border-box;
+}
+
+
+/* ========================================
+   SECTION TITLES
+======================================== */
+
+#todayDevotionContainer .fw-semibold {
+
+    display: block;
+
+    width: 100%;
+
+    margin-bottom: 8px;
+
+    font-weight: 600;
+}
+
+
+/* ========================================
+   TEXT CONTENT
+======================================== */
+
+#todayDevotionContainer .text-muted {
+
+    display: block;
+
+    width: 100%;
+
+    line-height: 1.7;
+
+    white-space: normal;
+
+    word-wrap: break-word;
+
+    overflow-wrap: anywhere;
+}
+
+
+/* ========================================
+   SCRIPTURE BOX
+======================================== */
+
+#todayDevotionContainer
+.p-3.rounded {
+
+    display: block;
+
+    width: 100%;
+
+    max-width: 100%;
+
+    box-sizing: border-box;
+
+    line-height: 1.7;
+
+    white-space: normal;
+
+    word-wrap: break-word;
+
+    overflow-wrap: anywhere;
+}
+
+
+/* ========================================
+   SOAP / SLAP SECTION
+======================================== */
+
+#todayDevotionContainer
+.dashboard-card > .mb-4 > div {
+
+    width: 100%;
+
+    box-sizing: border-box;
+}
+
+
+/* ========================================
+   SHARE BUTTON HOVER
+======================================== */
+
+#todayDevotionContainer
+#shareTodaysDevotion:hover {
+
+    transform: translateY(-1px);
+
+}
+
+
+/* ========================================
+   TABLET
+======================================== */
+
+@media (max-width: 768px) {
+
+    #todayDevotionContainer
+    .dashboard-card {
+
+        padding: 20px !important;
+
+    }
+
+
+    #todayDevotionContainer
+    .d-flex.justify-content-between {
+
+        gap: 12px;
+
+    }
+
+
+    #todayDevotionContainer
+    #shareTodaysDevotion {
+
+        padding: 7px 12px;
+
+        font-size: 14px;
+
+    }
+
+}
+
+
+/* ========================================
+   MOBILE
+======================================== */
+
+@media (max-width: 480px) {
+
+    #todayDevotionContainer
+    .d-flex.justify-content-between {
+
+        gap: 8px;
+
+    }
+
+
+    #todayDevotionContainer
+    #shareTodaysDevotion {
+
+        padding: 6px 10px;
+
+        font-size: 13px;
+
+    }
+
+
+    #todayDevotionContainer
+    #shareTodaysDevotion i {
+
+        margin-right: 4px !important;
+
+    }
+
+
+    #todayDevotionContainer h4 {
+
+        font-size: 20px;
+
+    }
+
+}
+
+/* ========================================
+   MOBILE KEYBOARD INPUT FIX
+======================================== */
+
+@media (max-width: 768px) {
+
+    input,
+    textarea,
+    select {
+
+        scroll-margin-top: 100px;
+        scroll-margin-bottom: 180px;
+
+    }
+
+
+    textarea {
+
+        min-height: 120px;
+
+    }
+
+
+    /* Make devotional modal usable above keyboard */
+    #devotionalModal .modal-dialog {
+
+        margin-top: 10px;
+        margin-bottom: 10px;
+
+    }
+
+
+    #devotionalModal .modal-body {
+
+        max-height: 65vh;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+
+    }
+
+
+/* Prayer request modal */
+#prayerRequestModal .modal-body {
+
+        max-height: 65vh;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+
+    }
+
+}
+
+
+/* Pastor remarks shown below a user's devotion */
+.pastor-remarks-card {
+    margin-top: 28px;
+
+    padding: 18px;
+
+    border: 1px solid rgba(111, 78, 55, 0.18);
+
+    border-left: 4px solid #6f4e37;
+
+    border-radius: 12px;
+
+    background: #fdf9f4;
+}
+
+
+.pastor-remarks-header {
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    margin-bottom: 10px;
+
+    color: #6f4e37;
+
+    font-size: 14px;
+}
+
+
+.pastor-remarks-header i {
+    font-size: 17px;
+}
+
+
+.pastor-remarks-content {
+    color: #3e2723;
+
+    font-size: 14px;
+
+    line-height: 1.65;
+
+    white-space: pre-wrap;
+}
+
+
+.page-title-row {
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+}
+
+.page-icon {
+    width: 52px;
+    height: 52px;
+
+    border-radius: 14px;
+
+    background-color: var(--cream);
+
+    color: var(--primary-brown);
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 22px;
+
+    flex-shrink: 0;
+}
+
+.page-header h1 {
+    font-size: 30px;
+
+    font-weight: 700;
+
+    margin: 0 0 6px;
+
+    color: var(--text-dark);
+}
+
+.page-header p {
+    color: var(--text-muted);
+
+    margin: 0;
+
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   PRAYER SECTION
+   ========================================================= */
+
+.prayer-section {
+    background-color: var(--white);
+
+    border-radius: 14px;
+
+    padding: 18px 20px;
+
+    border:
+        1px solid rgba(62, 39, 35, 0.05);
+
+    box-shadow:
+        0 3px 12px rgba(62, 39, 35, 0.04);
+
+    margin-bottom: 20px;
+}
+
+
+/* =========================================================
+   SECTION HEADER
+   ========================================================= */
+
+.section-header {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 12px;
+
+    margin-bottom: 14px;
+}
+
+.section-header h2 {
+    font-size: 20px;
+
+    font-weight: 700;
+
+    margin: 4px 0 4px;
+
+    color: var(--text-dark);
+}
+
+.section-header h2 i {
+    color: var(--primary-brown);
+
+    font-size: 18px;
+}
+
+.section-header p {
+    color: var(--text-muted);
+
+    margin: 0;
+
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   PRAYER COUNT
+   ========================================================= */
+
+.prayer-count {
+    min-width: 30px;
+
+    height: 30px;
+
+    padding: 0 9px;
+
+    border-radius: 999px;
+
+    background-color: var(--cream);
+
+    color: var(--primary-brown);
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    flex-shrink: 0;
+}
+
+.answered-count {
+    background-color: #e7f3eb;
+
+    color: #3f7955;
+}
+
+
+/* =========================================================
+   PRAYER LIST CONTAINER
+   ========================================================= */
+
+.prayer-list-container {
+    width: 100%;
+}
+
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+.prayer-loading {
+    text-align: center;
+
+    padding: 30px 15px;
+
+    color: var(--text-muted);
+}
+
+.prayer-loading .spinner-border {
+    width: 25px;
+
+    height: 25px;
+
+    color: var(--primary-brown);
+
+    margin-bottom: 10px;
+}
+
+.prayer-loading p {
+    margin: 0;
+
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   PRAYER ITEM
+   ========================================================= */
+
+.prayer-item {
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 12px;
+
+    padding: 14px 0;
+
+    border-top:
+        1px solid rgba(62, 39, 35, 0.08);
+}
+
+.prayer-item:first-child {
+    border-top: 0;
+
+    padding-top: 0;
+}
+
+.prayer-item:last-child {
+    padding-bottom: 0;
+}
+
+
+/* =========================================================
+   CHECKBOX
+   ========================================================= */
+
+.prayer-checkbox {
+    width: 18px;
+
+    height: 18px;
+
+    margin-top: 2px;
+
+    flex-shrink: 0;
+
+    accent-color: var(--primary-brown);
+
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   PRAYER CONTENT
+   ========================================================= */
+
+.prayer-content {
+    flex: 1;
+
+    min-width: 0;
+}
+
+.prayer-text {
+    font-size: 14px;
+
+    color: var(--text-muted);
+
+    line-height: 1.6;
+
+    margin: 0;
+
+    white-space: pre-wrap;
+
+    overflow-wrap: anywhere;
+}
+
+.prayer-date {
+    display: block;
+
+    margin-top: 5px;
+
+    color: var(--text-muted);
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.empty-prayer {
+    text-align: center;
+
+    padding: 28px 15px;
+
+    border-radius: 10px;
+
+    background-color: var(--background);
+
+    color: var(--text-muted);
+}
+
+.empty-prayer i {
+    font-size: 28px;
+
+    color: var(--light-brown);
+
+    display: block;
+
+    margin-bottom: 8px;
+}
+
+.empty-prayer p {
+    margin: 0;
+
+    font-size: 14px;
+
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   ANSWERED SECTION
+   ========================================================= */
+
+.answered-section {
+    margin-top: 0;
+}
+
+.answered-section .prayer-item {
+    opacity: 0.85;
+}
+
+.answered-section .prayer-text {
+    text-decoration: line-through;
+
+    color: var(--text-muted);
+}
+
+
+/* =========================================================
+   INFORMATION CARD
+   ========================================================= */
+
+.prayer-info-card {
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 14px;
+
+    padding: 18px;
+
+    background-color: var(--cream);
+
+    border-radius: 14px;
+
+    margin-top: 4px;
+}
+
+.prayer-info-icon {
+    width: 38px;
+    height: 38px;
+
+    border-radius: 10px;
+
+    background-color: var(--white);
+
+    color: var(--primary-brown);
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+}
+
+.prayer-info-card h5 {
+    margin: 0 0 6px;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    color: var(--dark-brown);
+}
+
+.prayer-info-card p {
+    margin: 0;
+
+    color: var(--text-muted);
+
+    font-size: 13px;
+
+    line-height: 1.7;
+}
+
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+.my-prayer-btn {
+    background-color: var(--primary-brown);
+
+    color: var(--white);
+
+    border: none;
+
+    border-radius: 8px;
+
+    padding: 9px 15px;
+
+    font-size: 14px;
+
+    font-weight: 600;
+}
+
+.my-prayer-btn:hover {
+    background-color: var(--dark-brown);
+
+    color: var(--white);
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 991px) {
+
+    .main-content {
+        margin-left: 0;
+
+        padding: 25px;
+    }
+
+    .page-header {
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 575px) {
+
+    .main-content {
+        padding: 20px 15px;
+    }
+
+    .page-header {
+        margin-bottom: 20px;
+    }
+
+    .page-title-row {
+        gap: 12px;
+    }
+
+    .page-icon {
+        width: 45px;
+        height: 45px;
+
+        border-radius: 12px;
+
+        font-size: 19px;
+    }
+
+    .page-header h1 {
+        font-size: 22px;
+    }
+
+    .page-header p {
+        font-size: 13px;
+    }
+
+    .prayer-section {
+        padding: 20px 15px;
+    }
+
+    .section-header {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+    .section-header h2 {
+        font-size: 18px;
+    }
+
+    .section-header p {
+        font-size: 13px;
+    }
+
+    .section-header .prayer-count {
+        align-self: flex-start;
+    }
+
+    .prayer-info-card {
+        padding: 15px;
+
+        gap: 10px;
+    }
+
+    .prayer-info-card p {
+        font-size: 12px;
+    }
+}
+
+/* ========================================
+   MY PRAYER LIST
+   MATCHES MAIN style.css
+======================================== */
+
+.prayer-list-page {
+    background-color: var(--background);
+    min-height: 100vh;
+}
+
+
+/* ========================================
+   PAGE HEADER
+======================================== */
+
+.prayer-page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 25px;
+}
+
+.prayer-page-header h2 {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin: 0 0 5px;
+}
+
+.prayer-page-header p {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin: 0;
+}
+
+
+/* ========================================
+   PRAYER SECTION CARD
+======================================== */
+
+.prayer-section {
+    background-color: var(--white);
+    border-radius: 14px;
+    padding: 18px 20px;
+    border: 1px solid rgba(62, 39, 35, 0.05);
+    box-shadow: 0 3px 12px rgba(62, 39, 35, 0.04);
+    margin-bottom: 20px;
+}
+
+
+/* ========================================
+   SECTION HEADER
+======================================== */
+
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.section-header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.section-header-left i {
+    font-size: 19px;
+    color: var(--primary-brown);
+}
+
+.section-header h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin: 0;
+}
+
+.prayer-count {
+    min-width: 26px;
+    height: 26px;
+    padding: 0 8px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 999px;
+
+    background-color: var(--cream);
+    color: var(--primary-brown);
+
+    font-size: 12px;
+    font-weight: 700;
+}
+
+
+/* ========================================
+   PRAYER LIST
+======================================== */
+
+#activePrayersList,
+#answeredPrayersList {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+
+/* ========================================
+   PRAYER ITEM
+======================================== */
+
+.prayer-item {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 18px;
+
+    padding: 14px 0;
+
+    border-top: 1px solid rgba(62, 39, 35, 0.08);
+
+    box-sizing: border-box;
+}
+
+.prayer-item:first-child {
+    border-top: none;
+    padding-top: 4px;
+}
+
+
+/* ========================================
+   LEFT SIDE
+======================================== */
+
+.prayer-item-content {
+    min-width: 0;
+    flex: 1;
+
+    display: flex;
+    align-items: flex-start;
+
+    gap: 12px;
+}
+
+
+/* ========================================
+   PRAYER ICON
+======================================== */
+
+.prayer-request-icon {
+    width: 38px;
+    height: 38px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    background-color: var(--cream);
+    color: var(--primary-brown);
+
+    font-size: 16px;
+}
+
+.prayer-request-icon.answered-icon {
+    background-color: #edf7f0;
+    color: #3d8b5f;
+}
+
+
+/* ========================================
+   PRAYER TEXT
+======================================== */
+
+.prayer-text-wrapper {
+    min-width: 0;
+    flex: 1;
+
+    padding-top: 1px;
+}
+
+.prayer-text {
+    margin: 0 0 6px;
+
+    color: var(--text-dark);
+
+    font-size: 14px;
+    font-weight: 500;
+
+    line-height: 1.6;
+
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
+.prayer-text.answered-text {
+    color: var(--text-muted);
+}
+
+
+/* ========================================
+   DATE
+======================================== */
+
+.prayer-date {
+    display: inline-flex;
+    align-items: center;
+
+    color: var(--text-muted);
+
+    font-size: 12px;
+
+    line-height: 1.4;
+}
+
+.prayer-date i {
+    color: var(--light-brown);
+    font-size: 11px;
+}
+
+
+/* ========================================
+   ACTION AREA
+======================================== */
+
+.prayer-action {
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* ========================================
+   CUSTOM CHECKBOX
+======================================== */
+
+.answered-check {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 8px;
+
+    cursor: pointer;
+
+    margin: 0;
+
+    color: var(--text-muted);
+
+    font-size: 13px;
+    font-weight: 500;
+
+    white-space: nowrap;
+
+    user-select: none;
+}
+
+
+/* Hide native checkbox */
+
+.answered-check input {
+    position: absolute;
+
+    opacity: 0;
+
+    width: 0;
+    height: 0;
+}
+
+
+/* Custom checkbox */
+
+.answered-check .checkmark {
+    width: 18px;
+    height: 18px;
+
+    flex-shrink: 0;
+
+    border: 1.5px solid #cfc5bd;
+
+    border-radius: 5px;
+
+    background-color: var(--white);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+/* Checked */
+
+.answered-check input:checked + .checkmark {
+    background-color: var(--primary-brown);
+
+    border-color: var(--primary-brown);
+}
+
+
+/* Check icon */
+
+.answered-check input:checked + .checkmark::after {
+    content: "";
+
+    width: 5px;
+    height: 9px;
+
+    border-right: 2px solid var(--white);
+    border-bottom: 2px solid var(--white);
+
+    transform: rotate(45deg);
+
+    margin-top: -2px;
+}
+
+
+/* Hover */
+
+.answered-check:hover .checkmark {
+    border-color: var(--light-brown);
+
+    box-shadow:
+        0 0 0 3px rgba(111, 78, 55, 0.08);
+}
+
+.answered-check:hover .check-label {
+    color: var(--primary-brown);
+}
+
+
+/* ========================================
+   ANSWERED BADGE
+======================================== */
+
+.answered-badge {
+    flex-shrink: 0;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 6px 10px;
+
+    border-radius: 999px;
+
+    background-color: #edf7f0;
+
+    color: #3d8b5f;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    white-space: nowrap;
+}
+
+
+/* ========================================
+   EMPTY STATE
+======================================== */
+
+.empty-prayer {
+    text-align: center;
+
+    padding: 25px 15px;
+
+    border-radius: 10px;
+
+    background-color: var(--background);
+
+    color: var(--text-muted);
+}
+
+.prayer-empty-icon {
+    width: 48px;
+    height: 48px;
+
+    margin: 0 auto 10px;
+
+    border-radius: 14px;
+
+    background-color: var(--cream);
+
+    color: var(--light-brown);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.prayer-empty-icon i {
+    font-size: 21px;
+}
+
+.empty-prayer h5 {
+    margin: 0 0 5px;
+
+    color: var(--text-dark);
+
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.empty-prayer p {
+    margin: 0;
+
+    font-size: 13px;
+
+    line-height: 1.6;
+}
+
+
+/* ========================================
+   LOADING
+======================================== */
+
+.prayer-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    padding: 20px;
+
+    color: var(--text-muted);
+
+    font-size: 13px;
+}
+
+
+/* ========================================
+   ANSWERED SECTION
+======================================== */
+
+.answered-prayer-item {
+    opacity: 0.95;
+}
+
+/* ========================================
+   MOBILE PRAYER LIST
+======================================== */
+
+@media (max-width: 576px) {
+
+    .prayer-item {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        padding: 18px 16px;
+        margin-bottom: 12px;
+        border-radius: 14px;
+    }
+
+    .prayer-item-content {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        width: 100%;
+    }
+
+    .prayer-request-icon {
+        flex: 0 0 38px;
+        width: 38px;
+        height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+    }
+
+    .prayer-text-wrapper {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .prayer-text {
+        margin: 0 0 8px;
+        font-size: 15px;
+        line-height: 1.5;
+        word-break: break-word;
+        overflow-wrap: anywhere;
+    }
+
+    .prayer-date {
+        font-size: 12px;
+    }
+
+    /* Answered checkbox */
+    .prayer-action {
+        width: 100%;
+        display: flex;
+        justify-content: flex-start;
+        padding-left: 50px;
+    }
+
+    .answered-check {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        font-size: 14px;
+        margin: 0;
+    }
+
+    .checkmark {
+        width: 22px;
+        height: 22px;
+        flex-shrink: 0;
+    }
+
+    .check-label {
+        font-size: 14px;
+    }
+
+    /* Answered prayers */
+    .answered-prayer-item {
+        flex-direction: column;
+    }
+
+    .answered-badge {
+        align-self: flex-start;
+        margin-left: 50px;
+        font-size: 13px;
+    }
+
+}
+

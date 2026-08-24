@@ -1,0 +1,853 @@
+/* =========================================================
+   DEVTRACK LOGIN PAGE
+   Brown Theme
+========================================================= */
+
+:root {
+    --brown-dark: #4e342e;
+    --brown-main: #6d4c41;
+    --brown-light: #8d6e63;
+    --brown-soft: #efebe9;
+    --brown-pale: #f7f3f1;
+    --brown-border: #d7ccc8;
+    --text-dark: #3e2723;
+    --text-muted: #795548;
+    --white: #ffffff;
+}
+
+/* =========================================================
+   BODY
+========================================================= */
+
+.login-page {
+    margin: 0;
+    min-height: 100vh;
+    font-family: "Poppins", sans-serif;
+    background: var(--brown-pale);
+    color: var(--text-dark);
+    overflow-x: hidden;
+}
+
+/* =========================================================
+   PAGE LOAD ANIMATION
+========================================================= */
+
+.login-page .login-brand-section,
+.login-page .login-card {
+    animation: loginPageEnter 0.8s ease forwards;
+}
+
+@keyframes loginPageEnter {
+    from {
+        opacity: 0;
+        transform: translateY(25px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =========================================================
+   LEFT BRAND SECTION
+========================================================= */
+
+.login-brand-section {
+    position: relative;
+    min-height: 100vh;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(78, 52, 46, 0.98),
+            rgba(109, 76, 65, 0.95)
+        );
+
+    color: var(--white);
+
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+}
+
+/* Decorative circles */
+
+.login-brand-section::before,
+.login-brand-section::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.login-brand-section::before {
+    width: 350px;
+    height: 350px;
+
+    background: rgba(255, 255, 255, 0.05);
+
+    top: -120px;
+    left: -100px;
+}
+
+.login-brand-section::after {
+    width: 450px;
+    height: 450px;
+
+    background: rgba(255, 255, 255, 0.04);
+
+    bottom: -200px;
+    right: -150px;
+}
+
+/* =========================================================
+   BRAND CONTENT
+========================================================= */
+
+.brand-content {
+    position: relative;
+    z-index: 2;
+
+    width: min(480px, 85%);
+}
+
+.brand-icon {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    min-width: 125px;
+    height: 52px;
+
+    padding: 0 20px;
+
+    border-radius: 14px;
+
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 2px;
+
+    backdrop-filter: blur(10px);
+
+    margin-bottom: 28px;
+}
+
+.brand-content h1 {
+    font-size: 42px;
+    font-weight: 700;
+
+    margin-bottom: 12px;
+}
+
+.brand-content > p {
+    font-size: 16px;
+    line-height: 1.8;
+
+    color: rgba(255, 255, 255, 0.82);
+
+    margin-bottom: 35px;
+}
+
+/* =========================================================
+   VERSE
+========================================================= */
+
+.brand-verse {
+    padding: 22px 25px;
+
+    border-left: 4px solid rgba(255, 255, 255, 0.7);
+
+    background: rgba(255, 255, 255, 0.07);
+
+    border-radius: 0 14px 14px 0;
+
+    backdrop-filter: blur(10px);
+}
+
+.brand-verse i {
+    font-size: 28px;
+    opacity: 0.7;
+}
+
+.brand-verse p {
+    font-size: 15px;
+    line-height: 1.7;
+
+    margin: 5px 0 8px;
+
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.brand-verse span {
+    font-size: 13px;
+    font-weight: 600;
+
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* =========================================================
+   RIGHT SIDE
+========================================================= */
+
+.login-page .col-lg-6:last-child {
+    background: var(--brown-pale);
+    position: relative;
+}
+
+/* =========================================================
+   LOGIN CARD
+========================================================= */
+
+.login-card {
+    width: min(460px, 90%);
+
+    padding: 42px 45px;
+
+    background: var(--white);
+
+    border-radius: 22px;
+
+    box-shadow:
+        0 20px 50px rgba(78, 52, 46, 0.12),
+        0 5px 15px rgba(78, 52, 46, 0.05);
+
+    border: 1px solid rgba(109, 76, 65, 0.08);
+
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+.login-card:hover {
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 25px 60px rgba(78, 52, 46, 0.15),
+        0 8px 20px rgba(78, 52, 46, 0.06);
+}
+
+/* =========================================================
+   MOBILE LOGO
+========================================================= */
+
+.mobile-brand-icon {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    min-width: 115px;
+    height: 48px;
+
+    padding: 0 18px;
+
+    border-radius: 13px;
+
+    background: var(--brown-main);
+    color: var(--white);
+
+    font-weight: 700;
+    letter-spacing: 2px;
+
+    margin-bottom: 15px;
+
+    box-shadow: 0 8px 20px rgba(109, 76, 65, 0.2);
+}
+
+.mobile-brand-text-badge {
+    font-size: 16px;
+}
+
+/* =========================================================
+   TITLES
+========================================================= */
+
+.login-title {
+    color: var(--text-dark);
+
+    font-size: 30px;
+    font-weight: 700;
+
+    margin-bottom: 7px;
+}
+
+.login-subtitle {
+    color: var(--text-muted);
+
+    font-size: 14px;
+
+    line-height: 1.7;
+
+    margin-bottom: 0;
+}
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.login-card .form-label {
+    color: var(--text-dark);
+
+    font-size: 13px;
+    font-weight: 600;
+
+    margin-bottom: 7px;
+}
+
+.login-card .input-group {
+    border-radius: 12px;
+
+    overflow: hidden;
+
+    transition:
+        box-shadow 0.25s ease,
+        transform 0.25s ease;
+}
+
+.login-card .input-group:focus-within {
+    box-shadow: 0 0 0 3px rgba(109, 76, 65, 0.12);
+
+    transform: translateY(-1px);
+}
+
+.login-card .input-group-text {
+    width: 48px;
+
+    justify-content: center;
+
+    background: var(--brown-soft);
+
+    border: 1px solid var(--brown-border);
+
+    border-right: none;
+
+    color: var(--brown-main);
+}
+
+.login-card .form-control {
+    height: 48px;
+
+    border: 1px solid var(--brown-border);
+
+    border-left: none;
+
+    font-size: 14px;
+
+    color: var(--text-dark);
+
+    box-shadow: none;
+}
+
+.login-card .form-control::placeholder {
+    color: #a1887f;
+}
+
+.login-card .form-control:focus {
+    border-color: var(--brown-border);
+
+    box-shadow: none;
+}
+
+/* =========================================================
+   PASSWORD TOGGLE
+========================================================= */
+
+.password-toggle {
+    height: 48px;
+
+    background: var(--white);
+
+    border: 1px solid var(--brown-border);
+
+    border-left: none;
+
+    color: var(--brown-light);
+
+    transition:
+        color 0.2s ease,
+        background 0.2s ease;
+}
+
+.password-toggle:hover {
+    color: var(--brown-dark);
+
+    background: var(--brown-pale);
+}
+
+.password-toggle:focus {
+    box-shadow: none;
+}
+
+/* =========================================================
+   LOGIN BUTTON
+========================================================= */
+
+.btn-login {
+    min-height: 49px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    background: linear-gradient(
+        135deg,
+        var(--brown-main),
+        var(--brown-dark)
+    );
+
+    color: var(--white);
+
+    font-size: 14px;
+    font-weight: 600;
+
+    box-shadow:
+        0 8px 18px rgba(78, 52, 46, 0.18);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        background 0.25s ease;
+}
+
+.btn-login:hover {
+    color: var(--white);
+
+    transform: translateY(-2px);
+
+    background: linear-gradient(
+        135deg,
+        var(--brown-dark),
+        #3e2723
+    );
+
+    box-shadow:
+        0 12px 25px rgba(78, 52, 46, 0.25);
+}
+
+.btn-login:active {
+    transform: translateY(0);
+}
+
+/* =========================================================
+   SIGN UP LINK
+========================================================= */
+
+.signup-text {
+    font-size: 13px;
+
+    color: var(--text-muted);
+
+    margin-bottom: 0;
+}
+
+.signup-text a {
+    color: var(--brown-main);
+
+    font-weight: 600;
+
+    text-decoration: none;
+
+    position: relative;
+
+    transition: color 0.2s ease;
+}
+
+.signup-text a::after {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    bottom: -2px;
+
+    width: 0;
+    height: 1px;
+
+    background: var(--brown-dark);
+
+    transition: width 0.25s ease;
+}
+
+.signup-text a:hover {
+    color: var(--brown-dark);
+}
+
+.signup-text a:hover::after {
+    width: 100%;
+}
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.login-card small {
+    font-size: 11px;
+    color: #a1887f !important;
+}
+
+/* =========================================================
+   PAGE TRANSITION
+========================================================= */
+
+/*
+   Default page exit
+*/
+
+.page-exit {
+    pointer-events: none;
+}
+
+.page-exit-left {
+    animation: slideOutLeft 0.45s ease forwards;
+}
+
+.page-exit-right {
+    animation: slideOutRight 0.45s ease forwards;
+}
+
+@keyframes slideOutLeft {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateX(-100%);
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+}
+
+/*
+   Page entering
+*/
+
+.page-enter-left {
+    animation: slideInFromLeft 0.55s ease forwards;
+}
+
+.page-enter-right {
+    animation: slideInFromRight 0.55s ease forwards;
+}
+
+@keyframes slideInFromLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-100%);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInFromRight {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+}
+
+/* =========================================================
+   TABLET / MOBILE
+========================================================= */
+
+@media (max-width: 991.98px) {
+
+    .login-page {
+        background:
+            linear-gradient(
+                135deg,
+                #f7f3f1,
+                #ffffff
+            );
+    }
+
+    .login-card {
+        width: min(470px, 92%);
+
+        padding: 35px 30px;
+
+        box-shadow:
+            0 15px 40px rgba(78, 52, 46, 0.10);
+    }
+
+}
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 575.98px) {
+
+    .login-card {
+        width: 94%;
+
+        padding: 30px 22px;
+
+        border-radius: 18px;
+    }
+
+    .login-title {
+        font-size: 26px;
+    }
+
+    .login-subtitle {
+        font-size: 13px;
+    }
+
+    .login-card .form-control,
+    .login-card .input-group-text,
+    .password-toggle {
+        height: 46px;
+    }
+
+}
+
+/* ========================================
+   INSTALL APP
+======================================== */
+
+.install-app-container {
+    width: 100%;
+    margin-top: 18px;
+}
+
+
+/* INSTALL CARD */
+
+.install-app-card {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 12px 14px;
+
+    background: #f8f3ef;
+
+    border: 1px solid #e5d8d0;
+
+    border-radius: 14px;
+
+    box-shadow: 0 5px 15px rgba(62, 39, 35, 0.06);
+
+    transition: all 0.25s ease;
+}
+
+
+.install-app-card:hover {
+
+    border-color: #6f4e37;
+
+    box-shadow: 0 8px 20px rgba(62, 39, 35, 0.10);
+
+    transform: translateY(-1px);
+
+}
+
+
+/* ICON */
+
+.install-app-icon {
+
+    width: 42px;
+    height: 42px;
+
+    min-width: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+
+    background: #6f4e37;
+
+    color: #fff;
+
+    font-size: 19px;
+}
+
+
+/* TEXT */
+
+.install-app-content {
+
+    flex: 1;
+
+    min-width: 0;
+}
+
+
+.install-app-content h6 {
+
+    margin: 0;
+
+    color: #3e2723;
+
+    font-size: 13px;
+
+    font-weight: 700;
+}
+
+
+.install-app-content p {
+
+    margin: 3px 0 0;
+
+    color: #8d7770;
+
+    font-size: 11px;
+
+    line-height: 1.3;
+}
+
+
+/* INSTALL BUTTON */
+
+.install-app-btn {
+
+    border: none;
+
+    outline: none;
+
+    padding: 9px 13px;
+
+    border-radius: 9px;
+
+    background: #3e2723;
+
+    color: white;
+
+    font-family: "Poppins", sans-serif;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 6px;
+
+    cursor: pointer;
+
+    white-space: nowrap;
+
+    transition: all 0.25s ease;
+
+}
+
+
+.install-app-btn:hover {
+
+    background: #5d4037;
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 5px 12px rgba(62, 39, 35, 0.20);
+
+}
+
+
+.install-app-btn:active {
+
+    transform: scale(0.97);
+
+}
+
+
+/* MOBILE */
+
+@media (max-width: 576px) {
+
+    .install-app-card {
+
+        padding: 11px;
+
+        gap: 10px;
+
+    }
+
+
+    .install-app-icon {
+
+        width: 38px;
+        height: 38px;
+
+        min-width: 38px;
+
+        font-size: 17px;
+
+    }
+
+
+    .install-app-content h6 {
+
+        font-size: 12px;
+
+    }
+
+
+    .install-app-content p {
+
+        font-size: 10px;
+
+    }
+
+
+    .install-app-btn {
+
+        padding: 8px 11px;
+
+        font-size: 11px;
+
+    }
+
+}

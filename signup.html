@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Sign Up | Devotional Tracker</title>
+
+    <!-- Bootstrap -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <!-- Bootstrap Icons -->
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    >
+
+    <!-- Main CSS -->
+    <link
+        rel="stylesheet"
+        href="./css/style.css"
+    >
+
+    <!-- Signup CSS -->
+    <link
+        rel="stylesheet"
+        href="./css/signup.css"
+    >
+
+</head>
+
+
+<body class="signup-page">
+
+
+    <!-- ========================================= -->
+    <!-- PAGE WRAPPER -->
+    <!-- ========================================= -->
+
+    <div class="signup-wrapper">
+
+
+        <!-- ========================================= -->
+        <!-- LEFT BRANDING -->
+        <!-- ========================================= -->
+
+        <section class="signup-brand-section">
+
+
+            <div class="signup-brand-content">
+
+
+                <!-- LOGO -->
+
+                <div class="signup-brand-logo">
+                    DT
+                </div>
+
+
+                <div class="signup-brand-name">
+
+                    <span class="brand-main">
+                        DevTrack
+                    </span>
+
+                    <span class="brand-sub">
+                        CLG-Laoag Music Team
+                    </span>
+
+                </div>
+
+
+                <!-- TITLE -->
+
+                <h1>
+                    Grow in faith.
+                    <br>
+                    Serve with purpose.
+                </h1>
+
+
+                <p class="signup-brand-description">
+
+                    Your devotional journey starts here.
+
+                    Take time to reflect on God's Word,
+                    strengthen your faith, and stay connected
+                    with your ministry family.
+
+                </p>
+
+
+                <!-- VERSE -->
+
+                <div class="signup-verse">
+
+                    <i class="bi bi-quote"></i>
+
+                    <p>
+                        "Draw near to God, and He will
+                        draw near to you."
+                    </p>
+
+                    <span>
+                        James 4:8
+                    </span>
+
+                </div>
+
+
+                <!-- ENCOURAGEMENT -->
+
+                <div class="signup-encouragement">
+
+                    <i class="bi bi-stars"></i>
+
+                    <div>
+
+                        <strong>
+                            Every devotion matters.
+                        </strong>
+
+                        <small>
+                            Keep seeking. Keep growing.
+                            Keep serving.
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ========================================= -->
+        <!-- SIGNUP SECTION -->
+        <!-- ========================================= -->
+
+        <section class="signup-form-section">
+
+
+            <div class="signup-card">
+
+
+                <!-- MOBILE BRAND -->
+
+                <div class="signup-mobile-brand">
+
+                    <div class="signup-brand-logo">
+                        DT
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            DevTrack
+                        </h2>
+
+                        <span>
+                            CLG-Laoag Music Team
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- HEADER -->
+
+                <div class="signup-header">
+
+                    
+                    <div>
+                        <h2 class="signup-title">
+                            Create Your Account
+                        </h2>
+
+                        <p class="signup-subtitle">
+                            Begin your devotional journey with us.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- ENCOURAGEMENT -->
+
+                <div class="signup-mini-message">
+
+                    <i class="bi bi-heart-fill"></i>
+
+                    <span>
+                        Welcome to a place where faith,
+                        reflection, and service grow together.
+                    </span>
+
+                </div>
+
+
+
+                <!-- SIGNUP FORM -->
+
+                <form id="signupForm">
+
+
+                    <!-- NAME -->
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <label
+                                for="firstName"
+                                class="form-label"
+                            >
+                                First Name
+                            </label>
+
+                            <div class="input-group">
+
+                                <span class="input-group-text">
+                                    <i class="bi bi-person"></i>
+                                </span>
+
+                                <input
+                                    type="text"
+                                    id="firstName"
+                                    class="form-control"
+                                    placeholder="Enter first name"
+                                    required
+                                >
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-md-6 mb-3">
+
+                            <label
+                                for="lastName"
+                                class="form-label"
+                            >
+                                Last Name
+                            </label>
+
+                            <div class="input-group">
+
+                                <span class="input-group-text">
+                                    <i class="bi bi-person"></i>
+                                </span>
+
+                                <input
+                                    type="text"
+                                    id="lastName"
+                                    class="form-control"
+                                    placeholder="Enter last name"
+                                    required
+                                >
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- EMAIL -->
+
+                    <div class="mb-3">
+
+                        <label
+                            for="email"
+                            class="form-label"
+                        >
+                            Email Address
+                        </label>
+
+                        <div class="input-group">
+
+                            <span class="input-group-text">
+                                <i class="bi bi-envelope"></i>
+                            </span>
+
+                            <input
+                                type="email"
+                                id="email"
+                                class="form-control"
+                                placeholder="Enter email address"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- BIRTHDAY + AGE -->
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <label
+                                for="birthday"
+                                class="form-label"
+                            >
+                                Birthday
+                            </label>
+
+                            <div class="input-group">
+
+                                <span class="input-group-text">
+                                    <i class="bi bi-calendar3"></i>
+                                </span>
+
+                                <input
+                                    type="date"
+                                    id="birthday"
+                                    class="form-control"
+                                    required
+                                >
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-md-6 mb-3">
+
+                            <label
+                                for="age"
+                                class="form-label"
+                            >
+                                Age
+                            </label>
+
+                            <div class="input-group">
+
+                                <span class="input-group-text">
+                                    <i class="bi bi-person-vcard"></i>
+                                </span>
+
+                                <input
+                                    type="number"
+                                    id="age"
+                                    class="form-control"
+                                    placeholder="Age"
+                                    readonly
+                                    required
+                                >
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- GENDER -->
+
+                    <div class="mb-3">
+
+                        <label
+                            for="gender"
+                            class="form-label"
+                        >
+                            Gender
+                        </label>
+
+                        <div class="input-group">
+
+                            <span class="input-group-text">
+                                <i class="bi bi-gender-ambiguous"></i>
+                            </span>
+
+                            <select
+                                id="gender"
+                                class="form-select"
+                                required
+                            >
+
+                                <option
+                                    value=""
+                                    selected
+                                    disabled
+                                >
+                                    Select gender
+                                </option>
+
+                                <option value="Male">
+                                    Male
+                                </option>
+
+                                <option value="Female">
+                                    Female
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- PHONE -->
+
+                    <div class="mb-3">
+
+                        <label
+                            for="phone"
+                            class="form-label"
+                        >
+                            Phone Number
+                        </label>
+
+                        <div class="input-group">
+
+                            <span class="input-group-text">
+                                <i class="bi bi-telephone"></i>
+                            </span>
+
+                            <input
+                                type="tel"
+                                id="phone"
+                                class="form-control"
+                                placeholder="09XXXXXXXXX"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- MINISTRY -->
+
+                    <div class="mb-3">
+
+                        <label
+                            for="ministry"
+                            class="form-label"
+                        >
+                            Ministry
+                        </label>
+
+                        <div class="input-group">
+
+                            <span class="input-group-text">
+                                <i class="bi bi-music-note-beamed"></i>
+                            </span>
+
+                            <select
+                                id="ministry"
+                                class="form-select"
+                                required
+                            >
+
+                                <option
+                                    value=""
+                                    selected
+                                    disabled
+                                >
+                                    Select your ministry
+                                </option>
+
+                                <option value="Instrumentalist">
+                                    Instrumentalist
+                                </option>
+
+                                <option value="Song Lead">
+                                    Song Lead
+                                </option>
+
+                                <option value="Back Up">
+                                    Back Up
+                                </option>
+
+                                <option value="Tech">
+                                    Tech
+                                </option>
+
+                                <option value="Tambourine Dancer">
+                                    Tambourine Dancer
+                                </option>
+
+                                <option value="Usherrete">
+                                    Usherette
+                                </option>
+
+                                <option value="Host">
+                                    Host
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- PASSWORD -->
+
+                    <div class="mb-3">
+
+                        <label
+                            for="password"
+                            class="form-label"
+                        >
+                            Password
+                        </label>
+
+                        <div class="input-group">
+
+                            <span class="input-group-text">
+                                <i class="bi bi-lock"></i>
+                            </span>
+
+                            <input
+                                type="password"
+                                id="password"
+                                class="form-control"
+                                placeholder="Create a password"
+                                required
+                            >
+
+                            <button
+                                type="button"
+                                class="btn password-toggle"
+                                id="toggleSignupPassword"
+                            >
+
+                                <i
+                                    class="bi bi-eye"
+                                    id="signupPasswordIcon"
+                                ></i>
+
+                            </button>
+
+                        </div>
+
+                        <small class="password-hint">
+                            <i class="bi bi-shield-check me-1"></i>
+                            Password must be at least 6 characters.
+                        </small>
+
+                    </div>
+
+
+
+                    <!-- CONFIRM PASSWORD -->
+
+                    <div class="mb-4">
+
+                        <label
+                            for="confirmPassword"
+                            class="form-label"
+                        >
+                            Confirm Password
+                        </label>
+
+                        <div class="input-group">
+
+                            <span class="input-group-text">
+                                <i class="bi bi-lock-fill"></i>
+                            </span>
+
+                            <input
+                                type="password"
+                                id="confirmPassword"
+                                class="form-control"
+                                placeholder="Confirm your password"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- SUBMIT -->
+
+                    <button
+                        type="submit"
+                        class="btn signup-submit w-100"
+                        id="signupButton"
+                    >
+
+                        <i class="bi bi-person-plus me-2"></i>
+
+                        Create Account
+
+                    </button>
+
+
+                </form>
+
+
+
+                <!-- LOGIN -->
+
+                <div class="login-return">
+
+                    <span>
+                        Already have an account?
+                    </span>
+
+                    <a
+                        href="./index.html"
+                        id="loginLink"
+                    >
+                        Login
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
+
+                </div>
+
+
+
+                <!-- FOOTER -->
+
+                <div class="signup-footer">
+
+                    <span>
+                        <i class="bi bi-music-note-beamed"></i>
+                        CLG-Laoag Music Team
+                    </span>
+
+                    <span>
+                        •
+                    </span>
+
+                    <span>
+                        DevTrack
+                    </span>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+    </div>
+
+
+
+    <!-- Bootstrap JS -->
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    ></script>
+
+
+
+    <!-- SweetAlert2 -->
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/sweetalert2@11"
+    ></script>
+
+
+
+    <!-- Signup JS -->
+
+    <script
+        type="module"
+        src="./js/signup.js"
+    ></script>
+
+
+    <!-- Page Transition -->
+
+    <script
+        type="module"
+        src="./js/transition.js"
+    ></script>
+
+
+</body>
+
+</html>

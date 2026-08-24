@@ -1,0 +1,292 @@
+/* ========================================
+   DEVTRACK PERSISTENT MUSIC PLAYER
+======================================== */
+
+.devtrack-music-player {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9999;
+
+    background: rgba(62, 39, 35, 0.97);
+    backdrop-filter: blur(12px);
+
+    color: #fff;
+
+    border-top: 1px solid rgba(255,255,255,0.12);
+
+    padding: 10px 18px;
+
+    box-shadow:
+        0 -5px 20px rgba(0,0,0,0.15);
+
+    transform: translateY(0);
+    transition: transform 0.3s ease;
+}
+
+
+/* HIDDEN */
+
+.devtrack-music-player.hidden {
+    transform: translateY(110%);
+}
+
+
+/* PLAYER INNER */
+
+.music-player-inner {
+    max-width: 1400px;
+    margin: auto;
+
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+
+/* SONG COVER */
+
+.music-player-cover {
+    width: 48px;
+    height: 48px;
+
+    min-width: 48px;
+
+    border-radius: 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: linear-gradient(
+        135deg,
+        #795548,
+        #3e2723
+    );
+
+    font-size: 22px;
+}
+
+
+/* SONG INFO */
+
+.music-player-info {
+    min-width: 150px;
+    max-width: 250px;
+    overflow: hidden;
+}
+
+.music-player-title {
+    margin: 0;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.music-player-artist {
+    margin: 3px 0 0;
+
+    font-size: 12px;
+
+    color: rgba(255,255,255,0.65);
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+/* CONTROLS */
+
+.music-player-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.music-player-btn {
+    width: 38px;
+    height: 38px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: transparent;
+
+    color: white;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.music-player-btn:hover {
+    background: rgba(255,255,255,0.12);
+}
+
+.music-player-btn.main {
+    background: white;
+    color: #3e2723;
+
+    font-size: 18px;
+}
+
+.music-player-btn.main:hover {
+    background: #f5f5f5;
+    transform: scale(1.05);
+}
+
+
+/* PROGRESS */
+
+.music-player-progress-area {
+    flex: 1;
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+}
+
+.music-player-time {
+    font-size: 11px;
+
+    color: rgba(255,255,255,0.65);
+
+    min-width: 38px;
+
+    text-align: center;
+}
+
+
+/* PROGRESS BAR */
+
+.music-player-progress {
+    flex: 1;
+
+    height: 5px;
+
+    appearance: none;
+
+    background: rgba(255,255,255,0.2);
+
+    border-radius: 10px;
+
+    cursor: pointer;
+}
+
+.music-player-progress::-webkit-slider-thumb {
+    appearance: none;
+
+    width: 13px;
+    height: 13px;
+
+    border-radius: 50%;
+
+    background: #fff;
+
+    cursor: pointer;
+}
+
+.music-player-progress::-moz-range-thumb {
+    width: 13px;
+    height: 13px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: #fff;
+
+    cursor: pointer;
+}
+
+
+/* CLOSE / MINIMIZE */
+
+.music-player-close {
+    width: 35px;
+    height: 35px;
+
+    border: none;
+
+    background: transparent;
+
+    color: rgba(255,255,255,0.7);
+
+    border-radius: 50%;
+
+    cursor: pointer;
+}
+
+.music-player-close:hover {
+    background: rgba(255,255,255,0.1);
+    color: white;
+}
+
+
+/* ========================================
+   MOBILE
+======================================== */
+
+@media (max-width: 768px) {
+
+    .devtrack-music-player {
+        padding: 9px 10px;
+    }
+
+    .music-player-inner {
+        gap: 9px;
+    }
+
+    .music-player-cover {
+        width: 42px;
+        height: 42px;
+        min-width: 42px;
+
+        font-size: 18px;
+    }
+
+    .music-player-info {
+        min-width: 0;
+        max-width: 130px;
+    }
+
+    .music-player-controls {
+        gap: 2px;
+    }
+
+    .music-player-btn {
+        width: 34px;
+        height: 34px;
+    }
+
+    .music-player-progress-area {
+        position: absolute;
+
+        left: 10px;
+        right: 10px;
+
+        bottom: 2px;
+
+        gap: 5px;
+    }
+
+    .music-player-time {
+        display: none;
+    }
+
+    .music-player-progress {
+        height: 3px;
+    }
+
+}

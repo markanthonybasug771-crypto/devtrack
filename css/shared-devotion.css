@@ -1,0 +1,427 @@
+/* ========================================
+   SHARED DEVOTION PAGE
+======================================== */
+
+* {
+    box-sizing: border-box;
+}
+
+
+body {
+
+    margin: 0;
+
+    min-height: 100vh;
+
+    font-family: "Inter", sans-serif;
+
+    background:
+        linear-gradient(
+            135deg,
+            #f8f4ef,
+            #eee5dc
+        );
+
+    color: #2f211b;
+
+}
+
+
+/* ========================================
+   PAGE
+======================================== */
+
+.shared-page {
+
+    width: 100%;
+
+    max-width: 850px;
+
+    margin: 0 auto;
+
+    padding: 40px 20px 60px;
+
+}
+
+
+/* ========================================
+   HEADER
+======================================== */
+
+.shared-header {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    margin-bottom: 30px;
+
+}
+
+
+.brand-badge {
+
+    width: 48px;
+
+    height: 48px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 12px;
+
+    background: #6f4e37;
+
+    color: white;
+
+    font-size: 18px;
+
+    font-weight: 800;
+
+}
+
+
+.brand-title {
+
+    font-size: 18px;
+
+    font-weight: 700;
+
+}
+
+
+.brand-subtitle {
+
+    color: #806f64;
+
+    font-size: 13px;
+
+}
+
+
+/* ========================================
+   LOADING
+======================================== */
+
+.loading-state {
+
+    min-height: 300px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color: #806f64;
+
+}
+
+
+.loading-state .spinner-border {
+
+    color: #6f4e37;
+
+    margin-bottom: 15px;
+
+}
+
+
+/* ========================================
+   ERROR
+======================================== */
+
+.error-state {
+
+    background: white;
+
+    border-radius: 20px;
+
+    padding: 50px 30px;
+
+    text-align: center;
+
+    box-shadow:
+        0 10px 35px rgba(50, 30, 20, 0.08);
+
+}
+
+
+.error-state i {
+
+    font-size: 50px;
+
+    color: #b85c5c;
+
+    display: block;
+
+    margin-bottom: 15px;
+
+}
+
+
+.error-state h3 {
+
+    font-weight: 700;
+
+}
+
+
+.error-state p {
+
+    color: #806f64;
+
+}
+
+
+/* ========================================
+   DEVOTION CARD
+======================================== */
+
+.devotion-card {
+
+    background: white;
+
+    border-radius: 22px;
+
+    padding: 35px;
+
+    box-shadow:
+        0 15px 45px rgba(50, 30, 20, 0.10);
+
+}
+
+
+/* ========================================
+   DEVOTION HEADER
+======================================== */
+
+.devotion-header {
+
+    margin-bottom: 35px;
+
+    padding-bottom: 25px;
+
+    border-bottom: 1px solid #eee5df;
+
+}
+
+
+.format-badge {
+
+    display: inline-block;
+
+    background: #6f4e37;
+
+    color: white;
+
+    padding: 5px 12px;
+
+    border-radius: 20px;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    letter-spacing: .5px;
+
+    margin-bottom: 10px;
+
+}
+
+
+.devotion-header h1 {
+
+    margin: 0;
+
+    font-size: 30px;
+
+    font-weight: 800;
+
+}
+
+
+.devotion-date {
+
+    margin-top: 8px;
+
+    margin-bottom: 0;
+
+    color: #806f64;
+
+    font-size: 14px;
+
+}
+
+
+/* ========================================
+   SECTIONS
+======================================== */
+
+.devotion-section {
+
+    margin-bottom: 30px;
+
+}
+
+
+.section-title {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    font-size: 17px;
+
+    font-weight: 700;
+
+    margin-bottom: 12px;
+
+}
+
+
+.section-title i {
+
+    color: #6f4e37;
+
+    font-size: 18px;
+
+}
+
+
+/* ========================================
+   SCRIPTURE
+======================================== */
+
+.scripture-box {
+
+    background: #f8f5f1;
+
+    border-left: 5px solid #6f4e37;
+
+    border-radius: 10px;
+
+    padding: 18px 20px;
+
+    font-size: 17px;
+
+    line-height: 1.8;
+
+    white-space: pre-wrap;
+
+    word-break: break-word;
+
+}
+
+
+/* ========================================
+   CONTENT
+======================================== */
+
+.section-content {
+
+    color: #5e514a;
+
+    font-size: 16px;
+
+    line-height: 1.8;
+
+    white-space: pre-wrap;
+
+    word-break: break-word;
+
+}
+
+
+/* ========================================
+   FOOTER
+======================================== */
+
+.shared-footer {
+
+    margin-top: 40px;
+
+    padding-top: 20px;
+
+    border-top: 1px solid #eee5df;
+
+    text-align: center;
+
+    color: #9a8980;
+
+    font-size: 13px;
+
+}
+
+
+.shared-footer i {
+
+    margin-right: 5px;
+
+    color: #6f4e37;
+
+}
+
+
+/* ========================================
+   MOBILE
+======================================== */
+
+@media (max-width: 600px) {
+
+    .shared-page {
+
+        padding: 25px 14px 40px;
+
+    }
+
+
+    .shared-header {
+
+        margin-bottom: 20px;
+
+    }
+
+
+    .devotion-card {
+
+        padding: 24px 20px;
+
+        border-radius: 18px;
+
+    }
+
+
+    .devotion-header h1 {
+
+        font-size: 25px;
+
+    }
+
+
+    .scripture-box {
+
+        font-size: 15px;
+
+        padding: 15px;
+
+    }
+
+
+    .section-content {
+
+        font-size: 15px;
+
+    }
+
+}
+
