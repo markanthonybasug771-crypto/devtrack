@@ -43,6 +43,141 @@
     rel="stylesheet"
     href="./css/music-player.css"
 >
+<style>
+    /* ========================================
+   PRAYER REQUEST
+======================================== */
+
+.admin-prayer-item {
+    background: #faf7f4;
+    border-radius: 15px;
+    padding: 18px;
+    margin-bottom: 12px;
+}
+
+.admin-prayer-date {
+    color: #8b5e3c;
+    font-size: .78rem;
+    font-weight: 600;
+    margin-bottom: 7px;
+}
+
+.admin-prayer-text {
+    color: #333;
+    margin: 0;
+    line-height: 1.7;
+}
+
+
+/* ========================================
+   ADMIN PRAYER REQUEST REACTIONS
+======================================== */
+
+.admin-prayer-reactions {
+    margin-top: 10px;
+    width: 100%;
+}
+
+.admin-prayer-reaction-buttons {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 7px;
+}
+
+.admin-prayer-reaction-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+
+    min-width: 48px;
+    height: 34px;
+
+    padding: 4px 9px;
+
+    border: 1px solid rgba(111, 78, 55, 0.18);
+    border-radius: 18px;
+
+    background: #fff;
+    color: #555;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.15s ease,
+        background 0.15s ease,
+        border-color 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+.admin-prayer-reaction-btn:hover {
+    transform: translateY(-1px);
+    background: #faf7f4;
+    border-color: rgba(111, 78, 55, 0.35);
+}
+
+.admin-prayer-reaction-btn:active {
+    transform: scale(0.95);
+}
+
+.admin-prayer-reaction-btn.active {
+    background: #f5eee8;
+    border-color: #6f4e37;
+    box-shadow: 0 2px 6px rgba(111, 78, 55, 0.12);
+}
+
+.admin-reaction-emoji {
+    font-size: 17px;
+    line-height: 1;
+}
+
+.admin-reaction-count {
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1;
+}
+
+.admin-prayer-reactions-loading {
+    display: flex;
+    align-items: center;
+    min-height: 34px;
+    color: #999;
+    font-size: 12px;
+}
+
+.admin-prayer-reactions-error {
+    color: #999;
+    font-size: 12px;
+}
+
+
+/* ========================================
+   MOBILE REACTIONS
+======================================== */
+
+@media (max-width: 576px) {
+
+    .admin-prayer-reaction-buttons {
+        gap: 6px;
+    }
+
+    .admin-prayer-reaction-btn {
+        min-width: 44px;
+        height: 32px;
+        padding: 4px 8px;
+    }
+
+    .admin-reaction-emoji {
+        font-size: 16px;
+    }
+
+    .admin-reaction-count {
+        font-size: 11px;
+    }
+
+}
+</style>
 
 </head>
 

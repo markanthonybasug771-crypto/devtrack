@@ -31,6 +31,174 @@
     >
     <link rel="stylesheet" href="./css/music-player.css">
 
+
+    <style>
+        /* ========================================
+   PRAYER REQUEST REACTIONS
+======================================== */
+
+.prayer-request-item {
+  align-items: flex-start;
+}
+
+.prayer-request-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.prayer-reactions {
+  margin-top: 10px;
+}
+
+.prayer-reaction-buttons {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.prayer-reaction-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+
+  min-width: 48px;
+  height: 34px;
+
+  padding: 4px 9px;
+
+  border: 1px solid rgba(111, 78, 55, 0.18);
+
+  border-radius: 18px;
+
+  background: #ffffff;
+
+  color: #555555;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.15s ease,
+    background 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.prayer-reaction-btn:hover {
+  transform: translateY(-1px);
+
+  background: #faf7f4;
+
+  border-color: rgba(111, 78, 55, 0.35);
+}
+
+.prayer-reaction-btn:active {
+  transform: scale(0.95);
+}
+
+.prayer-reaction-btn.active {
+  background: #f5eee8;
+
+  border-color: #6f4e37;
+
+  box-shadow:
+    0 2px 6px rgba(111, 78, 55, 0.12);
+}
+
+.reaction-emoji {
+  font-size: 17px;
+
+  line-height: 1;
+}
+
+.reaction-count {
+  font-size: 12px;
+
+  font-weight: 600;
+
+  line-height: 1;
+}
+
+.prayer-reactions-loading {
+  display: flex;
+
+  align-items: center;
+
+  min-height: 34px;
+
+  color: #999999;
+
+  font-size: 12px;
+}
+
+.prayer-reactions-error {
+  color: #999999;
+
+  font-size: 12px;
+}
+    /* ========================================
+       ENLARGED DEVOTIONAL TEXTAREAS
+       SOAP & SLAP
+       ======================================== */
+
+    .devotional-field textarea.form-control {
+        min-height: 180px;
+        height: 180px;
+        resize: vertical;
+        overflow-y: hidden;
+        line-height: 1.6;
+        padding: 14px 16px;
+        font-size: 15px;
+        transition: height 0.15s ease;
+    }
+
+    /* Make the devotional writing areas larger */
+    #soapObservation,
+    #soapApplication,
+    #soapPrayer,
+    #slapLesson,
+    #slapApplication,
+    #slapPrayer {
+        min-height: 180px;
+    }
+
+    /* On larger screens */
+    @media (min-width: 768px) {
+        .devotional-field textarea.form-control {
+            min-height: 200px;
+            height: 200px;
+        }
+
+        #soapObservation,
+        #soapApplication,
+        #soapPrayer,
+        #slapLesson,
+        #slapApplication,
+        #slapPrayer {
+            min-height: 200px;
+        }
+    }
+
+    /* On mobile */
+    @media (max-width: 767px) {
+        .devotional-field textarea.form-control {
+            min-height: 160px;
+            height: 160px;
+            font-size: 15px;
+        }
+
+        #soapObservation,
+        #soapApplication,
+        #soapPrayer,
+        #slapLesson,
+        #slapApplication,
+        #slapPrayer {
+            min-height: 160px;
+        }
+    }
+</style>
+
 </head>
 
 
@@ -423,7 +591,7 @@
 
         </div>
 
-    </div>
+    </div><br>
 
 
     <section class="dashboard-section mb-4">
@@ -588,96 +756,6 @@
 </button>
 
     </div> 
-
-
-    <!-- ============================== -->
-    <!-- DASHBOARD CARDS -->
-    <!-- ============================== -->
-
-    <div class="row g-3 mt-1">
-
-
-        <div class="col-md-4">
-
-            <div class="dashboard-card">
-
-                <div class="card-icon">
-
-                    <i class="bi bi-journal-check"></i>
-
-                </div>
-
-                <div>
-
-                    <small>
-                        My Devotionals
-                    </small>
-
-                    <h3 id="totalDevotionals">
-                        0
-                    </h3>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div class="col-md-4">
-
-            <div class="dashboard-card">
-
-                <div class="card-icon">
-
-                    <i class="bi bi-calendar-check"></i>
-
-                </div>
-
-                <div>
-
-                    <small>
-                        This Month
-                    </small>
-
-                    <h3 id="monthlyDevotionals">
-                        0
-                    </h3>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div class="col-md-4">
-
-            <div class="dashboard-card">
-
-                <div class="card-icon">
-
-                    <i class="bi bi-fire"></i>
-
-                </div>
-
-                <div>
-
-                    <small>
-                        Current Streak
-                    </small>
-
-                    <h3 id="currentStreakValue">
-                        0 days
-                    </h3>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
 
   <!-- ============================== -->
 <!-- PRAYER REQUESTS -->
@@ -1233,6 +1311,46 @@
 </script>
 <script type="module" src="./js/transition.js"></script>
 <script type="module" src="./js/music-player.js"></script>
+
+<script>
+    // ========================================
+    // AUTO EXPAND DEVOTIONAL TEXTAREAS
+    // SOAP & SLAP
+    // ========================================
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const devotionalTextareas = document.querySelectorAll(
+            "#soapObservation, " +
+            "#soapApplication, " +
+            "#soapPrayer, " +
+            "#slapLesson, " +
+            "#slapApplication, " +
+            "#slapPrayer"
+        );
+
+        devotionalTextareas.forEach(function (textarea) {
+
+            function autoExpand() {
+                // Reset height first so the textarea can shrink if needed
+                textarea.style.height = "auto";
+
+                // Expand based on the actual content
+                textarea.style.height = textarea.scrollHeight + "px";
+            }
+
+            // Expand while typing
+            textarea.addEventListener("input", autoExpand);
+
+            // Expand when the textarea receives existing content
+            textarea.addEventListener("focus", autoExpand);
+
+            // Initial adjustment
+            autoExpand();
+        });
+
+    });
+</script>
 
 </body>
 </html>
