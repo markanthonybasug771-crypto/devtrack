@@ -154,13 +154,19 @@
     }
 
     /* Make the devotional writing areas larger */
+    #soapScripture,
+    #slapScripture,
     #soapObservation,
     #soapApplication,
     #soapPrayer,
-    #slapLesson,
     #slapApplication,
     #slapPrayer {
         min-height: 180px;
+    }
+
+    #slapLesson {
+        min-height: 320px;
+        width: 100%;
     }
 
     /* On larger screens */
@@ -170,13 +176,18 @@
             height: 200px;
         }
 
+        #soapScripture,
+        #slapScripture,
         #soapObservation,
         #soapApplication,
         #soapPrayer,
-        #slapLesson,
         #slapApplication,
         #slapPrayer {
             min-height: 200px;
+        }
+
+        #slapLesson {
+            min-height: 320px;
         }
     }
 
@@ -188,17 +199,23 @@
             font-size: 15px;
         }
 
+        #soapScripture,
+        #slapScripture,
         #soapObservation,
         #soapApplication,
         #soapPrayer,
-        #slapLesson,
         #slapApplication,
         #slapPrayer {
             min-height: 160px;
         }
+
+        #slapLesson {
+            min-height: 240px;
+        }
     }
 </style>
 
+<link rel="stylesheet" href="./css/theme.css" />
 </head>
 
 
@@ -234,8 +251,6 @@
     </div>
 
 </nav>
-
-
 
 <!-- ============================== -->
 <!-- DESKTOP SIDEBAR -->
@@ -582,11 +597,11 @@
             </p>
 
             <h4 id="dailyQuote">
-                "Draw near to God, and He will draw near to you."
+
             </h4>
 
             <small id="dailyQuoteReference">
-                James 4:8
+
             </small>
 
         </div>
@@ -863,7 +878,7 @@
 
                     <textarea
                         id="prayerRequestInput"
-                        class="form-control"
+                        class="form-control auto-expand-textarea"
                         rows="5"
                         placeholder="What would you like the Music Team to pray for?"
                         maxlength="500"
@@ -1023,6 +1038,26 @@
                     <div class="mb-4">
 
                         <label
+                            for="devotionTitle"
+                            class="form-label"
+                        >
+                            Devotion Title
+                        </label>
+
+                        <input
+                            type="text"
+                            id="devotionTitle"
+                            class="form-control"
+                            placeholder="Give your devotion a title"
+                            maxlength="200"
+                            required
+                        >
+
+                    </div>
+
+                    <div class="mb-4">
+
+                        <label
                             for="devotionalFormat"
                             class="form-label"
                         >
@@ -1082,13 +1117,12 @@
                                 <strong>S — Scripture</strong>
                             </label>
 
-                            <input
-                                type="text"
+                            <textarea
                                 id="soapScripture"
-                                class="form-control"
+                                class="form-control auto-expand-textarea"
+                                rows="5"
                                 placeholder="Bible verse or passage"
-                                maxlength="300"
-                            >
+                            ></textarea>
 
                         </div>
 
@@ -1104,10 +1138,9 @@
 
                             <textarea
                                 id="soapObservation"
-                                class="form-control"
+                                class="form-control auto-expand-textarea"
                                 rows="5"
                                 placeholder="What did you learn or observe from the passage?"
-                                maxlength="2000"
                             ></textarea>
 
                         </div>
@@ -1124,7 +1157,7 @@
 
                             <textarea
                                 id="soapApplication"
-                                class="form-control"
+                                class="form-control auto-expand-textarea"
                                 rows="5"
                                 placeholder="How will you apply God's Word to your life?"
                                 maxlength="2000"
@@ -1144,7 +1177,7 @@
 
                             <textarea
                                 id="soapPrayer"
-                                class="form-control"
+                                class="form-control auto-expand-textarea"
                                 rows="5"
                                 placeholder="Write your prayer."
                                 maxlength="2000"
@@ -1179,13 +1212,12 @@
             <strong>S — Scripture</strong>
         </label>
 
-        <input
-            type="text"
+        <textarea
             id="slapScripture"
-            class="form-control"
+            class="form-control auto-expand-textarea"
+            rows="5"
             placeholder="Bible verse or passage"
-            maxlength="300"
-        >
+        ></textarea>
 
     </div>
 
@@ -1203,10 +1235,9 @@
 
         <textarea
             id="slapLesson"
-            class="form-control"
+            class="form-control auto-expand-textarea"
             rows="5"
             placeholder="What lesson did you learn from God's Word?"
-            maxlength="2000"
         ></textarea>
 
     </div>
@@ -1225,7 +1256,7 @@
 
         <textarea
             id="slapApplication"
-            class="form-control"
+            class="form-control auto-expand-textarea"
             rows="5"
             placeholder="How will you apply God's Word to your life?"
             maxlength="2000"
@@ -1247,7 +1278,7 @@
 
         <textarea
             id="slapPrayer"
-            class="form-control"
+            class="form-control auto-expand-textarea"
             rows="5"
             placeholder="Write your prayer."
             maxlength="2000"
@@ -1307,7 +1338,7 @@
 </div>
 <script
     type="module"
-    src="./js/user-dashboard.js">
+    src="./js/user-dashboard.js?v=20260919-devotion-title">
 </script>
 <script type="module" src="./js/transition.js"></script>
 <script type="module" src="./js/music-player.js"></script>
@@ -1322,6 +1353,8 @@
 
         const devotionalTextareas = document.querySelectorAll(
             "#soapObservation, " +
+            "#soapScripture, " +
+            "#slapScripture, " +
             "#soapApplication, " +
             "#soapPrayer, " +
             "#slapLesson, " +

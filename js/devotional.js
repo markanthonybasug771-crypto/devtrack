@@ -1,478 +1,318 @@
 import { auth, db } from "./firebase.js";
 
 import {
-    collection,
-    addDoc,
-    query,
-    where,
-    getDocs,
-    serverTimestamp
+  collection,
+  addDoc,
+  query,
+  where,
+  getDocs,
+  serverTimestamp,
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
+const devotionalForm = document.getElementById("devotionalForm");
 
-const devotionalForm =
-    document.getElementById("devotionalForm");
+const devotionalDate = document.getElementById("devotionalDate");
 
-const devotionalDate =
-    document.getElementById("devotionalDate");
+const devotionalFormat = document.getElementById("devotionalFormat");
 
-const devotionalFormat =
-    document.getElementById("devotionalFormat");
+const formatDescription = document.getElementById("formatDescription");
 
-const formatDescription =
-    document.getElementById("formatDescription");
+const soapFields = document.getElementById("soapFields");
 
-const soapFields =
-    document.getElementById("soapFields");
+const slapFields = document.getElementById("slapFields");
 
-const slapFields =
-    document.getElementById("slapFields");
-
-const saveDevotionalButton =
-    document.getElementById("saveDevotionalButton");
-
+const saveDevotionalButton = document.getElementById("saveDevotionalButton");
 
 // ========================================
 // GET LOCAL DATE
 // ========================================
 
 function getLocalDate() {
+  const today = new Date();
 
-    const today = new Date();
+  const year = today.getFullYear();
 
-    const year =
-        today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, "0");
 
-    const month =
-        String(today.getMonth() + 1)
-        .padStart(2, "0");
+  const day = String(today.getDate()).padStart(2, "0");
 
-    const day =
-        String(today.getDate())
-        .padStart(2, "0");
-
-    return `${year}-${month}-${day}`;
+  return `${year}-${month}-${day}`;
 }
-
 
 // ========================================
 // SET TODAY
 // ========================================
 
-devotionalDate.value =
-    getLocalDate();
-
+devotionalDate.value = getLocalDate();
 
 // ========================================
 // FORMAT SELECTION
 // ========================================
 
-devotionalFormat.addEventListener(
-    "change",
-    () => {
+devotionalFormat.addEventListener("change", () => {
+  const format = devotionalFormat.value;
 
-        const format =
-            devotionalFormat.value;
+  soapFields.classList.add("d-none");
 
+  slapFields.classList.add("d-none");
 
-        soapFields.classList.add("d-none");
+  formatDescription.classList.add("d-none");
 
-        slapFields.classList.add("d-none");
+  if (format === "SOAP") {
+    soapFields.classList.remove("d-none");
 
-        formatDescription.classList.add("d-none");
+    formatDescription.classList.remove("d-none");
 
-
-        if (format === "SOAP") {
-
-            soapFields.classList.remove("d-none");
-
-            formatDescription.classList.remove("d-none");
-
-            formatDescription.innerHTML = `
+    formatDescription.innerHTML = `
                 <strong>SOAP</strong> helps you
                 reflect on Scripture through
                 Scripture, Observation,
                 Application, and Prayer.
             `;
+  }
 
-        }
+  if (format === "SLAP") {
+    slapFields.classList.remove("d-none");
 
+    formatDescription.classList.remove("d-none");
 
-        if (format === "SLAP") {
-
-            slapFields.classList.remove("d-none");
-
-            formatDescription.classList.remove("d-none");
-
-            formatDescription.innerHTML = `
+    formatDescription.innerHTML = `
                 <strong>SLAP</strong> helps you reflect
                 through Learn, Apply, and Pray.
             `;
-
-        }
-
-    }
-);
-
+  }
+});
 
 // ========================================
 // CHECK IF ALREADY SUBMITTED TODAY
 // ========================================
 
 async function hasDevotionalToday() {
+  const user = auth.currentUser;
 
-    const user =
-        auth.currentUser;
+  if (!user) {
+    return false;
+  }
 
+  const today = getLocalDate();
 
-    if (!user) {
-        return false;
-    }
+  const devotionalQuery = query(
+    collection(db, "devotionals"),
 
+    where("userId", "==", user.uid),
 
-    const today =
-        getLocalDate();
+    where("date", "==", today),
+  );
 
+  const snapshot = await getDocs(devotionalQuery);
 
-    const devotionalQuery = query(
-
-        collection(db, "devotionals"),
-
-        where("userId", "==", user.uid),
-
-        where("date", "==", today)
-
-    );
-
-
-    const snapshot =
-        await getDocs(devotionalQuery);
-
-
-    return !snapshot.empty;
-
+  return !snapshot.empty;
 }
-
 
 // ========================================
 // SUBMIT DEVOTIONAL
 // ========================================
 
-devotionalForm.addEventListener(
-    "submit",
-    async (e) => {
+devotionalForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-        e.preventDefault();
+  const user = auth.currentUser;
 
+  if (!user) {
+    Swal.fire({
+      icon: "error",
+      title: "Not Logged In",
+      text: "Please login again.",
+      confirmButtonColor: "#6f4e37",
+    });
 
-        const user =
-            auth.currentUser;
+    return;
+  }
 
+  const format = devotionalFormat.value;
 
-        if (!user) {
+  if (!format) {
+    Swal.fire({
+      icon: "warning",
+      title: "Select a Format",
+      text: "Please choose SOAP or SLAP.",
+      confirmButtonColor: "#6f4e37",
+    });
 
-            Swal.fire({
-                icon: "error",
-                title: "Not Logged In",
-                text: "Please login again.",
-                confirmButtonColor: "#6f4e37"
-            });
+    return;
+  }
 
-            return;
-        }
+  // ========================================
+  // CHECK DUPLICATE
+  // ========================================
 
+  try {
+    const alreadySubmitted = await hasDevotionalToday();
 
-        const format =
-            devotionalFormat.value;
+    if (alreadySubmitted) {
+      Swal.fire({
+        icon: "info",
+        title: "Already Submitted",
+        text: "You have already submitted your devotional for today.",
+        confirmButtonColor: "#6f4e37",
+      });
 
+      return;
+    }
 
-        if (!format) {
+    // ========================================
+    // COLLECT CONTENT
+    // ========================================
 
-            Swal.fire({
-                icon: "warning",
-                title: "Select a Format",
-                text: "Please choose SOAP or SLAP.",
-                confirmButtonColor: "#6f4e37"
-            });
+    let content = {};
 
-            return;
-        }
+    if (format === "SOAP") {
+      const scripture = document.getElementById("soapScripture").value.trim();
 
+      const observation = document
+        .getElementById("soapObservation")
+        .value.trim();
 
-        // ========================================
-        // CHECK DUPLICATE
-        // ========================================
+      const application = document
+        .getElementById("soapApplication")
+        .value.trim();
 
-        try {
+      const prayer = document.getElementById("soapPrayer").value.trim();
 
-            const alreadySubmitted =
-                await hasDevotionalToday();
+      if (!scripture || !observation || !application || !prayer) {
+        Swal.fire({
+          icon: "warning",
+          title: "Incomplete Devotional",
+          text: "Please complete all SOAP sections.",
+          confirmButtonColor: "#6f4e37",
+        });
 
+        return;
+      }
 
-            if (alreadySubmitted) {
+      content = {
+        scripture,
 
-                Swal.fire({
-                    icon: "info",
-                    title: "Already Submitted",
-                    text:
-                        "You have already submitted your devotional for today.",
-                    confirmButtonColor: "#6f4e37"
-                });
+        observation,
 
-                return;
-            }
+        application,
 
+        prayer,
+      };
+    }
 
-            // ========================================
-            // COLLECT CONTENT
-            // ========================================
+    if (format === "SLAP") {
+      const scripture = document.getElementById("slapScripture").value.trim();
 
-            let content = {};
+      const lesson = document.getElementById("slapLesson").value.trim();
 
+      const application = document
+        .getElementById("slapApplication")
+        .value.trim();
 
-            if (format === "SOAP") {
+      const prayer = document.getElementById("slapPrayer").value.trim();
 
-                const scripture =
-                    document
-                        .getElementById("soapScripture")
-                        .value
-                        .trim();
+      if (!scripture || !lesson || !application || !prayer) {
+        Swal.fire({
+          icon: "warning",
+          title: "Incomplete Devotional",
+          text: "Please complete all SLAP sections.",
+          confirmButtonColor: "#6f4e37",
+        });
 
-                const observation =
-                    document
-                        .getElementById("soapObservation")
-                        .value
-                        .trim();
+        return;
+      }
 
-                const application =
-                    document
-                        .getElementById("soapApplication")
-                        .value
-                        .trim();
+      content = {
+        scripture,
+        lesson,
+        application,
+        prayer,
+      };
+    }
 
-                const prayer =
-                    document
-                        .getElementById("soapPrayer")
-                        .value
-                        .trim();
+    // ========================================
+    // DISABLE BUTTON
+    // ========================================
 
+    saveDevotionalButton.disabled = true;
 
-                if (
-                    !scripture ||
-                    !observation ||
-                    !application ||
-                    !prayer
-                ) {
-
-                    Swal.fire({
-                        icon: "warning",
-                        title: "Incomplete Devotional",
-                        text:
-                            "Please complete all SOAP sections.",
-                        confirmButtonColor: "#6f4e37"
-                    });
-
-                    return;
-                }
-
-
-                content = {
-
-                    scripture,
-
-                    observation,
-
-                    application,
-
-                    prayer
-
-                };
-
-            }
-
-
-            if (format === "SLAP") {
-
-                const scripture =
-                    document
-                        .getElementById("slapScripture")
-                        .value
-                        .trim();
-
-                const lesson =
-                    document
-                        .getElementById("slapLesson")
-                        .value
-                        .trim();
-
-                const application =
-                    document
-                        .getElementById("slapApplication")
-                        .value
-                        .trim();
-
-                const prayer =
-                    document
-                        .getElementById("slapPrayer")
-                        .value
-                        .trim();
-
-
-                if (
-                    !scripture ||
-                    !lesson ||
-                    !application ||
-                    !prayer
-                ) {
-
-                    Swal.fire({
-                        icon: "warning",
-                        title: "Incomplete Devotional",
-                        text:
-                            "Please complete all SLAP sections.",
-                        confirmButtonColor: "#6f4e37"
-                    });
-
-                    return;
-                }
-
-
-                content = {
-                    scripture,
-                    lesson,
-                    application,
-                    prayer
-                };
-
-            }
-
-
-            // ========================================
-            // DISABLE BUTTON
-            // ========================================
-
-            saveDevotionalButton.disabled =
-                true;
-
-
-            saveDevotionalButton.innerHTML = `
+    saveDevotionalButton.innerHTML = `
                 <span class="spinner-border spinner-border-sm me-1"></span>
                 Saving...
             `;
 
+    // ========================================
+    // SAVE TO FIRESTORE
+    // ========================================
 
-            // ========================================
-            // SAVE TO FIRESTORE
-            // ========================================
+    await addDoc(collection(db, "devotionals"), {
+      userId: user.uid,
 
-            await addDoc(
-                collection(db, "devotionals"),
-                {
+      date: getLocalDate(),
 
-                    userId: user.uid,
+      format: format,
 
-                    date: getLocalDate(),
+      content: content,
 
-                    format: format,
+      checked: false,
 
-                    content: content,
+      checkedBy: null,
 
-                    checked: false,
+      checkedAt: null,
 
-                    checkedBy: null,
+      createdAt: serverTimestamp(),
+    });
 
-                    checkedAt: null,
+    // ========================================
+    // SUCCESS
+    // ========================================
 
-                    createdAt:
-                        serverTimestamp()
+    devotionalForm.reset();
 
-                }
-            );
+    devotionalDate.value = getLocalDate();
 
+    soapFields.classList.add("d-none");
 
-            // ========================================
-            // SUCCESS
-            // ========================================
+    slapFields.classList.add("d-none");
 
-            devotionalForm.reset();
+    formatDescription.classList.add("d-none");
 
-            devotionalDate.value =
-                getLocalDate();
+    const modalElement = document.getElementById("devotionalModal");
 
-            soapFields.classList.add("d-none");
+    const modal = bootstrap.Modal.getInstance(modalElement);
 
-            slapFields.classList.add("d-none");
+    if (modal) {
+      modal.hide();
+    }
 
-            formatDescription.classList.add("d-none");
+    await Swal.fire({
+      icon: "success",
 
+      title: "Devotional Submitted!",
 
-            const modalElement =
-                document.getElementById(
-                    "devotionalModal"
-                );
+      text: "Your devotional for today has been recorded.",
 
+      confirmButtonColor: "#6f4e37",
+    });
+  } catch (error) {
+    console.error("Devotional error:", error);
 
-            const modal =
-                bootstrap.Modal.getInstance(
-                    modalElement
-                );
+    Swal.fire({
+      icon: "error",
 
+      title: "Something Went Wrong",
 
-            if (modal) {
-                modal.hide();
-            }
+      text: "We couldn't save your devotional.",
 
+      confirmButtonColor: "#6f4e37",
+    });
+  } finally {
+    saveDevotionalButton.disabled = false;
 
-            await Swal.fire({
-
-                icon: "success",
-
-                title: "Devotional Submitted!",
-
-                text:
-                    "Your devotional for today has been recorded.",
-
-                confirmButtonColor:
-                    "#6f4e37"
-
-            });
-
-
-        } catch (error) {
-
-            console.error(
-                "Devotional error:",
-                error
-            );
-
-
-            Swal.fire({
-
-                icon: "error",
-
-                title: "Something Went Wrong",
-
-                text:
-                    "We couldn't save your devotional.",
-
-                confirmButtonColor:
-                    "#6f4e37"
-
-            });
-
-
-        } finally {
-
-            saveDevotionalButton.disabled =
-                false;
-
-
-            saveDevotionalButton.innerHTML = `
+    saveDevotionalButton.innerHTML = `
                 <i class="bi bi-check-lg me-1"></i>
                 Submit Devotional
             `;
-
-        }
-
-    }
-);
+  }
+});

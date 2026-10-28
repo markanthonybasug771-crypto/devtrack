@@ -1403,18 +1403,12 @@ body {
         padding:
             14px 12px;
     }
-
-
     .admin-prayer-header h2 {
         font-size: 20px;
     }
-
-
     .admin-prayer-stat-card {
         padding: 14px;
     }
-
-
     .admin-prayer-stat-icon {
         width: 40px;
         height: 40px;
@@ -1423,8 +1417,6 @@ body {
 
         font-size: 16px;
     }
-
-
     .admin-prayer-stat-card h3 {
         font-size: 21px;
     }

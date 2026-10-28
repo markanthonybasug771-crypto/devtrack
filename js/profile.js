@@ -1,15 +1,15 @@
 import { auth, db } from "./firebase.js";
 
 import {
-    onAuthStateChanged,
-    signOut
+  onAuthStateChanged,
+  signOut,
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
 import {
-    doc,
-    getDoc,
-    setDoc,
-    serverTimestamp
+  doc,
+  getDoc,
+  setDoc,
+  serverTimestamp,
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 const profileForm = document.getElementById("profileForm");
@@ -38,179 +38,213 @@ const profileMinistry = document.getElementById("profileMinistry");
 let currentUserId = null;
 
 function calculateAge(value) {
-    const birthday = new Date(value);
-    if (isNaN(birthday.getTime())) {
-        return "";
-    }
-    const today = new Date();
-    let age = today.getFullYear() - birthday.getFullYear();
-    const monthDifference = today.getMonth() - birthday.getMonth();
-    if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthday.getDate())) {
-        age--;
-    }
-    return age;
+  const birthday = new Date(value);
+  if (isNaN(birthday.getTime())) {
+    return "";
+  }
+  const today = new Date();
+  let age = today.getFullYear() - birthday.getFullYear();
+  const monthDifference = today.getMonth() - birthday.getMonth();
+  if (
+    monthDifference < 0 ||
+    (monthDifference === 0 && today.getDate() < birthday.getDate())
+  ) {
+    age--;
+  }
+  return age;
 }
 
 function updateProfilePreview(user) {
-    const fullName = `${user.firstName || ""} ${user.lastName || ""}`.trim();
-    profileName.textContent = fullName || "Your Name";
-    profileRole.textContent = user.role ? `${user.role.charAt(0).toUpperCase()}${user.role.slice(1)}` : "Member";
-    profileEmail.textContent = user.email || "not set";
-    profileBirthday.textContent = user.birthday ? new Date(user.birthday).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" }) : "Not set";
-    profileAge.textContent = user.age || "—";
-    profileGender.textContent = user.gender || "Not set";
-    profilePhone.textContent = user.phone || "Not set";
-    profileMinistry.textContent = user.ministry || "Not set";
-    profileAvatar.textContent = (user.firstName || "U").charAt(0).toUpperCase();
+  const fullName = `${user.firstName || ""} ${user.lastName || ""}`.trim();
+  profileName.textContent = fullName || "Your Name";
+  profileRole.textContent = user.role
+    ? `${user.role.charAt(0).toUpperCase()}${user.role.slice(1)}`
+    : "Member";
+  profileEmail.textContent = user.email || "not set";
+  profileBirthday.textContent = user.birthday
+    ? new Date(user.birthday).toLocaleDateString("en-US", {
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+      })
+    : "Not set";
+  profileAge.textContent = user.age || "—";
+  profileGender.textContent = user.gender || "Not set";
+  profilePhone.textContent = user.phone || "Not set";
+  profileMinistry.textContent = user.ministry || "Not set";
+  profileAvatar.textContent = (user.firstName || "U").charAt(0).toUpperCase();
 }
 
 async function loadUserProfile(user) {
-    const userDocRef = doc(db, "users", user.uid);
-    const userDoc = await getDoc(userDocRef);
-    if (!userDoc.exists()) {
-        return null;
-    }
-    return userDoc.data();
+  const userDocRef = doc(db, "users", user.uid);
+  const userDoc = await getDoc(userDocRef);
+  if (!userDoc.exists()) {
+    return null;
+  }
+  return userDoc.data();
 }
 
 function populateForm(user) {
-    firstNameInput.value = user.firstName || "";
-    lastNameInput.value = user.lastName || "";
-    emailInput.value = user.email || "";
-    phoneInput.value = user.phone || "";
-    birthdayInput.value = user.birthday || "";
-    ageInput.value = user.age || "";
-    genderInput.value = user.gender || "";
-    ministryInput.value = user.ministry || "";
+  firstNameInput.value = user.firstName || "";
+  lastNameInput.value = user.lastName || "";
+  emailInput.value = user.email || "";
+  phoneInput.value = user.phone || "";
+  birthdayInput.value = user.birthday || "";
+  ageInput.value = user.age || "";
+  genderInput.value = user.gender || "";
+  ministryInput.value = user.ministry || "";
 }
 
 function showError(message) {
-    Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: message,
-        confirmButtonColor: "#6f4e37"
-    });
+  Swal.fire({
+    icon: "error",
+    title: "Oops...",
+    text: message,
+    confirmButtonColor: "#6f4e37",
+  });
 }
 
 function showSuccess(message) {
-    Swal.fire({
-        icon: "success",
-        title: "Saved",
-        text: message,
-        confirmButtonColor: "#6f4e37"
-    });
+  Swal.fire({
+    icon: "success",
+    title: "Saved",
+    text: message,
+    confirmButtonColor: "#6f4e37",
+  });
 }
 
 function syncAge() {
-    ageInput.value = calculateAge(birthdayInput.value);
+  ageInput.value = calculateAge(birthdayInput.value);
 }
 
 birthdayInput.addEventListener("change", syncAge);
 
 cancelButton.addEventListener("click", async () => {
-    const user = auth.currentUser;
-    if (!user) return;
-    const freshData = await loadUserProfile(user);
-    if (freshData) {
-        populateForm(freshData);
-        updateProfilePreview(freshData);
-    }
+  const user = auth.currentUser;
+  if (!user) return;
+  const freshData = await loadUserProfile(user);
+  if (freshData) {
+    populateForm(freshData);
+    updateProfilePreview(freshData);
+  }
 });
 
 profileForm.addEventListener("submit", async (event) => {
-    event.preventDefault();
+  event.preventDefault();
 
-    const firstName = firstNameInput.value.trim();
-    const lastName = lastNameInput.value.trim();
-    const email = emailInput.value.trim();
-    const phone = phoneInput.value.trim();
-    const birthday = birthdayInput.value;
-    const age = Number(ageInput.value);
-    const gender = genderInput.value;
-    const ministry = ministryInput.value;
+  const firstName = firstNameInput.value.trim();
+  const lastName = lastNameInput.value.trim();
+  const email = emailInput.value.trim();
+  const phone = phoneInput.value.trim();
+  const birthday = birthdayInput.value;
+  const age = Number(ageInput.value);
+  const gender = genderInput.value;
+  const ministry = ministryInput.value;
 
-    if (!firstName || !lastName || !email || !phone || !birthday || !age || !gender || !ministry) {
-        showError("Please complete all required fields before saving.");
-        return;
-    }
+  if (
+    !firstName ||
+    !lastName ||
+    !email ||
+    !phone ||
+    !birthday ||
+    !age ||
+    !gender ||
+    !ministry
+  ) {
+    showError("Please complete all required fields before saving.");
+    return;
+  }
 
-    try {
-        const userDocRef = doc(db, "users", currentUserId);
-        await setDoc(userDocRef, {
-            firstName,
-            lastName,
-            email,
-            phone,
-            birthday,
-            age,
-            gender,
-            ministry,
-            updatedAt: serverTimestamp()
-        }, { merge: true });
+  try {
+    const userDocRef = doc(db, "users", currentUserId);
+    await setDoc(
+      userDocRef,
+      {
+        firstName,
+        lastName,
+        email,
+        phone,
+        birthday,
+        age,
+        gender,
+        ministry,
+        updatedAt: serverTimestamp(),
+      },
+      { merge: true },
+    );
 
-        showSuccess("Your profile has been updated.");
-        updateProfilePreview({ firstName, lastName, email, phone, birthday, age, gender, ministry, role: profileRole.textContent });
-    } catch (error) {
-        console.error("Profile save error:", error);
-        showError("Unable to update your profile right now. Please try again.");
-    }
+    showSuccess("Your profile has been updated.");
+    updateProfilePreview({
+      firstName,
+      lastName,
+      email,
+      phone,
+      birthday,
+      age,
+      gender,
+      ministry,
+      role: profileRole.textContent,
+    });
+  } catch (error) {
+    console.error("Profile save error:", error);
+    showError("Unable to update your profile right now. Please try again.");
+  }
 });
 
 async function logout() {
-    const result = await Swal.fire({
-        icon: "question",
-        title: "Logout?",
-        text: "Are you sure you want to logout?",
-        showCancelButton: true,
-        confirmButtonColor: "#6f4e37",
-        cancelButtonColor: "#6c757d",
-        confirmButtonText: "Yes, Logout",
-        cancelButtonText: "Cancel"
-    });
+  const result = await Swal.fire({
+    icon: "question",
+    title: "Logout?",
+    text: "Are you sure you want to logout?",
+    showCancelButton: true,
+    confirmButtonColor: "#6f4e37",
+    cancelButtonColor: "#6c757d",
+    confirmButtonText: "Yes, Logout",
+    cancelButtonText: "Cancel",
+  });
 
-    if (!result.isConfirmed) return;
+  if (!result.isConfirmed) return;
 
-    try {
-        await signOut(auth);
-        window.location.href = "./index.html";
-    } catch (error) {
-        console.error("Logout error:", error);
-        showError("Unable to logout at the moment.");
-    }
+  try {
+    await signOut(auth);
+    window.location.href = "./index.html";
+  } catch (error) {
+    console.error("Logout error:", error);
+    showError("Unable to logout at the moment.");
+  }
 }
 
 logoutButton?.addEventListener("click", (event) => {
-    event.preventDefault();
-    logout();
+  event.preventDefault();
+  logout();
 });
 
 mobileLogoutButton?.addEventListener("click", (event) => {
-    event.preventDefault();
-    logout();
+  event.preventDefault();
+  logout();
 });
 
 onAuthStateChanged(auth, async (user) => {
-    if (!user) {
-        window.location.href = "./index.html";
-        return;
+  if (!user) {
+    window.location.href = "./index.html";
+    return;
+  }
+
+  currentUserId = user.uid;
+
+  try {
+    const userProfile = await loadUserProfile(user);
+    if (!userProfile) {
+      await signOut(auth);
+      window.location.href = "./index.html";
+      return;
     }
 
-    currentUserId = user.uid;
-
-    try {
-        const userProfile = await loadUserProfile(user);
-        if (!userProfile) {
-            await signOut(auth);
-            window.location.href = "./index.html";
-            return;
-        }
-
-        populateForm(userProfile);
-        updateProfilePreview(userProfile);
-        syncAge();
-    } catch (error) {
-        console.error("Profile load error:", error);
-        showError("Unable to load your profile. Please login again.");
-    }
+    populateForm(userProfile);
+    updateProfilePreview(userProfile);
+    syncAge();
+  } catch (error) {
+    console.error("Profile load error:", error);
+    showError("Unable to load your profile. Please login again.");
+  }
 });

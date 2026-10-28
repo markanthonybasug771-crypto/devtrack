@@ -1,15 +1,9 @@
-/* ========================================
-   ADMIN PLAYLIST
-======================================== */
 
 .admin-playlist-main {
     padding-bottom: 50px;
 }
 
 
-/* ========================================
-   HEADER
-======================================== */
 
 .admin-playlist-header {
     display: flex;
@@ -42,32 +36,22 @@
     width: 65px;
     height: 65px;
     border-radius: 18px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     background: #eee7df;
     color: #6f4e37;
-
     font-size: 1.8rem;
 }
 
-
-/* ========================================
-   CARD
-======================================== */
 
 .admin-playlist-card {
     background: #ffffff;
     border-radius: 18px;
     padding: 25px;
     margin-bottom: 25px;
-
     border: 1px solid #eee8e2;
-
-    box-shadow:
-        0 8px 25px rgba(62, 39, 35, 0.06);
+    box-shadow:0 8px 25px rgba(62, 39, 35, 0.06);
 }
 
 .admin-playlist-card-header {
@@ -75,16 +59,13 @@
     justify-content: space-between;
     align-items: center;
     gap: 15px;
-
     margin-bottom: 22px;
 }
-
 .admin-playlist-card-header h5 {
     margin: 0;
     color: #3e2723;
     font-weight: 700;
 }
-
 .admin-playlist-card-header p {
     margin: 5px 0 0;
     color: #888;
@@ -92,54 +73,36 @@
 }
 
 
-/* ========================================
-   FORM
-======================================== */
-
 .admin-playlist-card .form-label {
     color: #4e342e;
     font-weight: 600;
     font-size: 0.9rem;
 }
-
 .admin-playlist-card .form-control,
 .admin-playlist-card .input-group-text {
     border-color: #ddd3ca;
 }
-
 .admin-playlist-card .form-control {
     min-height: 45px;
 }
-
 .admin-playlist-card .form-control:focus {
     border-color: #8d6e63;
-
     box-shadow:
         0 0 0 0.2rem rgba(111, 78, 55, 0.12);
 }
-
 .admin-playlist-card .input-group-text {
     background: #f7f3ef;
     color: #6f4e37;
 }
 
 
-/* ========================================
-   ADD SONG BUTTON
-======================================== */
-
 .admin-add-song-btn {
     background: #6f4e37;
     color: #ffffff;
-
     border: none;
-
     padding: 11px 22px;
-
     border-radius: 10px;
-
     font-weight: 600;
-
     transition:
         0.2s ease;
 }
@@ -147,33 +110,20 @@
 .admin-add-song-btn:hover {
     background: #4e342e;
     color: #ffffff;
-
     transform: translateY(-1px);
 }
 
 
-/* ========================================
-   SONG COUNT
-======================================== */
-
 .admin-song-count {
     background: #eee7df;
     color: #6f4e37;
-
     padding: 6px 12px;
-
     border-radius: 20px;
-
     font-size: 0.78rem;
     font-weight: 600;
-
     white-space: nowrap;
 }
 
-
-/* ========================================
-   SONG LIST
-======================================== */
 
 .admin-song-list {
     display: flex;
@@ -182,57 +132,36 @@
 }
 
 
-/* ========================================
-   SONG ITEM
-======================================== */
-
 .admin-song-item {
     display: flex;
     align-items: center;
     gap: 15px;
-
     padding: 15px;
-
     border: 1px solid #eee8e2;
     border-radius: 14px;
-
     transition: 0.2s ease;
 }
 
 .admin-song-item:hover {
     border-color: #d8c7b8;
-
     box-shadow:
         0 5px 15px rgba(62, 39, 35, 0.05);
 }
 
 
-/* ========================================
-   COVER
-======================================== */
-
 .admin-song-cover {
     width: 52px;
     height: 52px;
-
     flex-shrink: 0;
-
     border-radius: 12px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     background: #eee7df;
     color: #6f4e37;
-
     font-size: 1.3rem;
 }
 
-
-/* ========================================
-   SONG INFO
-======================================== */
 
 .admin-song-info {
     flex: 1;
@@ -241,11 +170,8 @@
 
 .admin-song-info h6 {
     margin: 0;
-
     color: #3e2723;
-
     font-weight: 600;
-
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -253,16 +179,10 @@
 
 .admin-song-info p {
     margin: 4px 0 0;
-
     color: #888;
-
     font-size: 0.8rem;
 }
 
-
-/* ========================================
-   SONG ACTIONS
-======================================== */
 
 .admin-song-actions {
     display: flex;
@@ -273,42 +193,31 @@
 .admin-song-action {
     width: 38px;
     height: 38px;
-
     border: none;
-
     border-radius: 50%;
-
     display: flex;
     align-items: center;
     justify-content: center;
 
     transition: 0.2s ease;
 }
-
 .admin-song-play {
     background: #6f4e37;
     color: #ffffff;
 }
-
 .admin-song-play:hover {
     background: #4e342e;
     color: #ffffff;
 }
-
 .admin-song-delete {
     background: #f8eeee;
     color: #b23b3b;
 }
-
 .admin-song-delete:hover {
     background: #f3dede;
     color: #9b2929;
 }
 
-
-/* ========================================
-   EMPTY
-======================================== */
 
 .admin-playlist-empty {
     text-align: center;
@@ -318,177 +227,123 @@
 .admin-playlist-empty-icon {
     width: 70px;
     height: 70px;
-
     margin: 0 auto 15px;
-
     border-radius: 50%;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     background: #eee7df;
     color: #6f4e37;
-
     font-size: 1.7rem;
 }
-
 .admin-playlist-empty h5 {
     color: #3e2723;
     font-weight: 600;
 }
-
 .admin-playlist-empty p {
     color: #888;
     margin-bottom: 0;
 }
 
 
-/* ========================================
-   PLAYER
-======================================== */
-
 .admin-player-card {
     display: flex;
     align-items: center;
     gap: 15px;
-
     background: #3e2723;
     color: white;
-
     padding: 15px 18px;
-
     border-radius: 15px;
-
     margin-bottom: 15px;
 }
-
 .admin-player-icon {
     width: 45px;
     height: 45px;
-
     border-radius: 12px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     background: rgba(255,255,255,0.12);
-
     font-size: 1.2rem;
 }
-
 .admin-player-info {
     flex: 1;
 }
-
 .admin-player-info small {
     font-size: 0.65rem;
     letter-spacing: 1px;
     opacity: 0.7;
 }
-
 .admin-player-info h5 {
     margin: 2px 0;
     font-size: 0.95rem;
 }
-
 .admin-player-info p {
     margin: 0;
     font-size: 0.75rem;
     opacity: 0.7;
 }
-
 .admin-player-close {
     color: white;
     border: none;
 }
-
 .admin-player-close:hover {
     color: #ddd;
 }
 
-
-/* ========================================
-   YOUTUBE PLAYER
-======================================== */
-
 .admin-youtube-player {
     background: #000;
-
     border-radius: 16px;
-
     overflow: hidden;
-
     margin-bottom: 25px;
-
     box-shadow:
         0 10px 30px rgba(0,0,0,0.15);
 }
-
 .admin-youtube-player iframe {
     border: none;
 }
 
-
-/* ========================================
-   MOBILE
-======================================== */
-
 @media (max-width: 767px) {
-
     .admin-playlist-main {
         padding: 20px 15px 40px;
     }
-
     .admin-playlist-header {
         align-items: flex-start;
     }
-
     .admin-playlist-header-icon {
         width: 52px;
         height: 52px;
         font-size: 1.4rem;
         border-radius: 14px;
     }
-
     .admin-playlist-header h2 {
         font-size: 1.35rem;
     }
-
     .admin-playlist-header p {
         font-size: 0.85rem;
     }
-
     .admin-playlist-card {
         padding: 18px;
         border-radius: 15px;
     }
-
     .admin-playlist-card-header {
         align-items: flex-start;
     }
-
     .admin-song-item {
         padding: 12px;
     }
-
     .admin-song-cover {
         width: 45px;
         height: 45px;
     }
-
     .admin-song-info h6 {
         font-size: 0.85rem;
     }
-
     .admin-song-actions {
         gap: 4px;
     }
-
     .admin-song-action {
         width: 34px;
         height: 34px;
     }
-
 }

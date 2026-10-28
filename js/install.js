@@ -4,225 +4,149 @@
 
 let deferredPrompt = null;
 
-
 // ========================================
 // ELEMENTS
 // ========================================
 
-const installContainer =
-    document.getElementById("installAppContainer");
+const installContainer = document.getElementById("installAppContainer");
 
-const installButton =
-    document.getElementById("installAppBtn");
-
+const installButton = document.getElementById("installAppBtn");
 
 // ========================================
 // SHOW INSTALL BUTTON
 // ========================================
 
 function showInstallButton() {
+  if (!installContainer) {
+    return;
+  }
 
-    if (!installContainer) {
-        return;
-    }
-
-    installContainer.classList.remove("d-none");
-
+  installContainer.classList.remove("d-none");
 }
-
 
 // ========================================
 // HIDE INSTALL BUTTON
 // ========================================
 
 function hideInstallButton() {
+  if (!installContainer) {
+    return;
+  }
 
-    if (!installContainer) {
-        return;
-    }
-
-    installContainer.classList.add("d-none");
-
+  installContainer.classList.add("d-none");
 }
-
 
 // ========================================
 // CHECK IF APP IS ALREADY INSTALLED
 // ========================================
 
 function isAppInstalled() {
-
-    return (
-
-        window.matchMedia(
-            "(display-mode: standalone)"
-        ).matches ||
-
-        window.navigator.standalone === true
-
-    );
-
+  return (
+    window.matchMedia("(display-mode: standalone)").matches ||
+    window.navigator.standalone === true
+  );
 }
-
 
 // ========================================
 // CHECK IOS
 // ========================================
 
 function isIOS() {
-
-    return (
-
-        /iPhone|iPad|iPod/i.test(
-            navigator.userAgent
-        ) ||
-
-        (
-            navigator.platform === "MacIntel" &&
-            navigator.maxTouchPoints > 1
-        )
-
-    );
-
+  return (
+    /iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)
+  );
 }
-
 
 // ========================================
 // BEFORE INSTALL PROMPT
 // ANDROID / CHROME / EDGE / DESKTOP
 // ========================================
 
-window.addEventListener(
-    "beforeinstallprompt",
-    (event) => {
+window.addEventListener("beforeinstallprompt", (event) => {
+  console.log("PWA install is available.");
 
-        console.log(
-            "PWA install is available."
-        );
+  // Prevent browser's default prompt.
 
+  event.preventDefault();
 
-        // Prevent browser's default prompt.
+  // Save the event.
 
-        event.preventDefault();
+  deferredPrompt = event;
 
+  // Show our custom install card.
 
-        // Save the event.
-
-        deferredPrompt = event;
-
-
-        // Show our custom install card.
-
-        showInstallButton();
-
-    }
-);
-
+  showInstallButton();
+});
 
 // ========================================
 // INSTALL BUTTON
 // ========================================
 
 if (installButton) {
+  installButton.addEventListener("click", async () => {
+    // ====================================
+    // ANDROID / DESKTOP
+    // ====================================
 
-    installButton.addEventListener(
-        "click",
-        async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
 
+      const result = await deferredPrompt.userChoice;
 
-            // ====================================
-            // ANDROID / DESKTOP
-            // ====================================
+      console.log("Install result:", result.outcome);
 
-            if (deferredPrompt) {
+      // Prompt can only be used once.
 
-                deferredPrompt.prompt();
+      deferredPrompt = null;
 
+      // Hide our custom button.
 
-                const result =
-                    await deferredPrompt.userChoice;
+      hideInstallButton();
 
+      return;
+    }
 
-                console.log(
-                    "Install result:",
-                    result.outcome
-                );
+    // ====================================
+    // IOS
+    // ====================================
 
+    if (isIOS()) {
+      showIOSInstructions();
 
-                // Prompt can only be used once.
+      return;
+    }
 
-                deferredPrompt = null;
+    // ====================================
+    // OTHER BROWSER
+    // ====================================
 
-
-                // Hide our custom button.
-
-                hideInstallButton();
-
-
-                return;
-
-            }
-
-
-            // ====================================
-            // IOS
-            // ====================================
-
-            if (isIOS()) {
-
-                showIOSInstructions();
-
-                return;
-
-            }
-
-
-            // ====================================
-            // OTHER BROWSER
-            // ====================================
-
-            showBrowserInstructions();
-
-        }
-    );
-
+    showBrowserInstructions();
+  });
 }
-
 
 // ========================================
 // IOS INSTALL INSTRUCTIONS
 // ========================================
 
 function showIOSInstructions() {
+  if (typeof Swal === "undefined") {
+    alert(
+      "To install Devotional Tracker:\n\n" +
+        "1. Tap the Share button.\n" +
+        "2. Select Add to Home Screen.\n" +
+        "3. Tap Add.",
+    );
 
-    if (
-        typeof Swal === "undefined"
-    ) {
+    return;
+  }
 
-        alert(
+  Swal.fire({
+    icon: "info",
 
-            "To install Devotional Tracker:\n\n" +
+    title: "Install Devotional Tracker 📱",
 
-            "1. Tap the Share button.\n" +
-
-            "2. Select Add to Home Screen.\n" +
-
-            "3. Tap Add."
-
-        );
-
-        return;
-
-    }
-
-
-    Swal.fire({
-
-        icon: "info",
-
-        title: "Install Devotional Tracker 📱",
-
-        html: `
+    html: `
 
             <div style="text-align:left">
 
@@ -257,45 +181,32 @@ function showIOSInstructions() {
 
         `,
 
-        confirmButtonColor: "#6f4e37",
+    confirmButtonColor: "#6f4e37",
 
-        confirmButtonText: "Got it"
-
-    });
-
+    confirmButtonText: "Got it",
+  });
 }
-
 
 // ========================================
 // OTHER BROWSER
 // ========================================
 
 function showBrowserInstructions() {
+  if (typeof Swal === "undefined") {
+    alert(
+      "Open your browser menu and choose " +
+        "Install App or Add to Home Screen.",
+    );
 
-    if (
-        typeof Swal === "undefined"
-    ) {
+    return;
+  }
 
-        alert(
+  Swal.fire({
+    icon: "info",
 
-            "Open your browser menu and choose " +
+    title: "Install Devotional Tracker",
 
-            "Install App or Add to Home Screen."
-
-        );
-
-        return;
-
-    }
-
-
-    Swal.fire({
-
-        icon: "info",
-
-        title: "Install Devotional Tracker",
-
-        html: `
+    html: `
 
             <p>
                 Open your browser menu and select
@@ -310,52 +221,33 @@ function showBrowserInstructions() {
 
         `,
 
-        confirmButtonColor: "#6f4e37",
+    confirmButtonColor: "#6f4e37",
 
-        confirmButtonText: "Got it"
-
-    });
-
+    confirmButtonText: "Got it",
+  });
 }
-
 
 // ========================================
 // APP INSTALLED
 // ========================================
 
-window.addEventListener(
-    "appinstalled",
-    () => {
+window.addEventListener("appinstalled", () => {
+  console.log("Devotional Tracker installed.");
 
-        console.log(
-            "Devotional Tracker installed."
-        );
+  deferredPrompt = null;
 
-
-        deferredPrompt = null;
-
-
-        hideInstallButton();
-
-    }
-);
-
+  hideInstallButton();
+});
 
 // ========================================
 // ALREADY INSTALLED
 // ========================================
 
 if (isAppInstalled()) {
+  console.log("Devotional Tracker is already installed.");
 
-    console.log(
-        "Devotional Tracker is already installed."
-    );
-
-
-    hideInstallButton();
-
+  hideInstallButton();
 }
-
 
 // ========================================
 // IOS
@@ -366,11 +258,6 @@ if (isAppInstalled()) {
 // Therefore we manually show the
 // install card when appropriate.
 
-if (
-    isIOS() &&
-    !isAppInstalled()
-) {
-
-    showInstallButton();
-
+if (isIOS() && !isAppInstalled()) {
+  showInstallButton();
 }

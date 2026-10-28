@@ -1,13 +1,16 @@
 import { auth, db } from "./firebase.js";
 
 import {
-    signInWithEmailAndPassword,
-    onAuthStateChanged
+  signInWithEmailAndPassword,
+  sendPasswordResetEmail,
+  onAuthStateChanged,
+  setPersistence,
+  browserLocalPersistence,
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
 import {
-    doc,
-    getDoc
+  doc,
+  getDoc,
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 // ========================================
@@ -20,127 +23,224 @@ const ADMIN_EMAIL = "admin@pas.com";
 // ELEMENTS
 // ========================================
 
-const loginForm =
-    document.getElementById("loginForm");
+const loginForm = document.getElementById("loginForm");
 
-const emailInput =
-    document.getElementById("email");
+const emailInput = document.getElementById("email");
 
-const passwordInput =
-    document.getElementById("password");
+const passwordInput = document.getElementById("password");
 
-const loginButton =
-    document.getElementById("loginButton");
+const loginButton = document.getElementById("loginButton");
 
-const togglePassword =
-    document.getElementById("togglePassword");
+const togglePassword = document.getElementById("togglePassword");
 
-const passwordIcon =
-    document.getElementById("passwordIcon");
-
+const passwordIcon = document.getElementById("passwordIcon");
 
 // ========================================
-// CHECK EXISTING LOGIN SESSION
+// FORGOT PASSWORD ELEMENT
 // ========================================
 
-onAuthStateChanged(auth, async (user) => {
+const forgotPasswordLink = document.getElementById("forgotPasswordLink");
 
-    if (!user) {
+// ========================================
+// KEEP USERS SIGNED IN
+// ========================================
+
+async function restoreAuthenticatedSession() {
+  try {
+    await setPersistence(auth, browserLocalPersistence);
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
         return;
-    }
+      }
 
-    console.log(
-        "Existing Firebase session:",
-        user.email
-    );
+      if (user.email && user.email.toLowerCase() === ADMIN_EMAIL) {
+        localStorage.setItem("isAdmin", "true");
 
-    // ========================================
-    // ADMIN
-    // ========================================
-
-    if (
-        user.email &&
-        user.email.toLowerCase() === ADMIN_EMAIL
-    ) {
-
-        localStorage.setItem(
-            "isAdmin",
-            "true"
-        );
-
-        window.location.href =
-            "./admin-dashboard.html";
+        window.location.href = "./admin-dashboard.html";
 
         return;
-    }
+      }
 
-    // ========================================
-    // NORMAL USER
-    // ========================================
+      localStorage.removeItem("isAdmin");
 
-    localStorage.removeItem("isAdmin");
-
-    try {
-
-        const userDocRef =
-            doc(
-                db,
-                "users",
-                user.uid
-            );
-
-        const userDoc =
-            await getDoc(userDocRef);
+      try {
+        const userDocRef = doc(db, "users", user.uid);
+        const userDoc = await getDoc(userDocRef);
 
         if (!userDoc.exists()) {
+          console.warn("Existing account has no user profile.");
 
-            console.warn(
-                "Existing account has no user profile."
-            );
-
-            return;
+          return;
         }
 
-        window.location.href =
-            "./user-dashboard.html";
+        window.location.href = "./user-dashboard.html";
+      } catch (error) {
+        console.error("Existing session check error:", error);
+      }
+    });
+  } catch (error) {
+    console.error("Unable to restore authentication session:", error);
+  }
+}
 
-    } catch (error) {
-
-        console.error(
-            "Existing session check error:",
-            error
-        );
-
-    }
-
-});
+restoreAuthenticatedSession();
 
 // ========================================
 // SHOW / HIDE PASSWORD
 // ========================================
 
 if (togglePassword) {
+  togglePassword.addEventListener("click", () => {
+    if (passwordInput.type === "password") {
+      passwordInput.type = "text";
 
-    togglePassword.addEventListener("click", () => {
+      passwordIcon.classList.remove("bi-eye");
+      passwordIcon.classList.add("bi-eye-slash");
+    } else {
+      passwordInput.type = "password";
 
-        if (passwordInput.type === "password") {
+      passwordIcon.classList.remove("bi-eye-slash");
+      passwordIcon.classList.add("bi-eye");
+    }
+  });
+}
 
-            passwordInput.type = "text";
+// ========================================
+// FORGOT PASSWORD
+// ========================================
 
-            passwordIcon.classList.remove("bi-eye");
-            passwordIcon.classList.add("bi-eye-slash");
+if (forgotPasswordLink) {
+  forgotPasswordLink.addEventListener("click", async (e) => {
+    e.preventDefault();
 
-        } else {
+    const currentEmail = emailInput.value.trim().toLowerCase();
 
-            passwordInput.type = "password";
+    // ========================================
+    // CHECK EMAIL FIELD
+    // ========================================
 
-            passwordIcon.classList.remove("bi-eye-slash");
-            passwordIcon.classList.add("bi-eye");
+    if (!currentEmail) {
+      const result = await Swal.fire({
+        icon: "info",
+        title: "Forgot your password?",
+        text: "Enter your email address first so we can send you a password reset link.",
+        input: "email",
+        inputPlaceholder: "Enter your email",
+        inputValue: "",
+        confirmButtonText: "Send Reset Link",
+        confirmButtonColor: "#6f4e37",
+        showCancelButton: true,
+        cancelButtonText: "Cancel",
+        inputValidator: (value) => {
+          if (!value) {
+            return "Please enter your email address.";
+          }
+        },
+      });
 
+      if (!result.isConfirmed) {
+        return;
+      }
+
+      const email = result.value.trim().toLowerCase();
+
+      try {
+        await sendPasswordResetEmail(auth, email);
+
+        await Swal.fire({
+          icon: "success",
+          title: "Reset Link Sent!",
+          text: "Please check your email for the password reset link.",
+          confirmButtonColor: "#6f4e37",
+        });
+      } catch (error) {
+        console.error("Password reset error:", error);
+
+        let message =
+          "Unable to send the password reset email. Please try again.";
+
+        if (error.code === "auth/user-not-found") {
+          message = "No account was found with this email address.";
+        } else if (error.code === "auth/invalid-email") {
+          message = "Please enter a valid email address.";
+        } else if (error.code === "auth/network-request-failed") {
+          message = "Network error. Please check your internet connection.";
+        } else if (error.code === "auth/too-many-requests") {
+          message =
+            "Too many requests. Please wait a while before trying again.";
         }
 
+        await Swal.fire({
+          icon: "error",
+          title: "Reset Failed",
+          text: message,
+          confirmButtonColor: "#6f4e37",
+        });
+      }
+
+      return;
+    }
+
+    // ========================================
+    // EMAIL ALREADY ENTERED
+    // ========================================
+
+    const result = await Swal.fire({
+      icon: "question",
+      title: "Reset Password?",
+      html: `
+        We'll send a password reset link to:
+        <br>
+        <strong>${currentEmail}</strong>
+      `,
+      showCancelButton: true,
+      confirmButtonText: "Send Reset Link",
+      cancelButtonText: "Cancel",
+      confirmButtonColor: "#6f4e37",
     });
 
+    if (!result.isConfirmed) {
+      return;
+    }
+
+    // ========================================
+    // SEND RESET EMAIL
+    // ========================================
+
+    try {
+      await sendPasswordResetEmail(auth, currentEmail);
+
+      await Swal.fire({
+        icon: "success",
+        title: "Reset Link Sent!",
+        text: "Please check your email and follow the instructions to reset your password.",
+        confirmButtonColor: "#6f4e37",
+      });
+    } catch (error) {
+      console.error("Password reset error:", error);
+
+      let message =
+        "Unable to send the password reset email. Please try again.";
+
+      if (error.code === "auth/user-not-found") {
+        message = "No account was found with this email address.";
+      } else if (error.code === "auth/invalid-email") {
+        message = "Please enter a valid email address.";
+      } else if (error.code === "auth/network-request-failed") {
+        message = "Network error. Please check your internet connection.";
+      } else if (error.code === "auth/too-many-requests") {
+        message = "Too many requests. Please wait a while before trying again.";
+      }
+
+      await Swal.fire({
+        icon: "error",
+        title: "Reset Failed",
+        text: message,
+        confirmButtonColor: "#6f4e37",
+      });
+    }
+  });
 }
 
 // ========================================
@@ -148,200 +248,137 @@ if (togglePassword) {
 // ========================================
 
 loginForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-    e.preventDefault();
+  const email = emailInput.value.trim().toLowerCase();
 
-    const email =
-        emailInput.value.trim().toLowerCase();
+  const password = passwordInput.value;
 
-    const password =
-        passwordInput.value;
+  if (!email || !password) {
+    Swal.fire({
+      icon: "warning",
+      title: "Incomplete Fields",
+      text: "Please enter your email and password.",
+      confirmButtonColor: "#6f4e37",
+    });
 
-    if (!email || !password) {
+    return;
+  }
 
-        Swal.fire({
-            icon: "warning",
-            title: "Incomplete Fields",
-            text: "Please enter your email and password.",
-            confirmButtonColor: "#6f4e37"
-        });
+  loginButton.disabled = true;
 
-        return;
-    }
-
-    loginButton.disabled = true;
-
-    loginButton.innerHTML = `
+  loginButton.innerHTML = `
         <span class="spinner-border spinner-border-sm me-2"></span>
         Signing in...
     `;
 
-    try {
+  try {
+    // ========================================
+    // FIREBASE LOGIN
+    // ========================================
 
-        // ========================================
-        // FIREBASE LOGIN
-        // ========================================
+    const userCredential = await signInWithEmailAndPassword(
+      auth,
+      email,
+      password,
+    );
 
-        const userCredential =
-            await signInWithEmailAndPassword(
-                auth,
-                email,
-                password
-            );
+    const user = userCredential.user;
 
-        const user =
-            userCredential.user;
+    console.log("Logged in UID:", user.uid);
+    console.log("Logged in Email:", user.email);
 
-        console.log("Logged in UID:", user.uid);
-        console.log("Logged in Email:", user.email);
+    // ========================================
+    // ADMIN LOGIN
+    // ========================================
 
-        // ========================================
-        // ADMIN LOGIN
-        // ========================================
+    if (user.email && user.email.toLowerCase() === ADMIN_EMAIL) {
+      localStorage.setItem("isAdmin", "true");
 
-        if (
-            user.email &&
-            user.email.toLowerCase() === ADMIN_EMAIL
-        ) {
+      await Swal.fire({
+        icon: "success",
+        title: "Welcome, Admin!",
+        text: "Login successful.",
+        timer: 1200,
+        showConfirmButton: false,
+      });
 
-            localStorage.setItem(
-                "isAdmin",
-                "true"
-            );
+      window.location.href = "./admin-dashboard.html";
 
-            await Swal.fire({
-                icon: "success",
-                title: "Welcome, Admin!",
-                text: "Login successful.",
-                timer: 1200,
-                showConfirmButton: false
-            });
+      return;
+    }
 
-            window.location.href =
-                "./admin-dashboard.html";
+    // ========================================
+    // NORMAL USER LOGIN
+    // ========================================
 
-            return;
-        }
+    localStorage.removeItem("isAdmin");
 
-        // ========================================
-        // NORMAL USER LOGIN
-        // ========================================
+    const userDocRef = doc(db, "users", user.uid);
 
-        localStorage.removeItem("isAdmin");
+    const userDoc = await getDoc(userDocRef);
 
-        const userDocRef =
-            doc(
-                db,
-                "users",
-                user.uid
-            );
+    console.log("USER PROFILE EXISTS:", userDoc.exists());
+    console.log("USER PROFILE DATA:", userDoc.exists() ? userDoc.data() : null);
 
-        const userDoc =
-    await getDoc(userDocRef);
+    if (!userDoc.exists()) {
+      await Swal.fire({
+        icon: "warning",
+        title: "Profile Not Found",
+        text: "Your account exists, but your user profile could not be found.",
+        confirmButtonColor: "#6f4e37",
+      });
 
-console.log("USER PROFILE EXISTS:", userDoc.exists());
-console.log("USER PROFILE DATA:", userDoc.exists() ? userDoc.data() : null);
+      await auth.signOut();
 
-        if (!userDoc.exists()) {
+      return;
+    }
 
-            await Swal.fire({
-                icon: "warning",
-                title: "Profile Not Found",
-                text: "Your account exists, but your user profile could not be found.",
-                confirmButtonColor: "#6f4e37"
-            });
+    // ========================================
+    // USER SUCCESS
+    // ========================================
 
-            await auth.signOut();
+    await Swal.fire({
+      icon: "success",
+      title: "Login Successful!",
+      text: "Welcome back.",
+      timer: 1200,
+      showConfirmButton: false,
+    });
 
-            return;
-        }
+    window.location.href = "./user-dashboard.html";
+  } catch (error) {
+    console.error("ERROR CODE:", error.code);
+    console.error("ERROR MESSAGE:", error.message);
 
-        // ========================================
-        // USER SUCCESS
-        // ========================================
+    console.error("Login error:", error);
 
-        await Swal.fire({
-            icon: "success",
-            title: "Login Successful!",
-            text: "Welcome back.",
-            timer: 1200,
-            showConfirmButton: false
-        });
+    let message = "Unable to login. Please check your email and password.";
 
-        window.location.href =
-            "./user-dashboard.html";
+    if (error.code === "auth/invalid-credential") {
+      message = "Incorrect email or password.";
+    } else if (error.code === "auth/user-not-found") {
+      message = "No account was found with this email.";
+    } else if (error.code === "auth/wrong-password") {
+      message = "Incorrect password.";
+    } else if (error.code === "auth/too-many-requests") {
+      message = "Too many failed login attempts. Please try again later.";
+    } else if (error.code === "auth/network-request-failed") {
+      message = "Network error. Please check your internet connection.";
+    }
 
-    } catch (error) {
+    Swal.fire({
+      icon: "error",
+      title: "Login Failed",
+      text: message,
+      confirmButtonColor: "#6f4e37",
+    });
+  } finally {
+    loginButton.disabled = false;
 
-        console.error("ERROR CODE:", error.code);
-console.error("ERROR MESSAGE:", error.message);
-
-        console.error(
-            "Login error:",
-            error
-        );
-
-        let message =
-            "Unable to login. Please check your email and password.";
-
-        if (
-            error.code ===
-            "auth/invalid-credential"
-        ) {
-
-            message =
-                "Incorrect email or password.";
-
-        } else if (
-            error.code ===
-            "auth/user-not-found"
-        ) {
-
-            message =
-                "No account was found with this email.";
-
-        } else if (
-            error.code ===
-            "auth/wrong-password"
-        ) {
-
-            message =
-                "Incorrect password.";
-
-        } else if (
-            error.code ===
-            "auth/too-many-requests"
-        ) {
-
-            message =
-                "Too many failed login attempts. Please try again later.";
-
-        } else if (
-            error.code ===
-            "auth/network-request-failed"
-        ) {
-
-            message =
-                "Network error. Please check your internet connection.";
-
-        }
-
-        Swal.fire({
-            icon: "error",
-            title: "Login Failed",
-            text: message,
-            confirmButtonColor: "#6f4e37"
-        });
-
-    } finally {
-
-        loginButton.disabled = false;
-
-        loginButton.innerHTML = `
+    loginButton.innerHTML = `
             <i class="bi bi-box-arrow-in-right me-2"></i>
             Login
         `;
-
-    }
-
+  }
 });

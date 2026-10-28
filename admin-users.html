@@ -72,6 +72,7 @@
         src="https://cdn.jsdelivr.net/npm/sweetalert2@11"
     ></script>
 
+<link rel="stylesheet" href="./css/theme.css" />
 </head>
 
 
@@ -968,6 +969,37 @@
 </main>
 
 
+
+<div
+    class="modal fade"
+    id="missedDaysModal"
+    tabindex="-1"
+    aria-labelledby="missedDaysModalTitle"
+    aria-hidden="true"
+>
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <h5 class="modal-title" id="missedDaysModalTitle">
+                        Missed Devotion Days
+                    </h5>
+                    <div id="missedDaysUserName" class="text-muted small"></div>
+                </div>
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                ></button>
+            </div>
+            <div class="modal-body">
+                <p id="missedDaysCount" class="fw-semibold mb-3"></p>
+                <ul id="missedDaysList" class="list-group missed-days-list"></ul>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- ================================================= -->
 <!-- BOOTSTRAP JS -->

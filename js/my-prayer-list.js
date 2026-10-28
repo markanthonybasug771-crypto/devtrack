@@ -1,123 +1,96 @@
 import { auth, db } from "./firebase.js";
 
 import {
-    onAuthStateChanged,
-    signOut
+  onAuthStateChanged,
+  signOut,
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
 import {
-    collection,
-    query,
-    where,
-    onSnapshot,
-    updateDoc,
-    doc,
-    serverTimestamp
+  collection,
+  query,
+  where,
+  onSnapshot,
+  updateDoc,
+  doc,
+  serverTimestamp,
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-
 
 // ========================================
 // ELEMENTS
 // ========================================
 
-const activePrayersList =
-    document.getElementById("activePrayersList");
+const activePrayersList = document.getElementById("activePrayersList");
 
-const answeredPrayersList =
-    document.getElementById("answeredPrayersList");
+const answeredPrayersList = document.getElementById("answeredPrayersList");
 
-const activeLoading =
-    document.getElementById("activeLoading");
+const activeLoading = document.getElementById("activeLoading");
 
-const answeredLoading =
-    document.getElementById("answeredLoading");
+const answeredLoading = document.getElementById("answeredLoading");
 
-const activePrayerCount =
-    document.getElementById("activePrayerCount");
+const activePrayerCount = document.getElementById("activePrayerCount");
 
-const answeredPrayerCount =
-    document.getElementById("answeredPrayerCount");
-
+const answeredPrayerCount = document.getElementById("answeredPrayerCount");
 
 // ========================================
 // LOGOUT BUTTONS
 // ========================================
 
-const logoutButton =
-    document.getElementById("logoutButton");
+const logoutButton = document.getElementById("logoutButton");
 
-const mobileLogoutButton =
-    document.getElementById("mobileLogoutButton");
-
+const mobileLogoutButton = document.getElementById("mobileLogoutButton");
 
 // ========================================
 // ESCAPE HTML
 // ========================================
 
 function escapeHtml(text) {
+  if (text === null || text === undefined) {
+    return "";
+  }
 
-    if (
-        text === null ||
-        text === undefined
-    ) {
-        return "";
-    }
+  const div = document.createElement("div");
 
-    const div =
-        document.createElement("div");
+  div.textContent = String(text);
 
-    div.textContent = String(text);
-
-    return div.innerHTML;
+  return div.innerHTML;
 }
-
 
 // ========================================
 // LOADING
 // ========================================
 
 function showLoading() {
+  if (activeLoading) {
+    activeLoading.classList.remove("d-none");
+  }
 
-    if (activeLoading) {
-        activeLoading.classList.remove("d-none");
-    }
-
-    if (answeredLoading) {
-        answeredLoading.classList.remove("d-none");
-    }
-
+  if (answeredLoading) {
+    answeredLoading.classList.remove("d-none");
+  }
 }
-
 
 function hideActiveLoading() {
-
-    if (activeLoading) {
-        activeLoading.classList.add("d-none");
-    }
-
+  if (activeLoading) {
+    activeLoading.classList.add("d-none");
+  }
 }
-
 
 function hideAnsweredLoading() {
-
-    if (answeredLoading) {
-        answeredLoading.classList.add("d-none");
-    }
-
+  if (answeredLoading) {
+    answeredLoading.classList.add("d-none");
+  }
 }
-
 
 // ========================================
 // EMPTY ACTIVE
 // ========================================
 
 function renderEmptyActive() {
+  if (!activePrayersList) {
+    return;
+  }
 
-    if (!activePrayersList) {
-        return;
-    }
-
-    activePrayersList.innerHTML = `
+  activePrayersList.innerHTML = `
 
         <div class="empty-prayer">
 
@@ -139,21 +112,18 @@ function renderEmptyActive() {
         </div>
 
     `;
-
 }
-
 
 // ========================================
 // EMPTY ANSWERED
 // ========================================
 
 function renderEmptyAnswered() {
+  if (!answeredPrayersList) {
+    return;
+  }
 
-    if (!answeredPrayersList) {
-        return;
-    }
-
-    answeredPrayersList.innerHTML = `
+  answeredPrayersList.innerHTML = `
 
         <div class="empty-prayer">
 
@@ -175,122 +145,79 @@ function renderEmptyAnswered() {
         </div>
 
     `;
-
 }
-
 
 // ========================================
 // FORMAT DATE
 // ========================================
 
 function formatDate(dateValue) {
+  if (!dateValue) {
+    return "Unknown date";
+  }
 
-    if (!dateValue) {
-        return "Unknown date";
-    }
+  try {
+    const date = new Date(dateValue + "T00:00:00");
 
-    try {
-
-        const date =
-            new Date(dateValue + "T00:00:00");
-
-        return date.toLocaleDateString(
-            "en-US",
-            {
-                month: "long",
-                day: "numeric",
-                year: "numeric"
-            }
-        );
-
-    } catch (error) {
-
-        return dateValue;
-
-    }
-
+    return date.toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    });
+  } catch (error) {
+    return dateValue;
+  }
 }
-
 
 // ========================================
 // GET CREATED TIME
 // ========================================
 
 function getCreatedTime(prayer) {
+  if (prayer.createdAt && typeof prayer.createdAt.seconds === "number") {
+    return prayer.createdAt.seconds;
+  }
 
-    if (
-        prayer.createdAt &&
-        typeof prayer.createdAt.seconds === "number"
-    ) {
-        return prayer.createdAt.seconds;
-    }
-
-    return 0;
-
+  return 0;
 }
-
 
 // ========================================
 // SORT
 // ========================================
 
 function sortPrayers(prayers) {
-
-    return prayers.sort(
-        (a, b) => {
-
-            return (
-                getCreatedTime(b) -
-                getCreatedTime(a)
-            );
-
-        }
-    );
-
+  return prayers.sort((a, b) => {
+    return getCreatedTime(b) - getCreatedTime(a);
+  });
 }
-
 
 // ========================================
 // GET PRAYER TEXT
 // ========================================
 
 function getPrayerText(prayer) {
+  // ====================================
+  // DEVOTIONAL PRAYER
+  // ====================================
 
-    // ====================================
-    // DEVOTIONAL PRAYER
-    // ====================================
+  if (prayer.source === "devotion") {
+    return prayer.prayerText || "No prayer entered.";
+  }
 
-    if (prayer.source === "devotion") {
+  // ====================================
+  // PRAYER REQUEST
+  // ====================================
 
-        return (
-            prayer.prayerText ||
-            "No prayer entered."
-        );
-
-    }
-
-
-    // ====================================
-    // PRAYER REQUEST
-    // ====================================
-
-    return (
-        prayer.request ||
-        "No prayer request."
-    );
-
+  return prayer.request || "No prayer request.";
 }
-
 
 // ========================================
 // GET PRAYER SOURCE LABEL
 // ========================================
 
 function getPrayerSourceLabel(prayer) {
-
-    if (prayer.source === "devotion") {
-
-        return `
+  if (prayer.source === "devotion") {
+    return `
             <span class="badge rounded-pill"
                 style="
                     background:#6f4e37;
@@ -300,10 +227,9 @@ function getPrayerSourceLabel(prayer) {
                 Devotion
             </span>
         `;
+  }
 
-    }
-
-    return `
+  return `
         <span class="badge rounded-pill"
             style="
                 background:#eee7df;
@@ -313,58 +239,41 @@ function getPrayerSourceLabel(prayer) {
             Prayer Request
         </span>
     `;
-
 }
-
 
 // ========================================
 // RENDER ACTIVE PRAYERS
 // ========================================
 
 function renderActivePrayers(prayers) {
+  hideActiveLoading();
 
-    hideActiveLoading();
+  if (!activePrayersList) {
+    return;
+  }
 
-    if (!activePrayersList) {
-        return;
-    }
-
-
-    if (!prayers.length) {
-
-        if (activePrayerCount) {
-            activePrayerCount.textContent = "0";
-        }
-
-        renderEmptyActive();
-
-        return;
-
-    }
-
-
+  if (!prayers.length) {
     if (activePrayerCount) {
-
-        activePrayerCount.textContent =
-            prayers.length;
-
+      activePrayerCount.textContent = "0";
     }
 
+    renderEmptyActive();
 
-    activePrayersList.innerHTML = "";
+    return;
+  }
 
+  if (activePrayerCount) {
+    activePrayerCount.textContent = prayers.length;
+  }
 
-    prayers.forEach(
-        (prayer) => {
+  activePrayersList.innerHTML = "";
 
-            const item =
-                document.createElement("div");
+  prayers.forEach((prayer) => {
+    const item = document.createElement("div");
 
-            item.className =
-                "prayer-item";
+    item.className = "prayer-item";
 
-
-            item.innerHTML = `
+    item.innerHTML = `
 
                 <div class="prayer-item-content">
 
@@ -379,20 +288,14 @@ function renderActivePrayers(prayers) {
 
                         <div class="mb-1">
 
-                            ${getPrayerSourceLabel(
-                                prayer
-                            )}
+                            ${getPrayerSourceLabel(prayer)}
 
                         </div>
 
 
                         <p class="prayer-text">
 
-                            ${escapeHtml(
-                                getPrayerText(
-                                    prayer
-                                )
-                            )}
+                            ${escapeHtml(getPrayerText(prayer))}
 
                         </p>
 
@@ -403,11 +306,7 @@ function renderActivePrayers(prayers) {
                                 class="bi bi-calendar3 me-1"
                             ></i>
 
-                            ${escapeHtml(
-                                formatDate(
-                                    prayer.date
-                                )
-                            )}
+                            ${escapeHtml(formatDate(prayer.date))}
 
                         </small>
 
@@ -442,137 +341,79 @@ function renderActivePrayers(prayers) {
 
             `;
 
+    activePrayersList.appendChild(item);
+  });
 
-            activePrayersList.appendChild(item);
+  // ====================================
+  // CHECKBOX EVENTS
+  // ====================================
 
+  activePrayersList
+    .querySelectorAll(".answer-prayer-checkbox")
+    .forEach((checkbox) => {
+      checkbox.addEventListener("change", async () => {
+        if (!checkbox.checked) {
+          return;
         }
-    );
 
+        const prayerId = checkbox.dataset.id;
 
-    // ====================================
-    // CHECKBOX EVENTS
-    // ====================================
+        const source = checkbox.dataset.source;
 
-    activePrayersList
-        .querySelectorAll(
-            ".answer-prayer-checkbox"
-        )
-        .forEach(
-            (checkbox) => {
-
-                checkbox.addEventListener(
-                    "change",
-                    async () => {
-
-                        if (!checkbox.checked) {
-                            return;
-                        }
-
-
-                        const prayerId =
-                            checkbox.dataset.id;
-
-                        const source =
-                            checkbox.dataset.source;
-
-
-                        await markPrayerAnswered(
-                            prayerId,
-                            source,
-                            checkbox
-                        );
-
-                    }
-                );
-
-            }
-        );
-
+        await markPrayerAnswered(prayerId, source, checkbox);
+      });
+    });
 }
-
 
 // ========================================
 // RENDER ANSWERED
 // ========================================
 
 function renderAnsweredPrayers(prayers) {
+  hideAnsweredLoading();
 
-    hideAnsweredLoading();
+  if (!answeredPrayersList) {
+    return;
+  }
 
-    if (!answeredPrayersList) {
-        return;
-    }
-
-
-    if (!prayers.length) {
-
-        if (answeredPrayerCount) {
-
-            answeredPrayerCount.textContent =
-                "0";
-
-        }
-
-        renderEmptyAnswered();
-
-        return;
-
-    }
-
-
+  if (!prayers.length) {
     if (answeredPrayerCount) {
-
-        answeredPrayerCount.textContent =
-            prayers.length;
-
+      answeredPrayerCount.textContent = "0";
     }
 
+    renderEmptyAnswered();
 
-    answeredPrayersList.innerHTML = "";
+    return;
+  }
 
+  if (answeredPrayerCount) {
+    answeredPrayerCount.textContent = prayers.length;
+  }
 
-    prayers.forEach(
-        (prayer) => {
+  answeredPrayersList.innerHTML = "";
 
-            const item =
-                document.createElement("div");
+  prayers.forEach((prayer) => {
+    const item = document.createElement("div");
 
-            item.className =
-                "prayer-item answered-prayer-item";
+    item.className = "prayer-item answered-prayer-item";
 
+    let answeredDate = "Answered prayer";
 
-            let answeredDate =
-                "Answered prayer";
+    if (prayer.answeredAt) {
+      try {
+        const date = prayer.answeredAt.toDate();
 
+        answeredDate = `Answered ${date.toLocaleDateString("en-US", {
+          month: "long",
+          day: "numeric",
+          year: "numeric",
+        })}`;
+      } catch (error) {
+        answeredDate = "Answered prayer";
+      }
+    }
 
-            if (prayer.answeredAt) {
-
-                try {
-
-                    const date =
-                        prayer.answeredAt.toDate();
-
-                    answeredDate =
-                        `Answered ${date.toLocaleDateString(
-                            "en-US",
-                            {
-                                month: "long",
-                                day: "numeric",
-                                year: "numeric"
-                            }
-                        )}`;
-
-                } catch (error) {
-
-                    answeredDate =
-                        "Answered prayer";
-
-                }
-
-            }
-
-
-            item.innerHTML = `
+    item.innerHTML = `
 
                 <div class="prayer-item-content">
 
@@ -587,9 +428,7 @@ function renderAnsweredPrayers(prayers) {
 
                         <div class="mb-1">
 
-                            ${getPrayerSourceLabel(
-                                prayer
-                            )}
+                            ${getPrayerSourceLabel(prayer)}
 
                         </div>
 
@@ -598,11 +437,7 @@ function renderAnsweredPrayers(prayers) {
                             class="prayer-text answered-text"
                         >
 
-                            ${escapeHtml(
-                                getPrayerText(
-                                    prayer
-                                )
-                            )}
+                            ${escapeHtml(getPrayerText(prayer))}
 
                         </p>
 
@@ -613,9 +448,7 @@ function renderAnsweredPrayers(prayers) {
                                 class="bi bi-check-circle me-1"
                             ></i>
 
-                            ${escapeHtml(
-                                answeredDate
-                            )}
+                            ${escapeHtml(answeredDate)}
 
                         </small>
 
@@ -634,566 +467,328 @@ function renderAnsweredPrayers(prayers) {
 
             `;
 
-
-            answeredPrayersList.appendChild(item);
-
-        }
-    );
-
+    answeredPrayersList.appendChild(item);
+  });
 }
-
 
 // ========================================
 // MARK PRAYER AS ANSWERED
 // ========================================
 
-async function markPrayerAnswered(
-    prayerId,
-    source,
-    checkbox
-) {
+async function markPrayerAnswered(prayerId, source, checkbox) {
+  try {
+    checkbox.disabled = true;
 
-    try {
+    // ====================================
+    // DETERMINE COLLECTION
+    // ====================================
 
-        checkbox.disabled = true;
+    const collectionName = source === "devotion" ? "prayers" : "prayerRequests";
 
+    console.log("Marking prayer as answered:", {
+      prayerId,
+      source,
+      collectionName,
+    });
 
-        // ====================================
-        // DETERMINE COLLECTION
-        // ====================================
+    // ====================================
+    // UPDATE FIRESTORE
+    // ====================================
 
-        const collectionName =
-            source === "devotion"
-                ? "prayers"
-                : "prayerRequests";
+    await updateDoc(doc(db, collectionName, prayerId), {
+      answered: true,
 
+      answeredAt: serverTimestamp(),
+    });
 
-        console.log(
-            "Marking prayer as answered:",
-            {
-                prayerId,
-                source,
-                collectionName
-            }
-        );
+    // ====================================
+    // SUCCESS
+    // ====================================
 
+    if (typeof Swal !== "undefined") {
+      Swal.fire({
+        icon: "success",
 
-        // ====================================
-        // UPDATE FIRESTORE
-        // ====================================
+        title: "Prayer Answered! 🙏",
 
-        await updateDoc(
-            doc(
-                db,
-                collectionName,
-                prayerId
-            ),
-            {
-                answered: true,
+        text: "This prayer has been moved to your Answered Prayers.",
 
-                answeredAt:
-                    serverTimestamp()
-            }
-        );
+        confirmButtonColor: "#6f4e37",
 
+        timer: 1800,
 
-        // ====================================
-        // SUCCESS
-        // ====================================
-
-        if (
-            typeof Swal !== "undefined"
-        ) {
-
-            Swal.fire({
-
-                icon: "success",
-
-                title:
-                    "Prayer Answered! 🙏",
-
-                text:
-                    "This prayer has been moved to your Answered Prayers.",
-
-                confirmButtonColor:
-                    "#6f4e37",
-
-                timer: 1800,
-
-                showConfirmButton: false
-
-            });
-
-        }
-
-
-    } catch (error) {
-
-        console.error(
-            "Mark prayer answered error:",
-            error
-        );
-
-
-        checkbox.checked = false;
-
-        checkbox.disabled = false;
-
-
-        if (
-            typeof Swal !== "undefined"
-        ) {
-
-            Swal.fire({
-
-                icon: "error",
-
-                title:
-                    "Something Went Wrong",
-
-                text:
-                    "We couldn't update this prayer.",
-
-                confirmButtonColor:
-                    "#6f4e37"
-
-            });
-
-        }
-
+        showConfirmButton: false,
+      });
     }
+  } catch (error) {
+    console.error("Mark prayer answered error:", error);
 
+    checkbox.checked = false;
+
+    checkbox.disabled = false;
+
+    if (typeof Swal !== "undefined") {
+      Swal.fire({
+        icon: "error",
+
+        title: "Something Went Wrong",
+
+        text: "We couldn't update this prayer.",
+
+        confirmButtonColor: "#6f4e37",
+      });
+    }
+  }
 }
-
 
 // ========================================
 // LOAD MY PRAYER LIST
 // ========================================
 
 function loadMyPrayerList(userId) {
+  showLoading();
 
-    showLoading();
+  if (!userId) {
+    console.error("No user ID available.");
 
+    return;
+  }
 
-    if (!userId) {
+  // ====================================
+  // PRAYER REQUESTS LISTENER
+  // ====================================
 
-        console.error(
-            "No user ID available."
-        );
+  const prayerRequestQuery = query(
+    collection(db, "prayerRequests"),
 
-        return;
+    where("userId", "==", userId),
+  );
 
+  // ====================================
+  // DEVOTIONAL PRAYERS LISTENER
+  // ====================================
+
+  const devotionalPrayerQuery = query(
+    collection(db, "prayers"),
+
+    where("userId", "==", userId),
+  );
+
+  let prayerRequests = [];
+
+  let devotionalPrayers = [];
+
+  let requestLoaded = false;
+
+  let devotionalLoaded = false;
+
+  // ====================================
+  // COMBINE AND RENDER
+  // ====================================
+
+  function renderCombinedPrayers() {
+    if (!requestLoaded || !devotionalLoaded) {
+      return;
     }
 
+    const allPrayers = [...prayerRequests, ...devotionalPrayers];
 
-    // ====================================
-    // PRAYER REQUESTS LISTENER
-    // ====================================
+    const activePrayers = [];
 
-    const prayerRequestQuery =
-        query(
+    const answeredPrayers = [];
 
-            collection(
-                db,
-                "prayerRequests"
-            ),
+    allPrayers.forEach((prayer) => {
+      if (prayer.answered === true) {
+        answeredPrayers.push(prayer);
+      } else {
+        activePrayers.push(prayer);
+      }
+    });
 
-            where(
-                "userId",
-                "==",
-                userId
-            )
+    sortPrayers(activePrayers);
 
-        );
+    sortPrayers(answeredPrayers);
 
+    renderActivePrayers(activePrayers);
 
-    // ====================================
-    // DEVOTIONAL PRAYERS LISTENER
-    // ====================================
+    renderAnsweredPrayers(answeredPrayers);
+  }
 
-    const devotionalPrayerQuery =
-        query(
+  // ====================================
+  // LISTEN PRAYER REQUESTS
+  // ====================================
 
-            collection(
-                db,
-                "prayers"
-            ),
+  onSnapshot(
+    prayerRequestQuery,
 
-            where(
-                "userId",
-                "==",
-                userId
-            )
+    (snapshot) => {
+      prayerRequests = [];
 
-        );
+      snapshot.forEach((docSnapshot) => {
+        prayerRequests.push({
+          id: docSnapshot.id,
 
+          source: "request",
 
-    let prayerRequests = [];
+          ...docSnapshot.data(),
+        });
+      });
 
-    let devotionalPrayers = [];
+      requestLoaded = true;
 
+      renderCombinedPrayers();
+    },
 
-    let requestLoaded = false;
+    (error) => {
+      console.error("Prayer requests listener error:", error);
 
-    let devotionalLoaded = false;
+      requestLoaded = true;
 
+      renderCombinedPrayers();
+    },
+  );
 
-    // ====================================
-    // COMBINE AND RENDER
-    // ====================================
+  // ====================================
+  // LISTEN DEVOTIONAL PRAYERS
+  // ====================================
 
-    function renderCombinedPrayers() {
+  onSnapshot(
+    devotionalPrayerQuery,
 
-        if (
-            !requestLoaded ||
-            !devotionalLoaded
-        ) {
-            return;
-        }
+    (snapshot) => {
+      devotionalPrayers = [];
 
+      snapshot.forEach((docSnapshot) => {
+        devotionalPrayers.push({
+          id: docSnapshot.id,
 
-        const allPrayers = [
+          source: "devotion",
 
-            ...prayerRequests,
+          ...docSnapshot.data(),
+        });
+      });
 
-            ...devotionalPrayers
+      devotionalLoaded = true;
 
-        ];
+      renderCombinedPrayers();
+    },
 
+    (error) => {
+      console.error("Devotional prayers listener error:", error);
 
-        const activePrayers = [];
+      devotionalLoaded = true;
 
-        const answeredPrayers = [];
-
-
-        allPrayers.forEach(
-            (prayer) => {
-
-                if (
-                    prayer.answered === true
-                ) {
-
-                    answeredPrayers.push(
-                        prayer
-                    );
-
-                } else {
-
-                    activePrayers.push(
-                        prayer
-                    );
-
-                }
-
-            }
-        );
-
-
-        sortPrayers(
-            activePrayers
-        );
-
-        sortPrayers(
-            answeredPrayers
-        );
-
-
-        renderActivePrayers(
-            activePrayers
-        );
-
-        renderAnsweredPrayers(
-            answeredPrayers
-        );
-
-    }
-
-
-    // ====================================
-    // LISTEN PRAYER REQUESTS
-    // ====================================
-
-    onSnapshot(
-
-        prayerRequestQuery,
-
-        (snapshot) => {
-
-            prayerRequests = [];
-
-
-            snapshot.forEach(
-                (docSnapshot) => {
-
-                    prayerRequests.push({
-
-                        id:
-                            docSnapshot.id,
-
-                        source:
-                            "request",
-
-                        ...docSnapshot.data()
-
-                    });
-
-                }
-            );
-
-
-            requestLoaded = true;
-
-            renderCombinedPrayers();
-
-        },
-
-        (error) => {
-
-            console.error(
-                "Prayer requests listener error:",
-                error
-            );
-
-            requestLoaded = true;
-
-            renderCombinedPrayers();
-
-        }
-
-    );
-
-
-    // ====================================
-    // LISTEN DEVOTIONAL PRAYERS
-    // ====================================
-
-    onSnapshot(
-
-        devotionalPrayerQuery,
-
-        (snapshot) => {
-
-            devotionalPrayers = [];
-
-
-            snapshot.forEach(
-                (docSnapshot) => {
-
-                    devotionalPrayers.push({
-
-                        id:
-                            docSnapshot.id,
-
-                        source:
-                            "devotion",
-
-                        ...docSnapshot.data()
-
-                    });
-
-                }
-            );
-
-
-            devotionalLoaded = true;
-
-            renderCombinedPrayers();
-
-        },
-
-        (error) => {
-
-            console.error(
-                "Devotional prayers listener error:",
-                error
-            );
-
-
-            devotionalLoaded = true;
-
-            renderCombinedPrayers();
-
-        }
-
-    );
-
+      renderCombinedPrayers();
+    },
+  );
 }
-
 
 // ========================================
 // AUTH STATE
 // ========================================
 
 onAuthStateChanged(
+  auth,
 
-    auth,
+  (user) => {
+    if (!user) {
+      window.location.href = "./index.html";
 
-    (user) => {
-
-        if (!user) {
-
-            window.location.href =
-                "./index.html";
-
-            return;
-
-        }
-
-
-        console.log(
-            "Logged-in user:",
-            user.uid
-        );
-
-
-        loadMyPrayerList(
-            user.uid
-        );
-
+      return;
     }
 
-);
+    console.log("Logged-in user:", user.uid);
 
+    loadMyPrayerList(user.uid);
+  },
+);
 
 // ========================================
 // LOGOUT FUNCTION
 // ========================================
 
 async function logout() {
+  if (typeof Swal === "undefined") {
+    await signOut(auth);
 
-    if (
-        typeof Swal === "undefined"
-    ) {
+    window.location.href = "./index.html";
 
-        await signOut(auth);
+    return;
+  }
 
-        window.location.href =
-            "./index.html";
+  const result = await Swal.fire({
+    icon: "question",
 
-        return;
+    title: "Logout?",
 
-    }
+    text: "Are you sure you want to logout?",
 
+    showCancelButton: true,
 
-    const result =
-        await Swal.fire({
+    confirmButtonColor: "#6f4e37",
 
-            icon: "question",
+    cancelButtonColor: "#6c757d",
 
-            title: "Logout?",
+    confirmButtonText: "Yes, Logout",
 
-            text:
-                "Are you sure you want to logout?",
+    cancelButtonText: "Cancel",
+  });
 
-            showCancelButton: true,
+  if (!result.isConfirmed) {
+    return;
+  }
 
-            confirmButtonColor:
-                "#6f4e37",
+  try {
+    await signOut(auth);
 
-            cancelButtonColor:
-                "#6c757d",
+    await Swal.fire({
+      icon: "success",
 
-            confirmButtonText:
-                "Yes, Logout",
+      title: "Logged Out",
 
-            cancelButtonText:
-                "Cancel"
+      text: "You have been successfully logged out.",
 
-        });
+      timer: 1200,
 
+      showConfirmButton: false,
+    });
 
-    if (!result.isConfirmed) {
-        return;
-    }
+    window.location.href = "./index.html";
+  } catch (error) {
+    console.error("Logout error:", error);
 
+    Swal.fire({
+      icon: "error",
 
-    try {
+      title: "Logout Failed",
 
-        await signOut(auth);
+      text: "We couldn't log you out. Please try again.",
 
-
-        await Swal.fire({
-
-            icon: "success",
-
-            title: "Logged Out",
-
-            text:
-                "You have been successfully logged out.",
-
-            timer: 1200,
-
-            showConfirmButton: false
-
-        });
-
-
-        window.location.href =
-            "./index.html";
-
-
-    } catch (error) {
-
-        console.error(
-            "Logout error:",
-            error
-        );
-
-
-        Swal.fire({
-
-            icon: "error",
-
-            title: "Logout Failed",
-
-            text:
-                "We couldn't log you out. Please try again.",
-
-            confirmButtonColor:
-                "#6f4e37"
-
-        });
-
-    }
-
+      confirmButtonColor: "#6f4e37",
+    });
+  }
 }
-
 
 // ========================================
 // DESKTOP LOGOUT
 // ========================================
 
 if (logoutButton) {
+  logoutButton.addEventListener("click", (e) => {
+    e.preventDefault();
 
-    logoutButton.addEventListener(
-        "click",
-        (e) => {
-
-            e.preventDefault();
-
-            logout();
-
-        }
-    );
-
+    logout();
+  });
 }
-
 
 // ========================================
 // MOBILE LOGOUT
 // ========================================
 
 if (mobileLogoutButton) {
+  mobileLogoutButton.addEventListener("click", (e) => {
+    e.preventDefault();
 
-    mobileLogoutButton.addEventListener(
-        "click",
-        (e) => {
-
-            e.preventDefault();
-
-            logout();
-
-        }
-    );
-
+    logout();
+  });
 }

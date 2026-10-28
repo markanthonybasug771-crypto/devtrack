@@ -2576,6 +2576,15 @@ body {
     line-height: 1.65;
 
     white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.auto-expand-textarea {
+    height: auto;
+    min-height: 160px;
+    overflow-y: hidden;
+    resize: vertical;
+    field-sizing: content;
 }
 
 

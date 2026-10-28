@@ -1,0 +1,707 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap");
+
+:root {
+    --theme-ink: #38281f;
+    --theme-coffee: #503527;
+    --theme-brown: #704b34;
+    --theme-copper: #9b704d;
+    --theme-paper: #fffdf9;
+    --theme-parchment: #f4eee5;
+    --theme-line: rgba(91, 61, 42, 0.14);
+    --theme-shadow: 0 10px 28px rgba(67, 45, 30, 0.075);
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    color: var(--theme-ink);
+    background-color: var(--theme-parchment);
+    background-image: repeating-linear-gradient(
+        135deg,
+        rgba(101, 67, 47, 0.018) 0,
+        rgba(101, 67, 47, 0.018) 1px,
+        transparent 1px,
+        transparent 8px
+    );
+    font-family: "DM Sans", sans-serif;
+}
+
+.login-page,
+.signup-page,
+.install-app-btn {
+    font-family: "DM Sans", sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.page-header h1,
+.page-header h2,
+.dashboard-header h1,
+.dashboard-header h2,
+.admin-page-header h1,
+.admin-page-header h2,
+.admin-playlist-header h2,
+.admin-prayer-header h2,
+.shared-header .brand-title {
+    color: var(--theme-ink);
+    font-family: "Playfair Display", Georgia, serif;
+    letter-spacing: 0;
+}
+
+p,
+small,
+label {
+    letter-spacing: 0;
+}
+
+a {
+    transition: color 180ms ease, opacity 180ms ease;
+}
+
+a:hover {
+    color: var(--theme-copper);
+}
+
+button,
+.btn,
+input,
+select,
+textarea {
+    font-family: "DM Sans", sans-serif;
+}
+
+button:not(:disabled),
+.btn:not(:disabled) {
+    transition: color 180ms ease, background-color 180ms ease,
+        border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+button:not(:disabled):hover,
+.btn:not(:disabled):hover {
+    transform: translateY(-2px);
+}
+
+button:not(:disabled):active,
+.btn:not(:disabled):active {
+    transform: translateY(0) scale(0.98);
+}
+
+.btn,
+button:not(.btn-close),
+.form-control,
+.form-select,
+.input-group-text {
+    border-radius: 9px;
+}
+
+.form-control,
+.form-select,
+textarea {
+    border-color: #d9c9b8;
+    color: var(--theme-ink);
+    background-color: rgba(255, 253, 249, 0.92);
+}
+
+.form-control:focus,
+.form-select:focus,
+textarea:focus {
+    border-color: var(--theme-copper);
+    box-shadow: 0 0 0 0.22rem rgba(155, 112, 77, 0.16);
+}
+
+.desktop-sidebar {
+    background: linear-gradient(165deg, #39271e 0%, #4b3022 60%, #38251d 100%);
+    box-shadow: 8px 0 30px rgba(48, 31, 21, 0.11);
+}
+
+.sidebar-logo,
+.sidebar-text-badge {
+    background-color: #8a5c3c;
+}
+
+.sidebar-link,
+.admin-nav-btn {
+    transition: color 220ms ease, background-color 220ms ease,
+        transform 220ms ease, box-shadow 220ms ease;
+}
+
+.sidebar-link:hover,
+.sidebar-link:focus-visible,
+.admin-nav-btn:hover {
+    color: #fff8ef;
+    background-color: rgba(212, 169, 127, 0.16);
+    transform: translateX(3px);
+}
+
+.sidebar-link.active,
+.admin-nav-btn.active {
+    color: #fffaf3;
+    background: linear-gradient(110deg, #8b5d3d, #70482f);
+    box-shadow: inset 3px 0 #d9b18b;
+}
+
+.mobile-topbar,
+.mobile-navbar {
+    color: #fff8ef;
+    background: linear-gradient(110deg, #39271e 0%, #503527 62%, #60412c 100%);
+    border-color: rgba(255, 248, 239, 0.12);
+    box-shadow: 0 6px 20px rgba(48, 31, 21, 0.18);
+}
+
+body.admin-dashboard-page .mobile-topbar {
+    color: #fff8ef;
+    background: linear-gradient(110deg, #39271e 0%, #503527 62%, #60412c 100%);
+}
+
+.mobile-topbar .mobile-brand,
+.mobile-navbar .mobile-brand {
+    color: #fff8ef;
+}
+
+.mobile-topbar .sidebar-toggle,
+.mobile-navbar .sidebar-toggle {
+    color: #fff8ef;
+    background-color: rgba(255, 248, 239, 0.1);
+}
+
+.mobile-topbar .sidebar-toggle:hover,
+.mobile-navbar .sidebar-toggle:hover {
+    color: #fff8ef;
+    background-color: rgba(255, 248, 239, 0.19);
+}
+
+.mobile-sidebar,
+.mobile-sidebar.offcanvas {
+    color: #fff8ef;
+    background: linear-gradient(165deg, #39271e 0%, #4b3022 60%, #38251d 100%);
+    border-color: rgba(255, 248, 239, 0.12);
+    box-shadow: 12px 0 34px rgba(35, 22, 16, 0.25);
+}
+
+body.admin-dashboard-page .mobile-sidebar {
+    color: #fff8ef;
+    background: linear-gradient(165deg, #39271e 0%, #4b3022 60%, #38251d 100%);
+}
+
+.mobile-sidebar .offcanvas-header {
+    border-bottom: 1px solid rgba(255, 248, 239, 0.12);
+}
+
+.mobile-sidebar .offcanvas-header h5,
+.mobile-sidebar .offcanvas-header h6,
+.mobile-sidebar .offcanvas-header small,
+.mobile-sidebar .sidebar-footer small {
+    color: #fff8ef;
+}
+
+.mobile-sidebar .offcanvas-header small,
+.mobile-sidebar .sidebar-footer small {
+    color: rgba(255, 248, 239, 0.62);
+}
+
+.mobile-sidebar .sidebar-label {
+    color: #d3b28f;
+}
+
+.mobile-sidebar .sidebar-link {
+    color: rgba(255, 248, 239, 0.76);
+}
+
+.mobile-sidebar .sidebar-link:hover,
+.mobile-sidebar .sidebar-link:focus-visible {
+    color: #fff8ef;
+    background-color: rgba(212, 169, 127, 0.16);
+}
+
+.mobile-sidebar .sidebar-link.active {
+    color: #fffaf3;
+    background: linear-gradient(110deg, #8b5d3d, #70482f);
+    box-shadow: inset 3px 0 #d9b18b;
+}
+
+.mobile-sidebar .btn-close {
+    filter: invert(1);
+    opacity: 0.78;
+}
+
+body.admin-dashboard-page .sidebar-toggle {
+    color: #fff8ef;
+    background-color: rgba(255, 248, 239, 0.1);
+}
+
+.main-content,
+.admin-main,
+.dashboard-content,
+.playlist-content {
+    background-color: transparent;
+}
+
+.admin-card,
+.admin-stat-card,
+.admin-section-card,
+.admin-prayer-stat-card,
+.admin-playlist-card,
+.dashboard-card,
+.prayer-section,
+.prayer-item,
+.prayer-request-item,
+.admin-user-item,
+.admin-devotion-item,
+.admin-prayer-item,
+.admin-ranking-item,
+.playlist-card,
+.song-card,
+.about-card,
+.about-panel,
+.profile-card,
+.devotion-card,
+.devotion-section,
+.login-card,
+.signup-card {
+    border-color: var(--theme-line);
+    border-radius: 12px;
+    background-color: var(--theme-paper);
+    box-shadow: var(--theme-shadow);
+}
+
+.admin-card,
+.admin-stat-card,
+.admin-section-card,
+.admin-prayer-stat-card,
+.admin-playlist-card,
+.dashboard-card,
+.prayer-section,
+.playlist-card,
+.song-card,
+.about-card,
+.about-panel,
+.profile-card,
+.devotion-card,
+.devotion-section,
+.login-card,
+.signup-card {
+    transition: transform 240ms ease, border-color 240ms ease,
+        box-shadow 240ms ease, background-color 240ms ease;
+}
+
+.admin-card:hover,
+.admin-stat-card:hover,
+.admin-section-card:hover,
+.admin-prayer-stat-card:hover,
+.admin-playlist-card:hover,
+.dashboard-card:hover,
+.prayer-section:hover,
+.playlist-card:hover,
+.song-card:hover,
+.about-card:hover,
+.about-panel:hover,
+.profile-card:hover,
+.devotion-card:hover,
+.devotion-section:hover,
+.login-card:hover,
+.signup-card:hover {
+    border-color: rgba(137, 91, 58, 0.3);
+    box-shadow: 0 16px 34px rgba(67, 45, 30, 0.12);
+    transform: translateY(-3px);
+}
+
+.admin-stat-icon,
+.card-icon,
+.admin-prayer-stat-icon,
+.admin-playlist-header-icon,
+.playlist-header-icon,
+.profile-avatar,
+.user-avatar {
+    transition: transform 220ms ease, background-color 220ms ease,
+        color 220ms ease;
+}
+
+.admin-stat-card:hover .admin-stat-icon,
+.dashboard-card:hover .card-icon,
+.song-card:hover .song-cover {
+    transform: translateY(-2px) scale(1.04);
+}
+
+.encouragement-card,
+.admin-encouragement {
+    border: 1px solid rgba(255, 246, 232, 0.16);
+    border-radius: 12px;
+    color: #fff9f0;
+    background: linear-gradient(115deg, #493025, #704a32 72%, #80583d);
+    box-shadow: 0 12px 28px rgba(62, 39, 27, 0.16);
+    transition: transform 240ms ease, box-shadow 240ms ease;
+}
+
+.encouragement-card:hover,
+.admin-encouragement:hover {
+    box-shadow: 0 17px 34px rgba(62, 39, 27, 0.22);
+    transform: translateY(-3px);
+}
+
+.encouragement-card h1,
+.encouragement-card h2,
+.encouragement-card h3,
+.encouragement-card h4,
+.encouragement-card h5,
+.admin-encouragement h1,
+.admin-encouragement h2,
+.admin-encouragement h3,
+.admin-encouragement h4,
+.admin-encouragement h5 {
+    color: #fff9f0;
+}
+
+.page-header,
+.dashboard-header,
+.admin-page-header,
+.admin-playlist-header,
+.admin-prayer-header,
+.admin-section-header,
+.section-header,
+.playlist-header {
+    animation: theme-enter 560ms cubic-bezier(0.2, 0.7, 0.25, 1) both;
+}
+
+.main-content > *,
+.admin-main > *,
+.dashboard-content > *,
+.playlist-content > *,
+.shared-page > *,
+.login-card,
+.signup-card {
+    animation: theme-enter 620ms cubic-bezier(0.2, 0.7, 0.25, 1) both;
+}
+
+.main-content > :nth-child(2),
+.admin-main > :nth-child(2),
+.dashboard-content > :nth-child(2),
+.playlist-content > :nth-child(2),
+.shared-page > :nth-child(2) {
+    animation-delay: 80ms;
+}
+
+.main-content > :nth-child(3),
+.admin-main > :nth-child(3),
+.dashboard-content > :nth-child(3),
+.playlist-content > :nth-child(3),
+.shared-page > :nth-child(3) {
+    animation-delay: 150ms;
+}
+
+.admin-devotion-row,
+.admin-user-item,
+.prayer-item,
+.song-card,
+.prayer-request-item,
+.profile-detail-item {
+    transition: transform 200ms ease, border-color 200ms ease,
+        background-color 200ms ease, box-shadow 200ms ease;
+}
+
+.admin-devotion-row:hover,
+.admin-user-item:hover,
+.prayer-item:hover,
+.song-card:hover,
+.prayer-request-item:hover,
+.profile-detail-item:hover {
+    border-color: rgba(137, 91, 58, 0.28);
+    box-shadow: 0 8px 20px rgba(67, 45, 30, 0.09);
+    transform: translateY(-2px);
+}
+
+.admin-table th,
+table thead th {
+    color: var(--theme-brown);
+    background-color: #f5eee4;
+}
+
+.admin-table td,
+table tbody td {
+    border-color: var(--theme-line);
+}
+
+.modal-content {
+    overflow: hidden;
+    border-color: var(--theme-line);
+    border-radius: 12px;
+    background-color: var(--theme-paper);
+    box-shadow: 0 24px 70px rgba(45, 30, 21, 0.22);
+}
+
+.modal-header,
+.modal-footer {
+    border-color: var(--theme-line);
+    background-color: #f8f2e9;
+}
+
+.main-content #devotionsContainer {
+    row-gap: 22px;
+}
+
+.main-content #devotionsContainer > .col-md-6 {
+    flex: 0 0 100%;
+    width: 100%;
+    max-width: 100%;
+}
+
+.main-content #devotionsContainer .devotion-card {
+    display: grid;
+    grid-template-areas:
+        "heading preview"
+        "status action";
+    grid-template-columns: minmax(0, 1.15fr) minmax(250px, 0.85fr);
+    grid-template-rows: 1fr auto;
+    gap: 18px 28px;
+    min-height: 250px;
+    padding: 26px 30px;
+    border-left: 4px solid var(--theme-copper);
+}
+
+.main-content #devotionsContainer .devotion-card > :first-child {
+    grid-area: heading;
+}
+
+.main-content #devotionsContainer .devotion-card h5 {
+    color: var(--theme-ink);
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 1.3rem;
+    font-weight: 600;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+}
+
+.main-content #devotionsContainer .devotion-format {
+    display: inline-flex;
+    align-items: center;
+    min-height: 28px;
+    padding: 4px 11px;
+    border: 1px solid rgba(112, 75, 52, 0.14);
+    border-radius: 999px;
+    color: var(--theme-brown);
+    background: #f3e8da;
+    font-size: 0.76rem;
+    font-weight: 700;
+}
+
+.main-content #devotionsContainer .devotion-date {
+    color: #847366;
+    font-size: 0.85rem;
+}
+
+.main-content #devotionsContainer .devotion-preview {
+    grid-area: preview;
+    align-self: stretch;
+    margin: 0 !important;
+    padding: 18px 20px;
+    border: 1px solid rgba(91, 61, 42, 0.09);
+    border-left: 3px solid #c49a73;
+    border-radius: 8px;
+    background: #f8f3ec;
+}
+
+.main-content #devotionsContainer .devotion-preview small {
+    color: var(--theme-copper) !important;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.main-content #devotionsContainer .devotion-preview p {
+    color: #5f5147;
+    font-size: 0.94rem;
+    line-height: 1.75;
+    overflow-wrap: anywhere;
+}
+
+.main-content #devotionsContainer .devotion-card > :nth-child(3) {
+    grid-area: status;
+    align-self: center;
+    margin: 0 !important;
+}
+
+.main-content #devotionsContainer .devotion-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.83rem;
+    font-weight: 600;
+}
+
+.main-content #devotionsContainer .view-devotion-btn {
+    grid-area: action;
+    justify-self: end;
+    align-self: center;
+    width: auto !important;
+    min-width: 190px;
+    padding: 10px 18px;
+    color: var(--theme-brown);
+    border-color: #bda48d;
+}
+
+.main-content #devotionsContainer .view-devotion-btn:hover {
+    color: #fffaf4;
+    border-color: var(--theme-brown);
+    background: var(--theme-brown);
+    box-shadow: 0 6px 16px rgba(70, 46, 31, 0.17);
+}
+
+.dashboard-content .consistency-card {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 12px 24px;
+    align-items: center;
+    overflow: hidden;
+    padding: 28px 32px !important;
+    border: 1px solid rgba(255, 246, 232, 0.17);
+    border-radius: 14px;
+    color: #fff9f0;
+    background: linear-gradient(115deg, #432d23 0%, #65442f 68%, #755139 100%);
+    box-shadow: 0 14px 32px rgba(62, 39, 27, 0.17);
+}
+
+.dashboard-content .consistency-card > .d-flex {
+    grid-column: 1 / -1;
+    align-items: center;
+    margin: 0 !important;
+}
+
+.dashboard-content .consistency-card .text-muted.text-uppercase {
+    display: block;
+    margin-bottom: 7px;
+    color: #e5c7a8 !important;
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+
+.dashboard-content .consistency-card h4 {
+    color: #fff9f0;
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 3rem;
+    font-weight: 600;
+    line-height: 1;
+}
+
+.dashboard-content .consistency-card > .d-flex > i {
+    display: grid;
+    width: 62px;
+    height: 62px;
+    flex: 0 0 62px;
+    place-items: center;
+    border: 1px solid rgba(255, 249, 240, 0.23);
+    border-radius: 50%;
+    color: #f0c99e !important;
+    background: rgba(255, 249, 240, 0.1);
+    font-size: 1.4rem !important;
+}
+
+.dashboard-content .consistency-card > p {
+    grid-column: 1 / -1;
+    margin: 0 !important;
+    color: rgba(255, 249, 240, 0.76) !important;
+    font-size: 0.88rem !important;
+}
+
+.dashboard-content .consistency-card .progress {
+    grid-column: 1 / -1;
+    height: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 249, 240, 0.12);
+    border-radius: 999px;
+    background: rgba(255, 249, 240, 0.14);
+}
+
+.dashboard-content .consistency-card .progress-bar {
+    border-radius: inherit;
+    background: linear-gradient(90deg, #bd8758, #e7c39d) !important;
+    transition: width 900ms cubic-bezier(0.2, 0.7, 0.25, 1);
+}
+
+.dashboard-content .consistency-card:hover {
+    border-color: rgba(255, 246, 232, 0.34);
+    box-shadow: 0 18px 38px rgba(62, 39, 27, 0.23);
+}
+
+@media (max-width: 767.98px) {
+    .main-content #devotionsContainer .devotion-card {
+        grid-template-areas:
+            "heading"
+            "preview"
+            "status"
+            "action";
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto;
+        gap: 16px;
+        min-height: 0;
+        padding: 20px;
+    }
+
+    .main-content #devotionsContainer .view-devotion-btn {
+        justify-self: stretch;
+        width: 100% !important;
+    }
+
+    .dashboard-content .consistency-card {
+        gap: 11px 16px;
+        padding: 22px !important;
+    }
+
+    .dashboard-content .consistency-card h4 {
+        font-size: 2.5rem;
+    }
+
+    .dashboard-content .consistency-card > .d-flex > i {
+        width: 52px;
+        height: 52px;
+        flex-basis: 52px;
+    }
+}
+
+:focus-visible {
+    outline: 3px solid rgba(155, 112, 77, 0.48);
+    outline-offset: 3px;
+}
+
+@keyframes theme-enter {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .admin-card,
+    .admin-section-card,
+    .admin-playlist-card,
+    .dashboard-card,
+    .prayer-section,
+    .playlist-card,
+    .about-card,
+    .profile-card,
+    .devotion-card {
+        border-radius: 10px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

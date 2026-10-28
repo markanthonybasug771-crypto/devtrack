@@ -3,90 +3,69 @@
 // =========================================================
 
 document.addEventListener("DOMContentLoaded", () => {
+  // -----------------------------------------------------
+  // PAGE ENTER ANIMATION
+  // -----------------------------------------------------
 
-    // -----------------------------------------------------
-    // PAGE ENTER ANIMATION
-    // -----------------------------------------------------
+  document.body.classList.add("page-enter");
 
-    document.body.classList.add("page-enter");
+  // -----------------------------------------------------
+  // PAGE NAVIGATION
+  // -----------------------------------------------------
 
+  const links = document.querySelectorAll('a[href]:not([href="#"])');
 
-    // -----------------------------------------------------
-    // PAGE NAVIGATION
-    // -----------------------------------------------------
+  links.forEach((link) => {
+    link.addEventListener("click", (event) => {
+      const href = link.getAttribute("href");
 
-    const links = document.querySelectorAll(
-        'a[href]:not([href="#"])'
-    );
+      // Ignore invalid links
+      if (!href) {
+        return;
+      }
 
+      // Ignore anchor links
+      if (href.startsWith("#")) {
+        return;
+      }
 
-    links.forEach((link) => {
+      // Ignore external links
+      if (
+        href.startsWith("http://") ||
+        href.startsWith("https://") ||
+        href.startsWith("//")
+      ) {
+        return;
+      }
 
-        link.addEventListener("click", (event) => {
+      // Ignore new-tab links
+      if (link.target === "_blank") {
+        return;
+      }
 
-            const href = link.getAttribute("href");
+      // Ignore download links
+      if (link.hasAttribute("download")) {
+        return;
+      }
 
+      event.preventDefault();
 
-            // Ignore invalid links
-            if (!href) {
-                return;
-            }
+      // Prevent double clicking
+      if (document.body.classList.contains("page-exit")) {
+        return;
+      }
 
+      // Start exit animation
+      document.body.classList.remove("page-enter");
 
-            // Ignore anchor links
-            if (href.startsWith("#")) {
-                return;
-            }
+      document.body.classList.add("page-exit");
 
-
-            // Ignore external links
-            if (
-                href.startsWith("http://") ||
-                href.startsWith("https://") ||
-                href.startsWith("//")
-            ) {
-                return;
-            }
-
-
-            // Ignore new-tab links
-            if (link.target === "_blank") {
-                return;
-            }
-
-
-            // Ignore download links
-            if (link.hasAttribute("download")) {
-                return;
-            }
-
-
-            event.preventDefault();
-
-
-            // Prevent double clicking
-            if (document.body.classList.contains("page-exit")) {
-                return;
-            }
-
-
-            // Start exit animation
-            document.body.classList.remove("page-enter");
-
-            document.body.classList.add("page-exit");
-
-
-            // Navigate after animation
-            setTimeout(() => {
-
-                window.location.href = href;
-
-            }, 250);
-
-        });
-
+      // Navigate after animation
+      setTimeout(() => {
+        window.location.href = href;
+      }, 250);
     });
-
+  });
 });
 
 // ========================================
@@ -94,98 +73,63 @@ document.addEventListener("DOMContentLoaded", () => {
 // ========================================
 
 document.addEventListener("DOMContentLoaded", () => {
+  const body = document.body;
 
-    const body = document.body;
+  // ========================================
+  // PAGE ENTER
+  // ========================================
 
-    // ========================================
-    // PAGE ENTER
-    // ========================================
+  const direction = sessionStorage.getItem("pageTransition");
 
-    const direction =
-        sessionStorage.getItem("pageTransition");
+  if (direction === "signup") {
+    body.classList.add("page-enter-right");
 
-    if (direction === "signup") {
+    sessionStorage.removeItem("pageTransition");
+  } else if (direction === "login") {
+    body.classList.add("page-enter-left");
 
-        body.classList.add("page-enter-right");
+    sessionStorage.removeItem("pageTransition");
+  }
 
-        sessionStorage.removeItem("pageTransition");
+  // ========================================
+  // SIGN UP LINK
+  // LOGIN → SIGNUP
+  // ========================================
 
-    } else if (direction === "login") {
+  const signupLink = document.getElementById("signupLink");
 
-        body.classList.add("page-enter-left");
+  if (signupLink) {
+    signupLink.addEventListener("click", (e) => {
+      e.preventDefault();
 
-        sessionStorage.removeItem("pageTransition");
+      sessionStorage.setItem("pageTransition", "signup");
 
-    }
+      body.classList.add("page-exit-left");
 
+      setTimeout(() => {
+        window.location.href = signupLink.href;
+      }, 450);
+    });
+  }
 
-    // ========================================
-    // SIGN UP LINK
-    // LOGIN → SIGNUP
-    // ========================================
+  // ========================================
+  // LOGIN LINK
+  // SIGNUP → LOGIN
+  // ========================================
 
-    const signupLink =
-        document.getElementById("signupLink");
+  const loginLink = document.getElementById("loginLink");
 
-    if (signupLink) {
+  if (loginLink) {
+    loginLink.addEventListener("click", (e) => {
+      e.preventDefault();
 
-        signupLink.addEventListener("click", (e) => {
+      sessionStorage.setItem("pageTransition", "login");
 
-            e.preventDefault();
+      body.classList.add("page-exit-right");
 
-            sessionStorage.setItem(
-                "pageTransition",
-                "signup"
-            );
-
-            body.classList.add(
-                "page-exit-left"
-            );
-
-            setTimeout(() => {
-
-                window.location.href =
-                    signupLink.href;
-
-            }, 450);
-
-        });
-
-    }
-
-
-    // ========================================
-    // LOGIN LINK
-    // SIGNUP → LOGIN
-    // ========================================
-
-    const loginLink =
-        document.getElementById("loginLink");
-
-    if (loginLink) {
-
-        loginLink.addEventListener("click", (e) => {
-
-            e.preventDefault();
-
-            sessionStorage.setItem(
-                "pageTransition",
-                "login"
-            );
-
-            body.classList.add(
-                "page-exit-right"
-            );
-
-            setTimeout(() => {
-
-                window.location.href =
-                    loginLink.href;
-
-            }, 450);
-
-        });
-
-    }
-
+      setTimeout(() => {
+        window.location.href = loginLink.href;
+      }, 450);
+    });
+  }
 });

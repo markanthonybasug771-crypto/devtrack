@@ -36,6 +36,146 @@
 
     <link rel="stylesheet" href="./css/style.css" />
     <link rel="stylesheet" href="./css/music-player.css" />
+
+    <style>
+      /* ========================================
+   DEVOTION CONTENT FORMATTING
+======================================== */
+
+      .devotion-view-content {
+        font-size: 0.95rem;
+        line-height: 1.8;
+        color: #333;
+        overflow-wrap: anywhere;
+        word-break: normal;
+        white-space: pre-wrap;
+      }
+
+      .devotion-view-content p {
+        margin: 0 0 1rem;
+      }
+
+      .devotion-view-content p:last-child {
+        margin-bottom: 0;
+      }
+
+      .devotion-view-content ol,
+      .devotion-view-content ul {
+        margin: 0.25rem 0 1rem;
+        padding-left: 1.6rem;
+      }
+
+      .devotion-view-content li {
+        margin-bottom: 0.45rem;
+        padding-left: 0.25rem;
+        line-height: 1.75;
+      }
+
+      .devotion-view-content li:last-child {
+        margin-bottom: 0;
+      }
+
+      /* Match the readable card layout used in the admin devotion viewer. */
+      .user-devotion-modal .modal-content {
+        border: none;
+        border-radius: 20px;
+        overflow: hidden;
+      }
+
+      .user-devotion-modal .modal-header {
+        background: #faf7f4;
+        border-bottom: 1px solid #eee;
+      }
+
+      .user-devotion-modal .modal-title {
+        color: #2d211c;
+        font-weight: 700;
+      }
+
+      .user-devotion-view {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+      }
+
+      .user-devotion-section {
+        padding: 16px;
+        background: #fafafa;
+        border-radius: 13px;
+      }
+
+      .user-devotion-section h6 {
+        margin-bottom: 7px;
+        color: #8b5e3c;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.6px;
+        text-transform: uppercase;
+      }
+
+      .user-devotion-section .devotion-view-content {
+        margin: 0;
+      }
+
+      .user-devotion-section .devotion-edit-field {
+        margin-top: 10px;
+      }
+
+      /* Pastor remarks */
+
+      .pastor-remarks-content {
+        font-size: 0.95rem;
+        line-height: 1.8;
+        overflow-wrap: anywhere;
+      }
+
+      .pastor-remarks-content p {
+        margin: 0 0 1rem;
+      }
+
+      .pastor-remarks-content p:last-child {
+        margin-bottom: 0;
+      }
+
+      .pastor-remarks-content ol,
+      .pastor-remarks-content ul {
+        margin: 0.25rem 0 1rem;
+        padding-left: 1.6rem;
+      }
+
+      .pastor-remarks-content li {
+        margin-bottom: 0.45rem;
+        line-height: 1.75;
+      }
+
+      /* ========================================
+         DEVOTION EDIT MODE
+      ======================================== */
+
+      .devotion-edit-field {
+        width: 100%;
+        height: 220px;
+        min-height: 200px;
+        max-height: 55vh;
+        overflow-y: auto;
+        resize: vertical;
+        font-size: 0.95rem;
+        line-height: 1.7;
+        border-radius: 10px;
+        padding: 12px 14px;
+      }
+
+      .devotion-edit-field:focus {
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+      }
+
+      @media (max-width: 576px) {
+        .devotion-edit-field {
+          min-height: 160px;
+        }
+      }
+    </style>
+  <link rel="stylesheet" href="./css/theme.css" />
   </head>
 
   <body>
@@ -275,7 +415,8 @@
             </div>
           </div>
         </div>
-      </div><br><br>
+      </div>
+      <br /><br />
 
       <!-- PAGE HEADER -->
 
@@ -335,7 +476,7 @@
     <!-- ================================= -->
 
     <div
-      class="modal fade"
+      class="modal fade user-devotion-modal"
       id="viewDevotionModal"
       tabindex="-1"
       aria-hidden="true"
@@ -351,6 +492,15 @@
               <h5 class="modal-title mb-1" id="viewDevotionTitle">
                 My Devotion
               </h5>
+
+              <input
+                type="text"
+                class="form-control d-none"
+                id="editDevotionTitle"
+                maxlength="120"
+                placeholder="Give your devotion a title"
+                aria-label="Devotion title"
+              />
 
               <small class="text-muted" id="viewDevotionDate"></small>
             </div>
@@ -375,54 +525,85 @@
               <span class="devotion-format" id="viewDevotionFormat"></span>
             </div>
 
+            <div class="user-devotion-view">
             <!-- SCRIPTURE -->
 
-            <div class="devotion-view-section">
+            <div class="user-devotion-section">
               <h6>
                 <strong> S — Scripture </strong>
               </h6>
 
               <div id="viewScripture" class="devotion-view-content"></div>
+
+              <textarea
+                id="editScripture"
+                class="form-control devotion-edit-field d-none"
+                rows="8"
+              ></textarea>
             </div>
 
             <!-- OBSERVATION -->
 
-            <div id="viewObservationSection" class="devotion-view-section">
+            <div id="viewObservationSection" class="user-devotion-section">
               <h6>
                 <strong> O — Observation </strong>
               </h6>
 
               <div id="viewObservation" class="devotion-view-content"></div>
+
+              <textarea
+                id="editObservation"
+                class="form-control devotion-edit-field d-none"
+                rows="8"
+              ></textarea>
             </div>
 
             <!-- LESSON -->
 
-            <div id="viewLessonSection" class="devotion-view-section d-none">
+            <div id="viewLessonSection" class="user-devotion-section d-none">
               <h6>
                 <strong> L — Lesson </strong>
               </h6>
 
               <div id="viewLesson" class="devotion-view-content"></div>
+
+              <textarea
+                id="editLesson"
+                class="form-control devotion-edit-field d-none"
+                rows="8"
+              ></textarea>
             </div>
 
             <!-- APPLICATION -->
 
-            <div class="devotion-view-section">
+            <div class="user-devotion-section">
               <h6>
                 <strong> A — Application </strong>
               </h6>
 
               <div id="viewApplication" class="devotion-view-content"></div>
+
+              <textarea
+                id="editApplication"
+                class="form-control devotion-edit-field d-none"
+                rows="8"
+              ></textarea>
             </div>
 
             <!-- PRAYER -->
 
-            <div class="devotion-view-section">
+            <div class="user-devotion-section">
               <h6>
                 <strong> P — Prayer </strong>
               </h6>
 
               <div id="viewPrayer" class="devotion-view-content"></div>
+
+              <textarea
+                id="editPrayer"
+                class="form-control devotion-edit-field d-none"
+                rows="8"
+              ></textarea>
             </div>
 
             <!-- PASTOR REMARKS -->
@@ -436,18 +617,53 @@
 
               <div id="viewAdminRemark" class="pastor-remarks-content"></div>
             </div>
+            </div>
           </div>
 
           <!-- MODAL FOOTER -->
 
           <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Close
-            </button>
+            <!-- VIEW MODE BUTTONS -->
+
+            <div id="viewModeButtons" class="d-flex gap-2 ms-auto">
+              <button
+                type="button"
+                class="btn btn-primary"
+                id="editDevotionBtn"
+              >
+                <i class="bi bi-pencil-square me-2"></i>
+                Edit
+              </button>
+
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+            </div>
+
+            <!-- EDIT MODE BUTTONS -->
+
+            <div id="editModeButtons" class="d-none gap-2 ms-auto">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                id="cancelEditBtn"
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                class="btn btn-primary"
+                id="saveDevotionBtn"
+              >
+                <i class="bi bi-check-lg me-2"></i>
+                Save Changes
+              </button>
+            </div>
           </div>
         </div>
       </div>

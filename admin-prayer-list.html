@@ -1,753 +1,405 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
 
-<head>
-
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>Prayer List | CLG Devotional Tracker</title>
-
 
     <!-- Bootstrap -->
 
     <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-    >
-
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
 
     <!-- Bootstrap Icons -->
 
     <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
-    >
-
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
 
     <!-- Google Font -->
 
     <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
-        rel="stylesheet"
-    >
-
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
 
     <!-- SweetAlert -->
 
-    <script
-        src="https://cdn.jsdelivr.net/npm/sweetalert2@11"
-    ></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- Prayer List CSS -->
 
-    <link
-        rel="stylesheet"
-        href="./css/admin-prayer-list.css"
-    >
+    <link rel="stylesheet" href="./css/admin-prayer-list.css" />
 
-    <link
-        rel="stylesheet"
-        href="./css/style.css"
-    >
+    <link rel="stylesheet" href="./css/style.css" />
 
-    <link
-        rel="stylesheet"
-        href="./css/music-player.css"
-    >
-</head>
+    <link rel="stylesheet" href="./css/music-player.css" />
+  <link rel="stylesheet" href="./css/theme.css" />
+  </head>
 
-
-<body class="admin-prayer-list-page">
-
-
+  <body class="admin-prayer-list-page">
     <!-- ================================= -->
     <!-- MOBILE TOPBAR -->
     <!-- ================================= -->
 
     <nav class="mobile-topbar d-lg-none">
+      <button
+        class="btn sidebar-toggle"
+        type="button"
+        data-bs-toggle="offcanvas"
+        data-bs-target="#mobileSidebar"
+        aria-controls="mobileSidebar"
+      >
+        <i class="bi bi-list"></i>
+      </button>
 
-        <button
-            class="btn sidebar-toggle"
-            type="button"
-            data-bs-toggle="offcanvas"
-            data-bs-target="#mobileSidebar"
-            aria-controls="mobileSidebar"
-        >
+      <div class="mobile-brand">
+        <i class="bi bi-feather"></i>
 
-            <i class="bi bi-list"></i>
-
-        </button>
-
-
-        <div class="mobile-brand">
-
-            <i class="bi bi-feather"></i>
-
-            <span>
-                Prayer List
-            </span>
-
-        </div>
-
+        <span> Prayer List </span>
+      </div>
     </nav>
-
-
 
     <!-- ================================= -->
     <!-- DESKTOP SIDEBAR -->
     <!-- ================================= -->
 
     <aside class="desktop-sidebar d-none d-lg-flex">
+      <div class="sidebar-brand">
+        <div class="sidebar-logo sidebar-text-badge">DT</div>
 
-        <div class="sidebar-brand">
+        <div>
+          <h5>Devotional Tracker</h5>
 
-            <div class="sidebar-logo sidebar-text-badge">
-                DT
-            </div>
-
-
-            <div>
-
-                <h5>
-                    Devotional Tracker
-                </h5>
-
-                <small>
-                    Admin Panel
-                </small>
-
-            </div>
-
+          <small> Admin Panel </small>
         </div>
+      </div>
 
+      <div class="sidebar-menu">
+        <p class="sidebar-label">MAIN MENU</p>
 
-        <div class="sidebar-menu">
+        <!-- DASHBOARD -->
 
-            <p class="sidebar-label">
-                MAIN MENU
-            </p>
+        <a href="admin-dashboard.html" class="sidebar-link">
+          <i class="bi bi-grid-1x2-fill"></i>
 
+          <span> Dashboard </span>
+        </a>
 
-            <!-- DASHBOARD -->
+        <!-- DEVOTIONS -->
 
-            <a
-                href="admin-dashboard.html"
-                class="sidebar-link"
-            >
+        <a href="admin-devotions.html" class="sidebar-link">
+          <i class="bi bi-journal-text"></i>
 
-                <i class="bi bi-grid-1x2-fill"></i>
+          <span> Devotions </span>
+        </a>
 
-                <span>
-                    Dashboard
-                </span>
+        <!-- USERS -->
 
-            </a>
+        <a href="admin-users.html" class="sidebar-link">
+          <i class="bi bi-people-fill"></i>
 
+          <span> Users </span>
+        </a>
 
-            <!-- DEVOTIONS -->
+        <!-- PRAYER REQUESTS -->
 
-            <a
-                href="admin-devotions.html"
-                class="sidebar-link"
-            >
+        <a href="admin-prayers.html" class="sidebar-link">
+          <i class="bi bi-chat-heart-fill"></i>
 
-                <i class="bi bi-journal-text"></i>
+          <span> Prayer Requests </span>
+        </a>
 
-                <span>
-                    Devotions
-                </span>
+        <!-- PRAYER REQUEST LIST -->
 
-            </a>
+        <a href="admin-prayer-list.html" class="sidebar-link active">
+          <i class="bi bi-feather"></i>
 
+          <span> Prayer Requests List </span>
+        </a>
 
-            <!-- USERS -->
+        <a href="admin-playlist.html" class="sidebar-link">
+          <i class="bi bi-music-note-list"></i>
 
-            <a
-                href="admin-users.html"
-                class="sidebar-link"
-            >
+          <span> Playlist </span>
+        </a>
 
-                <i class="bi bi-people-fill"></i>
+        <!-- SETTINGS -->
 
-                <span>
-                    Users
-                </span>
+        <a href="admin-settings.html" class="sidebar-link">
+          <i class="bi bi-gear-fill"></i>
 
-            </a>
+          <span> Settings </span>
+        </a>
 
+        <!-- ABOUT -->
 
-            <!-- PRAYER REQUESTS -->
+        <a href="admin-about.html" class="sidebar-link">
+          <i class="bi bi-info-circle-fill"></i>
 
-            <a
-                href="admin-prayers.html"
-                class="sidebar-link"
-            >
+          <span> About </span>
+        </a>
 
-                <i class="bi bi-chat-heart-fill"></i>
+        <p class="sidebar-label mt-4">ACCOUNT</p>
 
-                <span>
-                    Prayer Requests
-                </span>
+        <!-- LOGOUT -->
 
-            </a>
+        <a href="#" class="sidebar-link" id="logoutBtn">
+          <i class="bi bi-box-arrow-right"></i>
 
+          <span> Logout </span>
+        </a>
+      </div>
 
-            <!-- PRAYER REQUEST LIST -->
+      <div class="sidebar-footer">
+        <small> Devotional Tracker </small>
 
-            <a
-                href="admin-prayer-list.html"
-                class="sidebar-link active"
-            >
+        <br />
 
-                <i class="bi bi-feather"></i>
-
-                <span>
-                    Prayer Requests List
-                </span>
-
-            </a>
-
-             <a
-    href="admin-playlist.html"
-    class="sidebar-link"
->
-
-    <i class="bi bi-music-note-list"></i>
-
-    <span>
-        Playlist
-    </span>
-
-</a>
-
-
-            <!-- SETTINGS -->
-
-            <a
-                href="admin-settings.html"
-                class="sidebar-link"
-            >
-
-                <i class="bi bi-gear-fill"></i>
-
-                <span>
-                    Settings
-                </span>
-
-            </a>
-
-
-            <!-- ABOUT -->
-
-            <a
-                href="admin-about.html"
-                class="sidebar-link"
-            >
-
-                <i class="bi bi-info-circle-fill"></i>
-
-                <span>
-                    About
-                </span>
-
-            </a>
-
-
-            <p class="sidebar-label mt-4">
-                ACCOUNT
-            </p>
-
-
-            <!-- LOGOUT -->
-
-            <a
-                href="#"
-                class="sidebar-link"
-                id="logoutBtn"
-            >
-
-                <i class="bi bi-box-arrow-right"></i>
-
-                <span>
-                    Logout
-                </span>
-
-            </a>
-
-        </div>
-
-
-        <div class="sidebar-footer">
-
-            <small>
-                Devotional Tracker
-            </small>
-
-            <br>
-
-            <small>
-                Admin Panel
-            </small>
-
-        </div>
-
+        <small> Admin Panel </small>
+      </div>
     </aside>
-
-
 
     <!-- ================================= -->
     <!-- MOBILE SIDEBAR -->
     <!-- ================================= -->
 
     <div
-        class="offcanvas offcanvas-start mobile-sidebar"
-        tabindex="-1"
-        id="mobileSidebar"
-        aria-labelledby="mobileSidebarLabel"
+      class="offcanvas offcanvas-start mobile-sidebar"
+      tabindex="-1"
+      id="mobileSidebar"
+      aria-labelledby="mobileSidebarLabel"
     >
+      <div class="offcanvas-header">
+        <div class="d-flex align-items-center gap-2">
+          <div class="sidebar-logo small-logo sidebar-text-badge">DT</div>
 
-        <div class="offcanvas-header">
+          <div>
+            <h6 class="mb-0 fw-bold" id="mobileSidebarLabel">
+              Devotional Tracker
+            </h6>
 
-            <div class="d-flex align-items-center gap-2">
-
-                <div
-                    class="sidebar-logo small-logo sidebar-text-badge"
-                >
-                    DT
-                </div>
-
-
-                <div>
-
-                    <h6
-                        class="mb-0 fw-bold"
-                        id="mobileSidebarLabel"
-                    >
-                        Devotional Tracker
-                    </h6>
-
-                    <small>
-                        Admin Panel
-                    </small>
-
-                </div>
-
-            </div>
-
-
-            <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="offcanvas"
-                aria-label="Close"
-            ></button>
-
+            <small> Admin Panel </small>
+          </div>
         </div>
 
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="offcanvas"
+          aria-label="Close"
+        ></button>
+      </div>
 
-        <div class="offcanvas-body">
+      <div class="offcanvas-body">
+        <p class="sidebar-label">MAIN MENU</p>
 
-            <p class="sidebar-label">
-                MAIN MENU
-            </p>
+        <!-- DASHBOARD -->
 
+        <a href="admin-dashboard.html" class="sidebar-link">
+          <i class="bi bi-grid-1x2-fill"></i>
 
-            <!-- DASHBOARD -->
+          <span> Dashboard </span>
+        </a>
 
-            <a
-                href="admin-dashboard.html"
-                class="sidebar-link"
-            >
+        <!-- DEVOTIONS -->
 
-                <i class="bi bi-grid-1x2-fill"></i>
+        <a href="admin-devotions.html" class="sidebar-link">
+          <i class="bi bi-journal-text"></i>
 
-                <span>
-                    Dashboard
-                </span>
+          <span> Devotions </span>
+        </a>
 
-            </a>
+        <!-- USERS -->
 
+        <a href="admin-users.html" class="sidebar-link">
+          <i class="bi bi-people-fill"></i>
 
-            <!-- DEVOTIONS -->
+          <span> Users </span>
+        </a>
 
-            <a
-                href="admin-devotions.html"
-                class="sidebar-link"
-            >
+        <!-- PRAYER REQUESTS -->
 
-                <i class="bi bi-journal-text"></i>
+        <a href="admin-prayers.html" class="sidebar-link">
+          <i class="bi bi-chat-heart-fill"></i>
 
-                <span>
-                    Devotions
-                </span>
+          <span> Prayer Requests </span>
+        </a>
 
-            </a>
+        <!-- PRAYER REQUEST LIST -->
 
+        <a href="admin-prayer-list.html" class="sidebar-link active">
+          <i class="bi bi-feather"></i>
 
-            <!-- USERS -->
+          <span> Prayer Requests List </span>
+        </a>
 
-            <a
-                href="admin-users.html"
-                class="sidebar-link"
-            >
+        <a href="admin-playlist.html" class="sidebar-link">
+          <i class="bi bi-music-note-list"></i>
 
-                <i class="bi bi-people-fill"></i>
+          <span> Playlist </span>
+        </a>
 
-                <span>
-                    Users
-                </span>
+        <!-- SETTINGS -->
 
-            </a>
+        <a href="admin-settings.html" class="sidebar-link">
+          <i class="bi bi-gear-fill"></i>
 
+          <span> Settings </span>
+        </a>
 
-            <!-- PRAYER REQUESTS -->
+        <!-- ABOUT -->
 
-            <a
-                href="admin-prayers.html"
-                class="sidebar-link"
-            >
+        <a href="admin-about.html" class="sidebar-link">
+          <i class="bi bi-info-circle-fill"></i>
 
-                <i class="bi bi-chat-heart-fill"></i>
+          <span> About </span>
+        </a>
 
-                <span>
-                    Prayer Requests
-                </span>
+        <p class="sidebar-label mt-4">ACCOUNT</p>
 
-            </a>
+        <!-- LOGOUT -->
 
+        <a href="#" class="sidebar-link" id="mobileLogoutBtn">
+          <i class="bi bi-box-arrow-right"></i>
 
-            <!-- PRAYER REQUEST LIST -->
-
-            <a
-                href="admin-prayer-list.html"
-                class="sidebar-link active"
-            >
-
-                <i class="bi bi-feather"></i>
-
-                <span>
-                    Prayer Requests List
-                </span>
-
-            </a>
-
-             <a
-    href="admin-playlist.html"
-    class="sidebar-link"
->
-
-    <i class="bi bi-music-note-list"></i>
-
-    <span>
-        Playlist
-    </span>
-
-</a>
-
-
-            <!-- SETTINGS -->
-
-            <a
-                href="admin-settings.html"
-                class="sidebar-link"
-            >
-
-                <i class="bi bi-gear-fill"></i>
-
-                <span>
-                    Settings
-                </span>
-
-            </a>
-
-
-            <!-- ABOUT -->
-
-            <a
-                href="admin-about.html"
-                class="sidebar-link"
-            >
-
-                <i class="bi bi-info-circle-fill"></i>
-
-                <span>
-                    About
-                </span>
-
-            </a>
-
-
-            <p class="sidebar-label mt-4">
-                ACCOUNT
-            </p>
-
-
-            <!-- LOGOUT -->
-
-            <a
-                href="#"
-                class="sidebar-link"
-                id="mobileLogoutBtn"
-            >
-
-                <i class="bi bi-box-arrow-right"></i>
-
-                <span>
-                    Logout
-                </span>
-
-            </a>
-
-        </div>
-
+          <span> Logout </span>
+        </a>
+      </div>
     </div>
-
-
 
     <!-- ================================= -->
     <!-- MAIN CONTENT -->
     <!-- ================================= -->
 
     <main class="main-content admin-prayer-main">
+      <!-- ================================= -->
+      <!-- PAGE HEADER -->
+      <!-- ================================= -->
 
+      <div class="admin-prayer-header mb-4">
+        <div>
+          <p class="admin-eyebrow">PRAYER MINISTRY</p>
 
-        <!-- ================================= -->
-        <!-- PAGE HEADER -->
-        <!-- ================================= -->
+          <h2>Prayer List</h2>
 
-        <div class="admin-prayer-header mb-4">
+          <p class="text-muted mb-0">
+            View and monitor prayer requests while keeping each request
+            anonymous.
+          </p>
+        </div>
+      </div>
+
+      <!-- ================================= -->
+      <!-- STATISTICS -->
+      <!-- ================================= -->
+
+      <div class="row g-4 mb-4">
+        <!-- ALL -->
+
+        <div class="col-12 col-md-4">
+          <div class="admin-prayer-stat-card">
+            <div class="admin-prayer-stat-icon">
+              <i class="bi bi-heart-fill"></i>
+            </div>
 
             <div>
+              <p>All Requests</p>
 
-                <p class="admin-eyebrow">
-                    PRAYER MINISTRY
-                </p>
-
-
-                <h2>
-                    Prayer List
-                </h2>
-
-
-                <p class="text-muted mb-0">
-                    View and monitor prayer requests
-                    while keeping each request anonymous.
-                </p>
-
+              <h3 id="allPrayerCount">0</h3>
             </div>
-
+          </div>
         </div>
 
+        <!-- ACTIVE -->
 
-
-        <!-- ================================= -->
-        <!-- STATISTICS -->
-        <!-- ================================= -->
-
-        <div class="row g-4 mb-4">
-
-
-            <!-- ALL -->
-
-            <div class="col-12 col-md-4">
-
-                <div class="admin-prayer-stat-card">
-
-                    <div class="admin-prayer-stat-icon">
-
-                        <i class="bi bi-heart-fill"></i>
-
-                    </div>
-
-
-                    <div>
-
-                        <p>
-                            All Requests
-                        </p>
-
-                        <h3 id="allPrayerCount">
-                            0
-                        </h3>
-
-                    </div>
-
-                </div>
-
+        <div class="col-12 col-md-4">
+          <div class="admin-prayer-stat-card">
+            <div class="admin-prayer-stat-icon">
+              <i class="bi bi-hourglass-split"></i>
             </div>
 
+            <div>
+              <p>Active</p>
 
-
-            <!-- ACTIVE -->
-
-            <div class="col-12 col-md-4">
-
-                <div class="admin-prayer-stat-card">
-
-                    <div class="admin-prayer-stat-icon">
-
-                        <i class="bi bi-hourglass-split"></i>
-
-                    </div>
-
-
-                    <div>
-
-                        <p>
-                            Active
-                        </p>
-
-                        <h3 id="activePrayerCount">
-                            0
-                        </h3>
-
-                    </div>
-
-                </div>
-
+              <h3 id="activePrayerCount">0</h3>
             </div>
-
-
-
-            <!-- ANSWERED -->
-
-            <div class="col-12 col-md-4">
-
-                <div class="admin-prayer-stat-card">
-
-                    <div class="admin-prayer-stat-icon checked">
-
-                        <i class="bi bi-check-circle-fill"></i>
-
-                    </div>
-
-
-                    <div>
-
-                        <p>
-                            Answered
-                        </p>
-
-                        <h3 id="answeredPrayerCount">
-                            0
-                        </h3>
-
-                    </div>
-
-                </div>
-
-            </div>
-
+          </div>
         </div>
 
+        <!-- ANSWERED -->
 
-
-        <!-- ================================= -->
-        <!-- PRAYER LIST -->
-        <!-- ================================= -->
-
-        <div class="admin-section-card">
-
-            <div class="admin-section-header">
-
-                <div>
-
-                    <h5>
-                        Prayer Requests
-                    </h5>
-
-                    <p>
-                        All requests are displayed anonymously.
-                    </p>
-
-                </div>
-
+        <div class="col-12 col-md-4">
+          <div class="admin-prayer-stat-card">
+            <div class="admin-prayer-stat-icon checked">
+              <i class="bi bi-check-circle-fill"></i>
             </div>
 
+            <div>
+              <p>Answered</p>
 
-            <!-- LOADING -->
-
-            <div
-                id="prayerLoading"
-                class="admin-prayer-loading"
-            >
-
-                <div
-                    class="spinner-border"
-                    role="status"
-                    aria-hidden="true"
-                ></div>
-
-                <p>
-                    Loading prayer requests...
-                </p>
-
+              <h3 id="answeredPrayerCount">0</h3>
             </div>
+          </div>
+        </div>
+      </div>
 
+      <!-- ================================= -->
+      <!-- PRAYER LIST -->
+      <!-- ================================= -->
 
-            <!-- PRAYER REQUESTS -->
+      <div class="admin-section-card">
+        <div class="admin-section-header">
+          <div>
+            <h5>Prayer Requests</h5>
 
-            <div
-                id="prayerRequestsList"
-                class="admin-prayer-list"
-            ></div>
-
+            <p>All requests are displayed anonymously.</p>
+          </div>
         </div>
 
+        <!-- LOADING -->
 
+        <div id="prayerLoading" class="admin-prayer-loading">
+          <div class="spinner-border" role="status" aria-hidden="true"></div>
+
+          <p>Loading prayer requests...</p>
+        </div>
+
+        <!-- PRAYER REQUESTS -->
+
+        <div id="prayerRequestsList" class="admin-prayer-list"></div>
+      </div>
     </main>
-
-
 
     <!-- ================================= -->
     <!-- BOOTSTRAP JS -->
     <!-- ================================= -->
 
-    <script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-    ></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- ================================= -->
     <!-- PRAYER LIST JS -->
     <!-- ================================= -->
 
-    <script
-        type="module"
-        src="./js/admin-prayer-list.js"
-    ></script>
-
+    <script type="module" src="./js/admin-prayer-list.js"></script>
 
     <!-- ================================= -->
     <!-- ADMIN AUTH -->
     <!-- ================================= -->
 
-    <script
-        type="module"
-        src="./js/admin-auth.js"
-    ></script>
-
+    <script type="module" src="./js/admin-auth.js"></script>
 
     <!-- ================================= -->
     <!-- PAGE TRANSITION -->
     <!-- ================================= -->
 
-    <script
-        type="module"
-        src="./js/transition.js"
-    ></script>
+    <script type="module" src="./js/transition.js"></script>
 
-    <script
-        type="module"
-        src="./js/music-player.js"
-    ></script>
-
-</body>
-
+    <script type="module" src="./js/music-player.js"></script>
+  </body>
 </html>

@@ -1,134 +1,90 @@
 import { auth, db } from "./firebase.js";
 
 import {
-    onAuthStateChanged,
-    signOut
+  onAuthStateChanged,
+  signOut,
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
 import {
-    collection,
-    query,
-    where,
-    orderBy,
-    onSnapshot,
-    updateDoc,
-    doc
+  collection,
+  query,
+  where,
+  orderBy,
+  onSnapshot,
+  updateDoc,
+  doc,
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-
 
 // ========================================
 // ELEMENTS
 // ========================================
 
-const prayerList =
-    document.getElementById("prayerList");
+const prayerList = document.getElementById("prayerList");
 
-const totalPrayers =
-    document.getElementById("totalPrayers");
+const totalPrayers = document.getElementById("totalPrayers");
 
-const pendingPrayers =
-    document.getElementById("pendingPrayers");
+const pendingPrayers = document.getElementById("pendingPrayers");
 
-const answeredPrayers =
-    document.getElementById("answeredPrayers");
+const answeredPrayers = document.getElementById("answeredPrayers");
 
-const logoutButton =
-    document.getElementById("logoutButton");
+const logoutButton = document.getElementById("logoutButton");
 
-const mobileLogoutButton =
-    document.getElementById("mobileLogoutButton");
+const mobileLogoutButton = document.getElementById("mobileLogoutButton");
 
-const currentDate =
-    document.getElementById("currentDate");
-
+const currentDate = document.getElementById("currentDate");
 
 // ========================================
 // CURRENT DATE
 // ========================================
 
 if (currentDate) {
-
-    currentDate.textContent =
-        new Date().toLocaleDateString(
-            "en-US",
-            {
-                weekday: "long",
-                month: "long",
-                day: "numeric",
-                year: "numeric"
-            }
-        );
-
+  currentDate.textContent = new Date().toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
 }
-
 
 // ========================================
 // AUTH CHECK
 // ========================================
 
-onAuthStateChanged(
-    auth,
-    (user) => {
+onAuthStateChanged(auth, (user) => {
+  if (!user) {
+    window.location.href = "./index.html";
 
-        if (!user) {
+    return;
+  }
 
-            window.location.href =
-                "./index.html";
-
-            return;
-        }
-
-
-        loadMyPrayers(user.uid);
-
-    }
-);
-
+  loadMyPrayers(user.uid);
+});
 
 // ========================================
 // LOAD MY PRAYERS
 // ========================================
 
 function loadMyPrayers(userId) {
+  const prayerQuery = query(
+    collection(db, "prayerRequests"),
 
-    const prayerQuery =
-        query(
+    where("userId", "==", userId),
 
-            collection(
-                db,
-                "prayerRequests"
-            ),
+    orderBy("createdAt", "desc"),
+  );
 
-            where(
-                "userId",
-                "==",
-                userId
-            ),
+  onSnapshot(
+    prayerQuery,
 
-            orderBy(
-                "createdAt",
-                "desc"
-            )
+    (snapshot) => {
+      prayerList.innerHTML = "";
 
-        );
+      // ========================================
+      // NO PRAYERS
+      // ========================================
 
-
-    onSnapshot(
-
-        prayerQuery,
-
-        (snapshot) => {
-
-            prayerList.innerHTML = "";
-
-
-            // ========================================
-            // NO PRAYERS
-            // ========================================
-
-            if (snapshot.empty) {
-
-                prayerList.innerHTML = `
+      if (snapshot.empty) {
+        prayerList.innerHTML = `
 
                     <div class="dashboard-card text-center p-5">
 
@@ -152,58 +108,32 @@ function loadMyPrayers(userId) {
 
                 `;
 
-                updatePrayerStats([]);
+        updatePrayerStats([]);
 
-                return;
-            }
+        return;
+      }
 
+      const prayers = [];
 
-            const prayers = [];
+      snapshot.forEach((docSnapshot) => {
+        prayers.push({
+          id: docSnapshot.id,
 
+          ...docSnapshot.data(),
+        });
+      });
 
-            snapshot.forEach(
-                (docSnapshot) => {
+      updatePrayerStats(prayers);
 
-                    prayers.push({
+      prayers.forEach((prayer) => {
+        renderPrayer(prayer);
+      });
+    },
 
-                        id:
-                            docSnapshot.id,
+    (error) => {
+      console.error("Prayer loading error:", error);
 
-                        ...docSnapshot.data()
-
-                    });
-
-                }
-            );
-
-
-            updatePrayerStats(
-                prayers
-            );
-
-
-            prayers.forEach(
-                (prayer) => {
-
-                    renderPrayer(
-                        prayer
-                    );
-
-                }
-            );
-
-        },
-
-
-        (error) => {
-
-            console.error(
-                "Prayer loading error:",
-                error
-            );
-
-
-            prayerList.innerHTML = `
+      prayerList.innerHTML = `
 
                 <div class="alert alert-danger">
 
@@ -214,88 +144,48 @@ function loadMyPrayers(userId) {
                 </div>
 
             `;
-
-        }
-
-    );
-
+    },
+  );
 }
-
 
 // ========================================
 // PRAYER STATS
 // ========================================
 
-function updatePrayerStats(
-    prayers
-) {
+function updatePrayerStats(prayers) {
+  const total = prayers.length;
 
-    const total =
-        prayers.length;
+  const answered = prayers.filter((prayer) => prayer.answered === true).length;
 
+  const pending = total - answered;
 
-    const answered =
-        prayers.filter(
-            prayer =>
-                prayer.answered === true
-        ).length;
+  if (totalPrayers) {
+    totalPrayers.textContent = total;
+  }
 
+  if (pendingPrayers) {
+    pendingPrayers.textContent = pending;
+  }
 
-    const pending =
-        total - answered;
-
-
-    if (totalPrayers) {
-
-        totalPrayers.textContent =
-            total;
-
-    }
-
-
-    if (pendingPrayers) {
-
-        pendingPrayers.textContent =
-            pending;
-
-    }
-
-
-    if (answeredPrayers) {
-
-        answeredPrayers.textContent =
-            answered;
-
-    }
-
+  if (answeredPrayers) {
+    answeredPrayers.textContent = answered;
+  }
 }
-
 
 // ========================================
 // RENDER PRAYER
 // ========================================
 
-function renderPrayer(
-    prayer
-) {
+function renderPrayer(prayer) {
+  const answered = prayer.answered === true;
 
-    const answered =
-        prayer.answered === true;
+  const date = prayer.date || "Unknown date";
 
+  const item = document.createElement("div");
 
-    const date =
-        prayer.date || "Unknown date";
+  item.className = "dashboard-card prayer-card mb-3";
 
-
-    const item =
-        document.createElement("div");
-
-
-    item.className =
-        "dashboard-card prayer-card mb-3";
-
-
-    item.innerHTML = `
+  item.innerHTML = `
 
         <div class="d-flex justify-content-between align-items-start gap-3">
 
@@ -307,25 +197,19 @@ function renderPrayer(
 
                     <span
                         class="badge rounded-pill prayer-status ${
-                            answered
-                                ? "bg-success"
-                                : "bg-warning text-dark"
+                          answered ? "bg-success" : "bg-warning text-dark"
                         }"
                     >
 
                         <i
                             class="bi ${
-                                answered
-                                    ? "bi-check-circle-fill"
-                                    : "bi-hourglass-split"
+                              answered
+                                ? "bi-check-circle-fill"
+                                : "bi-hourglass-split"
                             } me-1"
                         ></i>
 
-                        ${
-                            answered
-                                ? "Answered"
-                                : "Still Praying"
-                        }
+                        ${answered ? "Answered" : "Still Praying"}
 
                     </span>
 
@@ -343,9 +227,7 @@ function renderPrayer(
 
                     <i class="bi bi-quote me-1"></i>
 
-                    ${escapeHtml(
-                        prayer.request || ""
-                    )}
+                    ${escapeHtml(prayer.request || "")}
 
                 </div>
 
@@ -380,230 +262,121 @@ function renderPrayer(
 
     `;
 
+  const checkbox = item.querySelector(".prayer-answered-checkbox");
 
-    const checkbox =
-        item.querySelector(
-            ".prayer-answered-checkbox"
-        );
+  checkbox.addEventListener("change", async () => {
+    await updatePrayerStatus(prayer.id, checkbox.checked);
+  });
 
-
-    checkbox.addEventListener(
-        "change",
-        async () => {
-
-            await updatePrayerStatus(
-                prayer.id,
-                checkbox.checked
-            );
-
-        }
-    );
-
-
-    prayerList.appendChild(
-        item
-    );
-
+  prayerList.appendChild(item);
 }
-
 
 // ========================================
 // UPDATE PRAYER STATUS
 // ========================================
 
-async function updatePrayerStatus(
-    prayerId,
-    answered
-) {
+async function updatePrayerStatus(prayerId, answered) {
+  try {
+    const prayerRef = doc(db, "prayerRequests", prayerId);
 
-    try {
+    await updateDoc(prayerRef, {
+      answered: answered,
 
-        const prayerRef =
-            doc(
-                db,
-                "prayerRequests",
-                prayerId
-            );
+      answeredAt: answered ? new Date() : null,
 
+      answeredBy: answered ? auth.currentUser.uid : null,
+    });
 
-        await updateDoc(
-            prayerRef,
-            {
+    Swal.fire({
+      icon: "success",
 
-                answered:
-                    answered,
+      title: answered
+        ? "Prayer Marked as Answered! 🙏"
+        : "Prayer Marked as Unanswered",
 
-                answeredAt:
-                    answered
-                        ? new Date()
-                        : null,
+      text: answered
+        ? "Praise God for His answer to your prayer!"
+        : "Your prayer has been moved back to Still Praying.",
 
-                answeredBy:
-                    answered
-                        ? auth.currentUser.uid
-                        : null
+      timer: 1800,
 
-            }
-        );
+      showConfirmButton: false,
+    });
+  } catch (error) {
+    console.error("Prayer status update error:", error);
 
+    Swal.fire({
+      icon: "error",
 
-        Swal.fire({
+      title: "Update Failed",
 
-            icon:
-                "success",
+      text: "We couldn't update your prayer status.",
 
-            title:
-                answered
-                    ? "Prayer Marked as Answered! 🙏"
-                    : "Prayer Marked as Unanswered",
-
-            text:
-                answered
-                    ? "Praise God for His answer to your prayer!"
-                    : "Your prayer has been moved back to Still Praying.",
-
-            timer:
-                1800,
-
-            showConfirmButton:
-                false
-
-        });
-
-
-    } catch (error) {
-
-        console.error(
-            "Prayer status update error:",
-            error
-        );
-
-
-        Swal.fire({
-
-            icon:
-                "error",
-
-            title:
-                "Update Failed",
-
-            text:
-                "We couldn't update your prayer status.",
-
-            confirmButtonColor:
-                "#6f4e37"
-
-        });
-
-    }
-
+      confirmButtonColor: "#6f4e37",
+    });
+  }
 }
-
 
 // ========================================
 // LOGOUT
 // ========================================
 
 async function logout() {
+  const result = await Swal.fire({
+    icon: "question",
 
-    const result =
-        await Swal.fire({
+    title: "Logout?",
 
-            icon:
-                "question",
+    text: "Are you sure you want to logout?",
 
-            title:
-                "Logout?",
+    showCancelButton: true,
 
-            text:
-                "Are you sure you want to logout?",
+    confirmButtonColor: "#6f4e37",
 
-            showCancelButton:
-                true,
+    cancelButtonColor: "#6c757d",
 
-            confirmButtonColor:
-                "#6f4e37",
+    confirmButtonText: "Yes, Logout",
 
-            cancelButtonColor:
-                "#6c757d",
+    cancelButtonText: "Cancel",
+  });
 
-            confirmButtonText:
-                "Yes, Logout",
+  if (!result.isConfirmed) {
+    return;
+  }
 
-            cancelButtonText:
-                "Cancel"
+  try {
+    await signOut(auth);
 
-        });
-
-
-    if (!result.isConfirmed) {
-        return;
-    }
-
-
-    try {
-
-        await signOut(auth);
-
-        window.location.href =
-            "./index.html";
-
-    } catch (error) {
-
-        console.error(
-            "Logout error:",
-            error
-        );
-
-    }
-
+    window.location.href = "./index.html";
+  } catch (error) {
+    console.error("Logout error:", error);
+  }
 }
-
 
 if (logoutButton) {
+  logoutButton.addEventListener("click", (e) => {
+    e.preventDefault();
 
-    logoutButton.addEventListener(
-        "click",
-        (e) => {
-
-            e.preventDefault();
-
-            logout();
-
-        }
-    );
-
+    logout();
+  });
 }
-
 
 if (mobileLogoutButton) {
+  mobileLogoutButton.addEventListener("click", (e) => {
+    e.preventDefault();
 
-    mobileLogoutButton.addEventListener(
-        "click",
-        (e) => {
-
-            e.preventDefault();
-
-            logout();
-
-        }
-    );
-
+    logout();
+  });
 }
-
 
 // ========================================
 // ESCAPE HTML
 // ========================================
 
 function escapeHtml(text) {
+  const div = document.createElement("div");
 
-    const div =
-        document.createElement("div");
+  div.textContent = text;
 
-    div.textContent =
-        text;
-
-    return div.innerHTML;
-
+  return div.innerHTML;
 }

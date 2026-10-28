@@ -1,52 +1,50 @@
 import { auth, db } from "./firebase.js";
 
-import {
-    signOut
-} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import { signOut } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 
 import {
-    collection,
-    getDocs,
-    doc,
-    updateDoc,
-    deleteDoc
+  collection,
+  getDocs,
+  doc,
+  updateDoc,
+  deleteDoc,
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-
 
 // ========================================
 // ELEMENTS
 // ========================================
 
-const usersTableBody =
-    document.getElementById("usersTableBody");
+const usersTableBody = document.getElementById("usersTableBody");
 
-const searchUser =
-    document.getElementById("searchUser");
+const searchUser = document.getElementById("searchUser");
 
-const sortUsers =
-    document.getElementById("sortUsers");
+const sortUsers = document.getElementById("sortUsers");
 
-const topRanking =
-    document.getElementById("topRanking");
+const topRanking = document.getElementById("topRanking");
 
-const totalUsers =
-    document.getElementById("totalUsers");
+const totalUsers = document.getElementById("totalUsers");
 
-const totalDevotions =
-    document.getElementById("totalDevotions");
+const totalDevotions = document.getElementById("totalDevotions");
 
-const averageConsistency =
-    document.getElementById("averageConsistency");
+const averageConsistency = document.getElementById("averageConsistency");
 
-const visibleUsers =
-    document.getElementById("visibleUsers");
+const visibleUsers = document.getElementById("visibleUsers");
 
-const logoutBtn =
-    document.getElementById("logoutBtn");
+const logoutBtn = document.getElementById("logoutBtn");
 
-const mobileLogoutBtn =
-    document.getElementById("mobileLogoutBtn");
+const mobileLogoutBtn = document.getElementById("mobileLogoutBtn");
 
+const missedDaysModalElement = document.getElementById("missedDaysModal");
+
+const missedDaysModal = missedDaysModalElement
+  ? new bootstrap.Modal(missedDaysModalElement)
+  : null;
+
+const missedDaysUserName = document.getElementById("missedDaysUserName");
+
+const missedDaysCount = document.getElementById("missedDaysCount");
+
+const missedDaysList = document.getElementById("missedDaysList");
 
 // ========================================
 // DATA
@@ -55,362 +53,209 @@ const mobileLogoutBtn =
 let allUsers = [];
 let allDevotions = [];
 
-
 // ========================================
 // ADMIN AUTH
 // ========================================
 
 function checkAdmin() {
+  const isAdmin = localStorage.getItem("isAdmin");
 
-    const isAdmin =
-        localStorage.getItem("isAdmin");
+  if (isAdmin !== "true") {
+    window.location.href = "./index.html";
 
-    if (isAdmin !== "true") {
+    return false;
+  }
 
-        window.location.href =
-            "./index.html";
-
-        return false;
-    }
-
-    return true;
+  return true;
 }
-
 
 // ========================================
 // NAME HELPERS
 // ========================================
 
 function getFirstName(data) {
-
-    return (
-        data.firstName ||
-        data.firstname ||
-        data.first_name ||
-        ""
-    ).trim();
+  return (data.firstName || data.firstname || data.first_name || "").trim();
 }
-
 
 function getLastName(data) {
-
-    return (
-        data.lastName ||
-        data.lastname ||
-        data.last_name ||
-        ""
-    ).trim();
+  return (data.lastName || data.lastname || data.last_name || "").trim();
 }
-
 
 function getFullName(data) {
+  const firstName = getFirstName(data);
 
-    const firstName =
-        getFirstName(data);
+  const lastName = getLastName(data);
 
-    const lastName =
-        getLastName(data);
+  if (lastName && firstName) {
+    return `${lastName}, ${firstName}`;
+  }
 
-    if (lastName && firstName) {
-
-        return `${lastName}, ${firstName}`;
-
-    }
-
-    return (
-        lastName ||
-        firstName ||
-        data.displayName ||
-        data.email ||
-        "Unknown User"
-    );
+  return (
+    lastName || firstName || data.displayName || data.email || "Unknown User"
+  );
 }
-
 
 function getInitials(data) {
+  const first = getFirstName(data);
 
-    const first =
-        getFirstName(data);
+  const last = getLastName(data);
 
-    const last =
-        getLastName(data);
+  if (first && last) {
+    return (first.charAt(0) + last.charAt(0)).toUpperCase();
+  }
 
-    if (first && last) {
+  const name = getFullName(data).replace(",", "").split(" ").filter(Boolean);
 
-        return (
-            first.charAt(0) +
-            last.charAt(0)
-        ).toUpperCase();
+  if (name.length >= 2) {
+    return (name[0].charAt(0) + name[1].charAt(0)).toUpperCase();
+  }
 
-    }
-
-    const name =
-        getFullName(data)
-            .replace(",", "")
-            .split(" ")
-            .filter(Boolean);
-
-    if (name.length >= 2) {
-
-        return (
-            name[0].charAt(0) +
-            name[1].charAt(0)
-        ).toUpperCase();
-
-    }
-
-    return (
-        name[0]?.charAt(0) ||
-        "U"
-    ).toUpperCase();
+  return (name[0]?.charAt(0) || "U").toUpperCase();
 }
-
 
 // ========================================
 // ESCAPE HTML
 // ========================================
 
 function escapeHtml(value) {
-
-    return String(value || "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
+  return String(value || "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }
-
 
 // ========================================
 // DATE HELPERS
 // ========================================
 
 function getDateString(devotion) {
+  if (devotion.date) {
+    return String(devotion.date).substring(0, 10);
+  }
 
-    if (devotion.date) {
+  if (devotion.createdAt && typeof devotion.createdAt.toDate === "function") {
+    const date = devotion.createdAt.toDate();
 
-        return String(
-            devotion.date
-        ).substring(0, 10);
+    return formatLocalDate(date);
+  }
 
-    }
-
-    if (
-        devotion.createdAt &&
-        typeof devotion.createdAt.toDate === "function"
-    ) {
-
-        const date =
-            devotion.createdAt.toDate();
-
-        return formatLocalDate(date);
-
-    }
-
-    return "";
+  return "";
 }
-
 
 function formatLocalDate(date) {
+  if (!(date instanceof Date)) {
+    return "";
+  }
 
-    if (!(date instanceof Date)) {
-        return "";
-    }
+  const year = date.getFullYear();
 
-    const year =
-        date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
 
-    const month =
-        String(
-            date.getMonth() + 1
-        ).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
 
-    const day =
-        String(
-            date.getDate()
-        ).padStart(2, "0");
-
-    return `${year}-${month}-${day}`;
+  return `${year}-${month}-${day}`;
 }
-
 
 function parseDateOnly(dateString) {
+  if (!dateString) {
+    return null;
+  }
 
-    if (!dateString) {
-        return null;
-    }
+  const parts = String(dateString).substring(0, 10).split("-").map(Number);
 
-    const parts =
-        String(dateString)
-            .substring(0, 10)
-            .split("-")
-            .map(Number);
+  if (parts.length !== 3 || parts.some((value) => Number.isNaN(value))) {
+    return null;
+  }
 
-    if (
-        parts.length !== 3 ||
-        parts.some(
-            value => Number.isNaN(value)
-        )
-    ) {
+  const [year, month, day] = parts;
 
-        return null;
-    }
+  const date = new Date(year, month - 1, day);
 
-    const [
-        year,
-        month,
-        day
-    ] = parts;
+  date.setHours(0, 0, 0, 0);
 
-    const date =
-        new Date(
-            year,
-            month - 1,
-            day
-        );
-
-    date.setHours(
-        0,
-        0,
-        0,
-        0
-    );
-
-    return date;
+  return date;
 }
-
 
 // ========================================
 // GET DEVOTION STATUS
 // ========================================
 
 function isChecked(devotion) {
-
-    return (
-        devotion.checked === true ||
-        devotion.reviewed === true ||
-        devotion.isChecked === true ||
-        devotion.status === "checked" ||
-        devotion.status === "Checked" ||
-        devotion.status === "approved"
-    );
+  return (
+    devotion.checked === true ||
+    devotion.reviewed === true ||
+    devotion.isChecked === true ||
+    devotion.status === "checked" ||
+    devotion.status === "Checked" ||
+    devotion.status === "approved"
+  );
 }
-
 
 // ========================================
 // LOAD DATA
 // ========================================
 
 async function loadData() {
+  try {
+    showLoading();
 
-    try {
+    // ========================================
+    // LOAD USERS
+    // ========================================
 
-        showLoading();
+    const usersSnapshot = await getDocs(collection(db, "users"));
 
+    allUsers = [];
 
-        // ========================================
-        // LOAD USERS
-        // ========================================
+    usersSnapshot.forEach((docSnapshot) => {
+      allUsers.push({
+        id: docSnapshot.id,
 
-        const usersSnapshot =
-            await getDocs(
-                collection(
-                    db,
-                    "users"
-                )
-            );
+        ...docSnapshot.data(),
+      });
+    });
 
+    // ========================================
+    // LOAD DEVOTIONALS
+    // ========================================
 
-        allUsers = [];
+    const devotionSnapshot = await getDocs(collection(db, "devotionals"));
 
-        usersSnapshot.forEach(
-            (docSnapshot) => {
+    allDevotions = [];
 
-                allUsers.push({
+    devotionSnapshot.forEach((docSnapshot) => {
+      allDevotions.push({
+        id: docSnapshot.id,
 
-                    id:
-                        docSnapshot.id,
+        ...docSnapshot.data(),
+      });
+    });
 
-                    ...docSnapshot.data()
+    console.log("Users loaded:", allUsers.length);
 
-                });
+    console.log("Devotions loaded:", allDevotions.length);
 
-            }
-        );
+    // ========================================
+    // BUILD STATISTICS
+    // ========================================
 
+    buildUserStatistics();
+  } catch (error) {
+    console.error("Failed to load admin users data:", error);
 
-        // ========================================
-        // LOAD DEVOTIONALS
-        // ========================================
-
-        const devotionSnapshot =
-            await getDocs(
-                collection(
-                    db,
-                    "devotionals"
-                )
-            );
-
-
-        allDevotions = [];
-
-        devotionSnapshot.forEach(
-            (docSnapshot) => {
-
-                allDevotions.push({
-
-                    id:
-                        docSnapshot.id,
-
-                    ...docSnapshot.data()
-
-                });
-
-            }
-        );
-
-
-        console.log(
-            "Users loaded:",
-            allUsers.length
-        );
-
-        console.log(
-            "Devotions loaded:",
-            allDevotions.length
-        );
-
-
-        // ========================================
-        // BUILD STATISTICS
-        // ========================================
-
-        buildUserStatistics();
-
-
-    } catch (error) {
-
-        console.error(
-            "Failed to load admin users data:",
-            error
-        );
-
-
-        showLoadError(error);
-
-    }
+    showLoadError(error);
+  }
 }
-
 
 // ========================================
 // LOADING STATE
 // ========================================
 
 function showLoading() {
-
-    if (topRanking) {
-
-        topRanking.innerHTML = `
+  if (topRanking) {
+    topRanking.innerHTML = `
 
             <div class="col-12">
 
@@ -430,45 +275,32 @@ function showLoading() {
             </div>
 
         `;
+  }
 
-    }
+  if (totalUsers) {
+    totalUsers.textContent = "0";
+  }
 
+  if (totalDevotions) {
+    totalDevotions.textContent = "0";
+  }
 
-    if (totalUsers) {
-        totalUsers.textContent = "0";
-    }
-
-    if (totalDevotions) {
-        totalDevotions.textContent = "0";
-    }
-
-    if (averageConsistency) {
-        averageConsistency.textContent = "0%";
-    }
-
+  if (averageConsistency) {
+    averageConsistency.textContent = "0%";
+  }
 }
-
 
 // ========================================
 // LOAD ERROR
 // ========================================
 
 function showLoadError(error) {
+  console.error("Firestore error code:", error?.code);
 
-    console.error(
-        "Firestore error code:",
-        error?.code
-    );
+  console.error("Firestore error message:", error?.message);
 
-    console.error(
-        "Firestore error message:",
-        error?.message
-    );
-
-
-    if (topRanking) {
-
-        topRanking.innerHTML = `
+  if (topRanking) {
+    topRanking.innerHTML = `
 
             <div class="col-12">
 
@@ -482,8 +314,7 @@ function showLoadError(error) {
 
                     <p>
                         ${escapeHtml(
-                            error?.message ||
-                            "Unable to load Firestore data."
+                          error?.message || "Unable to load Firestore data.",
                         )}
                     </p>
 
@@ -492,13 +323,10 @@ function showLoadError(error) {
             </div>
 
         `;
+  }
 
-    }
-
-
-    if (usersTableBody) {
-
-        usersTableBody.innerHTML = `
+  if (usersTableBody) {
+    usersTableBody.innerHTML = `
 
             <tr>
 
@@ -528,533 +356,308 @@ function showLoadError(error) {
             </tr>
 
         `;
+  }
 
-    }
+  if (totalUsers) {
+    totalUsers.textContent = "0";
+  }
 
+  if (totalDevotions) {
+    totalDevotions.textContent = "0";
+  }
 
-    if (totalUsers) {
-        totalUsers.textContent = "0";
-    }
-
-    if (totalDevotions) {
-        totalDevotions.textContent = "0";
-    }
-
-    if (averageConsistency) {
-        averageConsistency.textContent = "0%";
-    }
-
+  if (averageConsistency) {
+    averageConsistency.textContent = "0%";
+  }
 }
-
 
 // ========================================
 // BUILD USER STATISTICS
 // ========================================
 
 function buildUserStatistics() {
+  const users = [];
 
-    const users = [];
+  // ========================================
+  // PROCESS USERS
+  // ========================================
 
-
-    // ========================================
-    // PROCESS USERS
-    // ========================================
-
-    allUsers.forEach(
-        (user) => {
-
-            const userDevotions =
-                allDevotions.filter(
-                    devotion =>
-                        devotion.userId ===
-                        user.id
-                );
-
-
-            // ========================================
-            // TOTAL DEVOTIONS
-            // ========================================
-
-            const total =
-                userDevotions.length;
-
-
-            // ========================================
-            // CHECKED
-            // ========================================
-
-            const checked =
-                userDevotions.filter(
-                    devotion =>
-                        isChecked(devotion)
-                ).length;
-
-
-            // ========================================
-            // PENDING
-            // ========================================
-
-            const pending =
-                userDevotions.filter(
-                    devotion =>
-                        !isChecked(devotion)
-                ).length;
-
-
-            // ========================================
-            // MISSED DAYS
-            // ========================================
-
-            const missed =
-                calculateMissedDays(
-                    userDevotions
-                );
-
-
-            // ========================================
-            // CONSISTENCY
-            // ========================================
-
-            /*
-             *
-             * Tracked Days =
-             *
-             * Checked
-             * +
-             * Pending
-             * +
-             * Missed
-             *
-             */
-
-            const consistency =
-                calculateConsistency(
-                    userDevotions
-                );
-
-
-            users.push({
-
-                ...user,
-
-                total,
-
-                checked,
-
-                pending,
-
-                missed,
-
-                consistency
-
-            });
-
-        }
+  allUsers.forEach((user) => {
+    const userDevotions = allDevotions.filter(
+      (devotion) => devotion.userId === user.id,
     );
 
+    // ========================================
+    // TOTAL DEVOTIONS
+    // ========================================
+
+    const total = userDevotions.length;
 
     // ========================================
-    // USERS WITHOUT PROFILE
+    // CHECKED
     // ========================================
 
-    allDevotions.forEach(
-        (devotion) => {
-
-            const exists =
-                users.some(
-                    user =>
-                        user.id ===
-                        devotion.userId
-                );
-
-
-            if (!exists) {
-
-                const userDevotions =
-                    allDevotions.filter(
-                        item =>
-                            item.userId ===
-                            devotion.userId
-                    );
-
-
-                const total =
-                    userDevotions.length;
-
-
-                const checked =
-                    userDevotions.filter(
-                        item =>
-                            isChecked(item)
-                    ).length;
-
-
-                const pending =
-                    userDevotions.filter(
-                        item =>
-                            !isChecked(item)
-                    ).length;
-
-
-                const missed =
-                    calculateMissedDays(
-                        userDevotions
-                    );
-
-
-                const consistency =
-                    calculateConsistency(
-                        userDevotions
-                    );
-
-
-                users.push({
-
-                    id:
-                        devotion.userId,
-
-                    firstName:
-                        "",
-
-                    lastName:
-                        "",
-
-                    email:
-                        "",
-
-                    total,
-
-                    checked,
-
-                    pending,
-
-                    missed,
-
-                    consistency
-
-                });
-
-            }
-
-        }
-    );
-
+    const checked = userDevotions.filter((devotion) =>
+      isChecked(devotion),
+    ).length;
 
     // ========================================
-    // RANKING
+    // PENDING
+    // ========================================
+
+    const pending = userDevotions.filter(
+      (devotion) => !isChecked(devotion),
+    ).length;
+
+    // ========================================
+    // MISSED DAYS
+    // ========================================
+
+    const missedDates = calculateMissedDates(userDevotions);
+
+    const missed = missedDates.length;
+
+    // ========================================
+    // CONSISTENCY
     // ========================================
 
     /*
      *
-     * Ranking:
+     * Tracked Days =
      *
-     * 1. More checked
-     * 2. Higher consistency
-     * 3. Fewer missed
-     * 4. Fewer pending
-     * 5. More total devotions
+     * Checked
+     * +
+     * Pending
+     * +
+     * Missed
      *
      */
 
-    users.sort(
-        (a, b) => {
+    const consistency = calculateConsistency(userDevotions);
 
-            if (
-                b.checked !==
-                a.checked
-            ) {
+    users.push({
+      ...user,
 
-                return (
-                    b.checked -
-                    a.checked
-                );
+      total,
 
-            }
+      checked,
 
+      pending,
 
-            if (
-                b.consistency !==
-                a.consistency
-            ) {
+      missed,
 
-                return (
-                    b.consistency -
-                    a.consistency
-                );
+      missedDates,
 
-            }
+      consistency,
+    });
+  });
 
+  // ========================================
+  // USERS WITHOUT PROFILE
+  // ========================================
 
-            if (
-                a.missed !==
-                b.missed
-            ) {
+  allDevotions.forEach((devotion) => {
+    const exists = users.some((user) => user.id === devotion.userId);
 
-                return (
-                    a.missed -
-                    b.missed
-                );
+    if (!exists) {
+      const userDevotions = allDevotions.filter(
+        (item) => item.userId === devotion.userId,
+      );
 
-            }
+      const total = userDevotions.length;
 
+      const checked = userDevotions.filter((item) => isChecked(item)).length;
 
-            if (
-                a.pending !==
-                b.pending
-            ) {
+      const pending = userDevotions.filter((item) => !isChecked(item)).length;
 
-                return (
-                    a.pending -
-                    b.pending
-                );
+      const missedDates = calculateMissedDates(userDevotions);
 
-            }
+      const missed = missedDates.length;
 
+      const consistency = calculateConsistency(userDevotions);
 
-            return (
-                b.total -
-                a.total
-            );
+      users.push({
+        id: devotion.userId,
 
-        }
+        firstName: "",
+
+        lastName: "",
+
+        email: "",
+
+        total,
+
+        checked,
+
+        pending,
+
+        missed,
+
+        missedDates,
+
+        consistency,
+      });
+    }
+  });
+
+  // ========================================
+  // RANKING
+  // ========================================
+
+  /*
+   *
+  * Rank by consistency percentage only.
+  * Equal percentages share a rank; names stabilize their display order.
+   *
+   */
+
+  users.sort((a, b) => {
+    return (
+      b.consistency - a.consistency ||
+      getFullName(a).localeCompare(getFullName(b))
     );
+  });
 
+  // ========================================
+  // ASSIGN RANK
+  // ========================================
 
-    // ========================================
-    // ASSIGN RANK
-    // ========================================
+  let currentRank = 0;
+  let previousConsistency = null;
 
-    users.forEach(
-        (user, index) => {
+  users.forEach((user, index) => {
+    if (user.consistency !== previousConsistency) {
+      currentRank = index + 1;
+      previousConsistency = user.consistency;
+    }
 
-            user.rank =
-                index + 1;
+    user.rank = currentRank;
+  });
 
-        }
-    );
+  // ========================================
+  // SAVE
+  // ========================================
 
+  allUsers = users;
 
-    // ========================================
-    // SAVE
-    // ========================================
+  // ========================================
+  // RENDER
+  // ========================================
 
-    allUsers =
-        users;
+  renderStatistics(users);
 
+  renderTopRanking(users);
 
-    // ========================================
-    // RENDER
-    // ========================================
-
-    renderStatistics(
-        users
-    );
-
-    renderTopRanking(
-        users
-    );
-
-    renderUsers(
-        users
-    );
-
+  renderUsers(users);
 }
-
 
 // ========================================
 // CALCULATE MISSED DAYS
 // ========================================
 
-function calculateMissedDays(
-    userDevotions
-) {
+function calculateMissedDates(userDevotions) {
+  if (!userDevotions || !userDevotions.length) {
+    return [];
+  }
 
-    if (
-        !userDevotions ||
-        !userDevotions.length
-    ) {
+  const dates = [
+    ...new Set(
+      userDevotions.map((devotion) => getDateString(devotion)).filter(Boolean),
+    ),
+  ]
+    .filter((date) => parseDateOnly(date))
+    .sort();
 
-        return 0;
+  if (!dates.length) {
+    return [];
+  }
 
+  const submittedDates = new Set(dates);
+  const firstDate = parseDateOnly(dates[0]);
+  const yesterday = new Date();
+  yesterday.setHours(0, 0, 0, 0);
+  yesterday.setDate(yesterday.getDate() - 1);
+
+  const missedDates = [];
+
+  for (
+    const date = new Date(firstDate);
+    date <= yesterday;
+    date.setDate(date.getDate() + 1)
+  ) {
+    const dateString = formatLocalDate(date);
+
+    if (!submittedDates.has(dateString)) {
+      missedDates.push(dateString);
     }
+  }
 
-
-    // ========================================
-    // GET VALID DATES
-    // ========================================
-
-    const dates =
-        userDevotions
-            .map(
-                devotion =>
-                    parseDateOnly(
-                        getDateString(
-                            devotion
-                        )
-                    )
-            )
-            .filter(Boolean);
-
-
-    if (!dates.length) {
-
-        return 0;
-
-    }
-
-
-    // The missed count is the current consecutive
-    // gap since the user's latest submitted devotion.
-    const latestDate =
-        new Date(
-            Math.max(
-                ...dates.map(
-                    date =>
-                        date.getTime()
-                )
-            )
-        );
-
-
-    // ========================================
-    // YESTERDAY
-    // ========================================
-
-    const yesterday =
-        new Date();
-
-    yesterday.setHours(
-        0,
-        0,
-        0,
-        0
-    );
-
-    yesterday.setDate(
-        yesterday.getDate() - 1
-    );
-
-
-    if (latestDate >= yesterday) {
-        return 0;
-    }
-
-
-    const millisecondsPerDay =
-        24 * 60 * 60 * 1000;
-
-    return Math.round(
-        (yesterday.getTime() - latestDate.getTime()) /
-        millisecondsPerDay
-    );
+  return missedDates;
 }
-
 
 function calculateConsistency(userDevotions) {
+  const dates = [
+    ...new Set(
+      userDevotions.map((devotion) => getDateString(devotion)).filter(Boolean),
+    ),
+  ];
 
-    const dates = [
-        ...new Set(
-            userDevotions
-                .map(devotion => getDateString(devotion))
-                .filter(Boolean)
-        )
-    ];
+  if (!dates.length) {
+    return 0;
+  }
 
-    if (!dates.length) {
-        return 0;
-    }
+  const firstDate = parseDateOnly(dates.sort()[0]);
+  const today = new Date();
 
-    const firstDate = parseDateOnly(dates.sort()[0]);
-    const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
-    today.setHours(0, 0, 0, 0);
+  const millisecondsPerDay = 24 * 60 * 60 * 1000;
+  const trackedDays = Math.max(
+    1,
+    Math.floor((today.getTime() - firstDate.getTime()) / millisecondsPerDay) +
+      1,
+  );
 
-    const millisecondsPerDay = 24 * 60 * 60 * 1000;
-    const trackedDays = Math.max(
-        1,
-        Math.floor(
-            (today.getTime() - firstDate.getTime()) /
-            millisecondsPerDay
-        ) + 1
-    );
-
-    return Math.round((dates.length / trackedDays) * 100);
+  return Math.round((dates.length / trackedDays) * 100);
 }
-
 
 // ========================================
 // STATISTICS
 // ========================================
 
 function renderStatistics(users) {
+  const total = users.length;
 
-    const total =
-        users.length;
+  const devotionCount = allDevotions.length;
 
+  const average = users.length
+    ? Math.round(
+        users.reduce((sum, user) => sum + user.consistency, 0) / users.length,
+      )
+    : 0;
 
-    const devotionCount =
-        allDevotions.length;
+  if (totalUsers) {
+    totalUsers.textContent = total;
+  }
 
+  if (totalDevotions) {
+    totalDevotions.textContent = devotionCount;
+  }
 
-    const average =
-        users.length
-            ? Math.round(
-                users.reduce(
-                    (
-                        sum,
-                        user
-                    ) =>
-                        sum +
-                        user.consistency,
-                    0
-                ) /
-                users.length
-            )
-            : 0;
-
-
-    if (totalUsers) {
-
-        totalUsers.textContent =
-            total;
-
-    }
-
-
-    if (totalDevotions) {
-
-        totalDevotions.textContent =
-            devotionCount;
-
-    }
-
-
-    if (averageConsistency) {
-
-        averageConsistency.textContent =
-            `${average}%`;
-
-    }
-
+  if (averageConsistency) {
+    averageConsistency.textContent = `${average}%`;
+  }
 }
-
 
 // ========================================
 // TOP RANKING
 // ========================================
 
 function renderTopRanking(users) {
+  const top = users.slice(0, 3);
 
-    const top =
-        users.slice(
-            0,
-            3
-        );
-
-
-    if (!top.length) {
-
-        topRanking.innerHTML = `
+  if (!top.length) {
+    topRanking.innerHTML = `
 
             <div class="col-12">
 
@@ -1072,30 +675,16 @@ function renderTopRanking(users) {
 
         `;
 
-        return;
+    return;
+  }
 
-    }
+  const medals = ["🥇", "🥈", "🥉"];
 
+  const classes = ["first", "second", "third"];
 
-    const medals = [
-        "🥇",
-        "🥈",
-        "🥉"
-    ];
-
-
-    const classes = [
-        "first",
-        "second",
-        "third"
-    ];
-
-
-    topRanking.innerHTML =
-        top.map(
-            (user, index) => {
-
-                return `
+  topRanking.innerHTML = top
+    .map((user, index) => {
+      return `
 
                     <div class="col-md-4">
 
@@ -1110,17 +699,13 @@ function renderTopRanking(users) {
 
 
                             <div class="top-avatar">
-                                ${escapeHtml(
-                                    getInitials(user)
-                                )}
+                                ${escapeHtml(getInitials(user))}
                             </div>
 
 
                             <div class="top-name">
 
-                                ${escapeHtml(
-                                    getFullName(user)
-                                )}
+                                ${escapeHtml(getFullName(user))}
 
                             </div>
 
@@ -1180,170 +765,67 @@ function renderTopRanking(users) {
                     </div>
 
                 `;
-
-            }
-        ).join("");
-
+    })
+    .join("");
 }
-
 
 // ========================================
 // USER TABLE
 // ========================================
 
 function renderUsers(users) {
+  let filtered = [...users];
 
-    let filtered =
-        [...users];
+  // ========================================
+  // SEARCH
+  // ========================================
 
+  const search = searchUser ? searchUser.value.trim().toLowerCase() : "";
 
-    // ========================================
-    // SEARCH
-    // ========================================
+  if (search) {
+    filtered = filtered.filter((user) => {
+      const name = getFullName(user).toLowerCase();
 
-    const search =
-        searchUser
-            ? searchUser.value
-                .trim()
-                .toLowerCase()
-            : "";
+      const email = (user.email || "").toLowerCase();
 
+      return name.includes(search) || email.includes(search);
+    });
+  }
 
-    if (search) {
+  // ========================================
+  // SORT
+  // ========================================
 
-        filtered =
-            filtered.filter(
-                (user) => {
+  const sort = sortUsers ? sortUsers.value : "rank";
 
-                    const name =
-                        getFullName(user)
-                            .toLowerCase();
+  if (sort === "name") {
+    filtered.sort(sortByName);
+  } else if (sort === "devotions") {
+    filtered.sort((a, b) => b.total - a.total);
+  } else if (sort === "checked") {
+    filtered.sort((a, b) => b.checked - a.checked);
+  } else if (sort === "missed") {
+    filtered.sort((a, b) => a.missed - b.missed);
+  } else if (sort === "consistency") {
+    filtered.sort((a, b) => b.consistency - a.consistency);
+  } else {
+    filtered.sort((a, b) => a.rank - b.rank);
+  }
 
-                    const email =
-                        (
-                            user.email ||
-                            ""
-                        ).toLowerCase();
+  // ========================================
+  // VISIBLE USERS
+  // ========================================
 
+  if (visibleUsers) {
+    visibleUsers.textContent = filtered.length;
+  }
 
-                    return (
-                        name.includes(
-                            search
-                        ) ||
-                        email.includes(
-                            search
-                        )
-                    );
+  // ========================================
+  // EMPTY
+  // ========================================
 
-                }
-            );
-
-    }
-
-
-    // ========================================
-    // SORT
-    // ========================================
-
-    const sort =
-        sortUsers
-            ? sortUsers.value
-            : "rank";
-
-
-    if (
-        sort ===
-        "name"
-    ) {
-
-        filtered.sort(
-            sortByName
-        );
-
-    }
-
-    else if (
-        sort ===
-        "devotions"
-    ) {
-
-        filtered.sort(
-            (a, b) =>
-                b.total -
-                a.total
-        );
-
-    }
-
-    else if (
-        sort ===
-        "checked"
-    ) {
-
-        filtered.sort(
-            (a, b) =>
-                b.checked -
-                a.checked
-        );
-
-    }
-
-    else if (
-        sort ===
-        "missed"
-    ) {
-
-        filtered.sort(
-            (a, b) =>
-                a.missed -
-                b.missed
-        );
-
-    }
-
-    else if (
-        sort ===
-        "consistency"
-    ) {
-
-        filtered.sort(
-            (a, b) =>
-                b.consistency -
-                a.consistency
-        );
-
-    }
-
-    else {
-
-        filtered.sort(
-            (a, b) =>
-                a.rank -
-                b.rank
-        );
-
-    }
-
-
-    // ========================================
-    // VISIBLE USERS
-    // ========================================
-
-    if (visibleUsers) {
-
-        visibleUsers.textContent =
-            filtered.length;
-
-    }
-
-
-    // ========================================
-    // EMPTY
-    // ========================================
-
-    if (!filtered.length) {
-
-        usersTableBody.innerHTML = `
+  if (!filtered.length) {
+    usersTableBody.innerHTML = `
 
             <tr>
 
@@ -1372,137 +854,64 @@ function renderUsers(users) {
 
         `;
 
-        return;
+    return;
+  }
 
-    }
+  // ========================================
+  // RENDER
+  // ========================================
 
-
-    // ========================================
-    // RENDER
-    // ========================================
-
-    usersTableBody.innerHTML =
-        filtered
-            .map(
-                renderUserRow
-            )
-            .join("");
-
+  usersTableBody.innerHTML = filtered.map(renderUserRow).join("");
 }
-
 
 // ========================================
 // USER ROW
 // ========================================
 
 function renderUserRow(user) {
+  let rankClass = "rank-other";
 
-    let rankClass =
-        "rank-other";
+  if (user.rank === 1) {
+    rankClass = "rank-1";
+  }
 
+  if (user.rank === 2) {
+    rankClass = "rank-2";
+  }
 
-    if (
-        user.rank ===
-        1
-    ) {
+  if (user.rank === 3) {
+    rankClass = "rank-3";
+  }
 
-        rankClass =
-            "rank-1";
+  // ========================================
+  // PERFORMANCE STATUS
+  // ========================================
 
+  let statusClass = "performance-new";
+
+  let statusText = "No Devotion Yet";
+
+  if (user.total > 0) {
+    if (user.consistency >= 90) {
+      statusClass = "performance-excellent";
+
+      statusText = "Excellent";
+    } else if (user.consistency >= 70) {
+      statusClass = "performance-good";
+
+      statusText = "Good";
+    } else if (user.consistency >= 40) {
+      statusClass = "performance-average";
+
+      statusText = "Needs Improvement";
+    } else {
+      statusClass = "performance-low";
+
+      statusText = "Low";
     }
+  }
 
-
-    if (
-        user.rank ===
-        2
-    ) {
-
-        rankClass =
-            "rank-2";
-
-    }
-
-
-    if (
-        user.rank ===
-        3
-    ) {
-
-        rankClass =
-            "rank-3";
-
-    }
-
-
-    // ========================================
-    // PERFORMANCE STATUS
-    // ========================================
-
-    let statusClass =
-        "performance-new";
-
-    let statusText =
-        "No Devotion Yet";
-
-
-    if (
-        user.total >
-        0
-    ) {
-
-        if (
-            user.consistency >=
-            90
-        ) {
-
-            statusClass =
-                "performance-excellent";
-
-            statusText =
-                "Excellent";
-
-        }
-
-        else if (
-            user.consistency >=
-            70
-        ) {
-
-            statusClass =
-                "performance-good";
-
-            statusText =
-                "Good";
-
-        }
-
-        else if (
-            user.consistency >=
-            40
-        ) {
-
-            statusClass =
-                "performance-average";
-
-            statusText =
-                "Needs Improvement";
-
-        }
-
-        else {
-
-            statusClass =
-                "performance-low";
-
-            statusText =
-                "Low";
-
-        }
-
-    }
-
-
-    return `
+  return `
 
         <tr>
 
@@ -1530,9 +939,7 @@ function renderUserRow(user) {
 
                     <div class="user-avatar">
 
-                        ${escapeHtml(
-                            getInitials(user)
-                        )}
+                        ${escapeHtml(getInitials(user))}
 
                     </div>
 
@@ -1541,18 +948,14 @@ function renderUserRow(user) {
 
                         <div class="user-name">
 
-                            ${escapeHtml(
-                                getFullName(user)
-                            )}
+                            ${escapeHtml(getFullName(user))}
 
                         </div>
 
 
                         <div class="user-email">
 
-                            ${escapeHtml(
-                                user.email || ""
-                            )}
+                            ${escapeHtml(user.email || "")}
 
                         </div>
 
@@ -1599,24 +1002,26 @@ function renderUserRow(user) {
 
             <td>
 
-                <span class="
-                    admin-badge
-                    ${
-                        user.missed > 0
-                            ? "missed"
-                            : "checked"
-                    }
-                ">
+              <button
+                type="button"
+                class="
+                  admin-badge
+                  missed-days-trigger
+                  ${user.missed > 0 ? "missed" : "checked"}
+                "
+                data-missed-user-id="${escapeHtml(user.id)}"
+                aria-label="Show ${user.missed} missed devotion days for ${escapeHtml(getFullName(user))}"
+              >
 
                     <i class="bi ${
-                        user.missed > 0
-                            ? "bi-calendar-x-fill"
-                            : "bi-check-circle-fill"
+                      user.missed > 0
+                        ? "bi-calendar-x-fill"
+                        : "bi-check-circle-fill"
                     }"></i>
 
                     ${user.missed}
 
-                </span>
+                </button>
 
             </td>
 
@@ -1677,146 +1082,115 @@ function renderUserRow(user) {
         </tr>
 
     `;
-
 }
-
 
 // ========================================
 // SORT BY NAME
 // ========================================
 
 function sortByName(a, b) {
+  const lastA = getLastName(a).toLowerCase();
 
-    const lastA =
-        getLastName(a)
-            .toLowerCase();
+  const lastB = getLastName(b).toLowerCase();
 
-    const lastB =
-        getLastName(b)
-            .toLowerCase();
+  if (lastA !== lastB) {
+    return lastA.localeCompare(lastB);
+  }
 
-
-    if (
-        lastA !==
-        lastB
-    ) {
-
-        return lastA.localeCompare(
-            lastB
-        );
-
-    }
-
-
-    return getFirstName(a)
-        .toLowerCase()
-        .localeCompare(
-            getFirstName(b)
-                .toLowerCase()
-        );
+  return getFirstName(a)
+    .toLowerCase()
+    .localeCompare(getFirstName(b).toLowerCase());
 }
-
 
 // ========================================
 // SEARCH
 // ========================================
 
 if (searchUser) {
-
-    searchUser.addEventListener(
-        "input",
-        () =>
-            renderUsers(
-                allUsers
-            )
-    );
-
+  searchUser.addEventListener("input", () => renderUsers(allUsers));
 }
-
 
 // ========================================
 // SORT
 // ========================================
 
 if (sortUsers) {
-
-    sortUsers.addEventListener(
-        "change",
-        () =>
-            renderUsers(
-                allUsers
-            )
-    );
-
+  sortUsers.addEventListener("change", () => renderUsers(allUsers));
 }
 
+if (usersTableBody && missedDaysModal) {
+  usersTableBody.addEventListener("click", (event) => {
+    const trigger = event.target.closest("[data-missed-user-id]");
+
+    if (!trigger) {
+      return;
+    }
+
+    const user = allUsers.find(
+      (item) => item.id === trigger.dataset.missedUserId,
+    );
+
+    if (!user) {
+      return;
+    }
+
+    missedDaysUserName.textContent = getFullName(user);
+    missedDaysCount.textContent = `${user.missed} missed day${
+      user.missed === 1 ? "" : "s"
+    }`;
+
+    if (user.missedDates.length) {
+      missedDaysList.innerHTML = user.missedDates
+        .map((date) => {
+          const displayDate = parseDateOnly(date).toLocaleDateString(
+            undefined,
+            { year: "numeric", month: "long", day: "numeric" },
+          );
+
+          return `<li class="list-group-item">${escapeHtml(displayDate)}</li>`;
+        })
+        .join("");
+    } else {
+      missedDaysList.innerHTML =
+        '<li class="list-group-item text-muted">No missed devotion days.</li>';
+    }
+
+    missedDaysModal.show();
+  });
+}
 
 // ========================================
 // LOGOUT
 // ========================================
 
 async function logout(event) {
+  if (event) {
+    event.preventDefault();
+  }
 
-    if (event) {
-        event.preventDefault();
-    }
+  try {
+    await signOut(auth);
+  } catch (error) {
+    console.error("Logout error:", error);
+  } finally {
+    localStorage.removeItem("isAdmin");
 
-
-    try {
-
-        await signOut(
-            auth
-        );
-
-    } catch (error) {
-
-        console.error(
-            "Logout error:",
-            error
-        );
-
-    } finally {
-
-        localStorage.removeItem(
-            "isAdmin"
-        );
-
-        window.location.href =
-            "./index.html";
-
-    }
-
+    window.location.href = "./index.html";
+  }
 }
-
 
 if (logoutBtn) {
-
-    logoutBtn.addEventListener(
-        "click",
-        logout
-    );
-
+  logoutBtn.addEventListener("click", logout);
 }
-
 
 if (mobileLogoutBtn) {
-
-    mobileLogoutBtn.addEventListener(
-        "click",
-        logout
-    );
-
+  mobileLogoutBtn.addEventListener("click", logout);
 }
-
 
 // ========================================
 // START
 // ========================================
 
-if (
-    checkAdmin()
-) {
-
-    loadData();
-
+if (checkAdmin()) {
+  loadData();
 }

@@ -1,378 +1,236 @@
 import { db } from "./firebase.js";
 
 import {
-    doc,
-    getDoc
+  doc,
+  getDoc,
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-
 
 // ========================================
 // ELEMENTS
 // ========================================
 
-const loadingState =
-    document.getElementById("loadingState");
+const loadingState = document.getElementById("loadingState");
 
-const errorState =
-    document.getElementById("errorState");
+const errorState = document.getElementById("errorState");
 
-const devotionContent =
-    document.getElementById("devotionContent");
+const devotionContent = document.getElementById("devotionContent");
 
-const devotionFormat =
-    document.getElementById("devotionFormat");
+const devotionFormat = document.getElementById("devotionFormat");
 
-const devotionDate =
-    document.getElementById("devotionDate");
+const devotionTitle = document.getElementById("devotionTitle");
 
-const devotionScripture =
-    document.getElementById("devotionScripture");
+const devotionDate = document.getElementById("devotionDate");
 
-const observationSection =
-    document.getElementById("observationSection");
+const devotionScripture = document.getElementById("devotionScripture");
 
-const devotionObservation =
-    document.getElementById("devotionObservation");
+const observationSection = document.getElementById("observationSection");
 
-const lessonSection =
-    document.getElementById("lessonSection");
+const devotionObservation = document.getElementById("devotionObservation");
 
-const devotionLesson =
-    document.getElementById("devotionLesson");
+const lessonSection = document.getElementById("lessonSection");
 
-const devotionApplication =
-    document.getElementById("devotionApplication");
+const devotionLesson = document.getElementById("devotionLesson");
 
+const devotionApplication = document.getElementById("devotionApplication");
 
 // ========================================
 // ESCAPE HTML
 // ========================================
 
 function escapeHtml(text) {
+  const div = document.createElement("div");
 
-    const div =
-        document.createElement("div");
+  div.textContent = text || "";
 
-    div.textContent =
-        text || "";
-
-    return div.innerHTML;
+  return div.innerHTML;
 }
 
+// ========================================
+// FORMAT DEVOTION TEXT
+// ========================================
+
+function formatDevotionText(value) {
+  if (value === null || value === undefined) {
+    return "";
+  }
+
+  return escapeHtml(String(value));
+}
 
 // ========================================
 // GET SHARE ID
 // ========================================
 
-const urlParams =
-    new URLSearchParams(
-        window.location.search
-    );
+const urlParams = new URLSearchParams(window.location.search);
 
-const shareId =
-    urlParams.get("id");
-
+const shareId = urlParams.get("id");
 
 // ========================================
 // LOAD SHARED DEVOTION
 // ========================================
 
 async function loadSharedDevotion() {
+  if (!shareId) {
+    showError();
 
-    if (!shareId) {
+    return;
+  }
 
-        showError();
+  try {
+    const devotionRef = doc(db, "sharedDevotions", shareId);
 
-        return;
+    const devotionSnapshot = await getDoc(devotionRef);
+
+    if (!devotionSnapshot.exists()) {
+      showError();
+
+      return;
     }
 
+    const data = devotionSnapshot.data();
 
-    try {
+    renderDevotion(data);
+  } catch (error) {
+    console.error("Shared devotion error:", error);
 
-        const devotionRef =
-            doc(
-                db,
-                "sharedDevotions",
-                shareId
-            );
-
-
-        const devotionSnapshot =
-            await getDoc(
-                devotionRef
-            );
-
-
-        if (!devotionSnapshot.exists()) {
-
-            showError();
-
-            return;
-        }
-
-
-        const data =
-            devotionSnapshot.data();
-
-
-        renderDevotion(data);
-
-
-    } catch (error) {
-
-        console.error(
-            "Shared devotion error:",
-            error
-        );
-
-        showError();
-
-    }
-
+    showError();
+  }
 }
-
 
 // ========================================
 // RENDER DEVOTION
 // ========================================
 
 function renderDevotion(data) {
+  const format = (data.format || "SOAP").toUpperCase();
 
-    const format =
-        (
-            data.format ||
-            "SOAP"
-        ).toUpperCase();
+  const content = data.content || {};
 
+  // ========================================
+  // PUBLIC CONTENT ONLY
+  // PRAYER IS NOT READ OR DISPLAYED
+  // ========================================
 
-    const content =
-        data.content || {};
+  const scripture = content.scripture || "";
 
+  const observation = content.observation || "";
 
-    // ========================================
-    // PUBLIC CONTENT ONLY
-    // PRAYER IS NOT READ OR DISPLAYED
-    // ========================================
+  const lesson = content.lesson || "";
 
-    const scripture =
-        content.scripture ||
-        "";
+  const application = content.application || "";
 
+  // ========================================
+  // HEADER
+  // ========================================
 
-    const observation =
-        content.observation ||
-        "";
+  devotionFormat.textContent = format;
 
+  devotionTitle.textContent =
+    data.title || data.content?.title || "Untitled Devotion";
 
-    const lesson =
-        content.lesson ||
-        "";
+  devotionDate.textContent = formatDate(data.date);
 
+  // ========================================
+  // SCRIPTURE
+  // ========================================
 
-    const application =
-        content.application ||
-        "";
+  devotionScripture.innerHTML = formatDevotionText(
+    scripture || "No scripture entered.",
+  );
 
+  // ========================================
+  // APPLICATION
+  // ========================================
 
-    // ========================================
-    // HEADER
-    // ========================================
+  devotionApplication.innerHTML = formatDevotionText(
+    application || "No application entered.",
+  );
 
-    devotionFormat.textContent =
-        format;
+  // ========================================
+  // SOAP
+  // ========================================
 
+  if (format === "SOAP") {
+    observationSection.classList.remove("d-none");
 
-    devotionDate.textContent =
-        formatDate(
-            data.date
-        );
+    lessonSection.classList.add("d-none");
 
+    devotionObservation.innerHTML = formatDevotionText(
+      observation || "No observation entered.",
+    );
+  }
 
-    // ========================================
-    // SCRIPTURE
-    // ========================================
+  // ========================================
+  // SLAP
+  // ========================================
+  else if (format === "SLAP") {
+    observationSection.classList.add("d-none");
 
-    devotionScripture.innerHTML =
-        escapeHtml(
-            scripture ||
-            "No scripture entered."
-        );
+    lessonSection.classList.remove("d-none");
 
+    devotionLesson.innerHTML = formatDevotionText(lesson || "No lesson entered.");
+  }
 
-    // ========================================
-    // APPLICATION
-    // ========================================
+  // ========================================
+  // UNKNOWN FORMAT
+  // ========================================
+  else {
+    observationSection.classList.add("d-none");
 
-    devotionApplication.innerHTML =
-        escapeHtml(
-            application ||
-            "No application entered."
-        );
+    lessonSection.classList.add("d-none");
+  }
 
+  // ========================================
+  // SHOW CONTENT
+  // ========================================
 
-    // ========================================
-    // SOAP
-    // ========================================
+  loadingState.classList.add("d-none");
 
-    if (format === "SOAP") {
-
-        observationSection
-            .classList
-            .remove("d-none");
-
-
-        lessonSection
-            .classList
-            .add("d-none");
-
-
-        devotionObservation.innerHTML =
-            escapeHtml(
-                observation ||
-                "No observation entered."
-            );
-
-    }
-
-
-    // ========================================
-    // SLAP
-    // ========================================
-
-    else if (format === "SLAP") {
-
-        observationSection
-            .classList
-            .add("d-none");
-
-
-        lessonSection
-            .classList
-            .remove("d-none");
-
-
-        devotionLesson.innerHTML =
-            escapeHtml(
-                lesson ||
-                "No lesson entered."
-            );
-
-    }
-
-
-    // ========================================
-    // UNKNOWN FORMAT
-    // ========================================
-
-    else {
-
-        observationSection
-            .classList
-            .add("d-none");
-
-
-        lessonSection
-            .classList
-            .add("d-none");
-
-    }
-
-
-    // ========================================
-    // SHOW CONTENT
-    // ========================================
-
-    loadingState
-        .classList
-        .add("d-none");
-
-
-    devotionContent
-        .classList
-        .remove("d-none");
-
+  devotionContent.classList.remove("d-none");
 }
-
 
 // ========================================
 // FORMAT DATE
 // ========================================
 
 function formatDate(dateValue) {
+  if (!dateValue) {
+    return "";
+  }
 
-    if (!dateValue) {
+  const parts = dateValue.split("-");
 
-        return "";
+  if (parts.length !== 3) {
+    return dateValue;
+  }
 
-    }
+  const year = Number(parts[0]);
 
+  const month = Number(parts[1]);
 
-    const parts =
-        dateValue.split("-");
+  const day = Number(parts[2]);
 
+  const date = new Date(year, month - 1, day);
 
-    if (parts.length !== 3) {
-
-        return dateValue;
-
-    }
-
-
-    const year =
-        Number(parts[0]);
-
-
-    const month =
-        Number(parts[1]);
-
-
-    const day =
-        Number(parts[2]);
-
-
-    const date =
-        new Date(
-            year,
-            month - 1,
-            day
-        );
-
-
-    return date.toLocaleDateString(
-        "en-US",
-        {
-            weekday: "long",
-            month: "long",
-            day: "numeric",
-            year: "numeric"
-        }
-    );
-
+  return date.toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
 }
-
 
 // ========================================
 // SHOW ERROR
 // ========================================
 
 function showError() {
+  loadingState.classList.add("d-none");
 
-    loadingState
-        .classList
-        .add("d-none");
+  devotionContent.classList.add("d-none");
 
-
-    devotionContent
-        .classList
-        .add("d-none");
-
-
-    errorState
-        .classList
-        .remove("d-none");
-
+  errorState.classList.remove("d-none");
 }
-
 
 // ========================================
 // START

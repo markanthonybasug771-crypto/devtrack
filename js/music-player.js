@@ -5,12 +5,11 @@
 import { auth, db } from "./firebase.js";
 
 import {
-    collection,
-    getDocs,
-    query,
-    orderBy
+  collection,
+  getDocs,
+  query,
+  orderBy,
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-
 
 // ========================================
 // PLAYER STATE
@@ -30,128 +29,88 @@ let player = null;
 
 let playerReady = false;
 
-
 // ========================================
 // STORAGE KEY
 // ========================================
 
 function getPlayerStorageKey() {
+  if (!auth.currentUser) {
+    return null;
+  }
 
-    if (!auth.currentUser) {
-        return null;
-    }
-
-    return `devtrackMusicPlayer_${auth.currentUser.uid}`;
-
+  return `devtrackMusicPlayer_${auth.currentUser.uid}`;
 }
-
 
 // ========================================
 // GET SAVED STATE
 // ========================================
 
 function getSavedState() {
+  try {
+    const storageKey = getPlayerStorageKey();
 
-    try {
-
-        const storageKey =
-            getPlayerStorageKey();
-
-        if (!storageKey) {
-            return null;
-        }
-
-        const saved =
-            localStorage.getItem(
-                storageKey
-            );
-
-        if (!saved) {
-            return null;
-        }
-
-        return JSON.parse(saved);
-
-    } catch (error) {
-
-        console.error(
-            "Failed to read player state:",
-            error
-        );
-
-        return null;
-
+    if (!storageKey) {
+      return null;
     }
 
-}
+    const saved = localStorage.getItem(storageKey);
 
+    if (!saved) {
+      return null;
+    }
+
+    return JSON.parse(saved);
+  } catch (error) {
+    console.error("Failed to read player state:", error);
+
+    return null;
+  }
+}
 
 // ========================================
 // SAVE PLAYER STATE
 // ========================================
 
 function savePlayerState() {
+  if (currentSongIndex < 0 || !songs[currentSongIndex]) {
+    return;
+  }
 
-    if (
-        currentSongIndex < 0 ||
-        !songs[currentSongIndex]
-    ) {
-        return;
-    }
+  const storageKey = getPlayerStorageKey();
 
-    const storageKey =
-        getPlayerStorageKey();
+  if (!storageKey) {
+    return;
+  }
 
-    if (!storageKey) {
-        return;
-    }
+  const song = songs[currentSongIndex];
 
-    const song =
-        songs[currentSongIndex];
+  const state = {
+    songId: song.id,
 
-    const state = {
+    songIndex: currentSongIndex,
 
-        songId:
-            song.id,
+    currentTime: currentTime,
 
-        songIndex:
-            currentSongIndex,
+    isPlaying: isPlaying,
+  };
 
-        currentTime:
-            currentTime,
+  localStorage.setItem(
+    storageKey,
 
-        isPlaying:
-            isPlaying
-
-    };
-
-    localStorage.setItem(
-
-        storageKey,
-
-        JSON.stringify(state)
-
-    );
-
+    JSON.stringify(state),
+  );
 }
-
 
 // ========================================
 // CREATE PLAYER UI
 // ========================================
 
 function createPlayerUI() {
+  if (document.getElementById("devtrackMusicPlayer")) {
+    return;
+  }
 
-    if (
-        document.getElementById(
-            "devtrackMusicPlayer"
-        )
-    ) {
-        return;
-    }
-
-
-    const playerHTML = `
+  const playerHTML = `
 
         <div
             id="devtrackMusicPlayer"
@@ -295,17 +254,12 @@ function createPlayerUI() {
 
     `;
 
+  document.body.insertAdjacentHTML(
+    "beforeend",
 
-    document.body.insertAdjacentHTML(
-
-        "beforeend",
-
-        playerHTML
-
-    );
-
+    playerHTML,
+  );
 }
-
 
 // ========================================
 // ELEMENTS
@@ -333,369 +287,176 @@ let durationDisplay;
 
 let closeButton;
 
-
 // ========================================
 // INITIALIZE ELEMENTS
 // ========================================
 
 function initializeElements() {
+  playerContainer = document.getElementById("devtrackMusicPlayer");
 
-    playerContainer =
-        document.getElementById(
-            "devtrackMusicPlayer"
-        );
+  playerTitle = document.getElementById("musicPlayerTitle");
 
+  playerArtist = document.getElementById("musicPlayerArtist");
 
-    playerTitle =
-        document.getElementById(
-            "musicPlayerTitle"
-        );
+  playPauseButton = document.getElementById("musicPlayerPlayPause");
 
+  playPauseIcon = document.getElementById("musicPlayerPlayPauseIcon");
 
-    playerArtist =
-        document.getElementById(
-            "musicPlayerArtist"
-        );
+  previousButton = document.getElementById("musicPlayerPrevious");
 
+  nextButton = document.getElementById("musicPlayerNext");
 
-    playPauseButton =
-        document.getElementById(
-            "musicPlayerPlayPause"
-        );
+  progressBar = document.getElementById("musicPlayerProgress");
 
+  currentTimeDisplay = document.getElementById("musicPlayerCurrentTime");
 
-    playPauseIcon =
-        document.getElementById(
-            "musicPlayerPlayPauseIcon"
-        );
+  durationDisplay = document.getElementById("musicPlayerDuration");
 
-
-    previousButton =
-        document.getElementById(
-            "musicPlayerPrevious"
-        );
-
-
-    nextButton =
-        document.getElementById(
-            "musicPlayerNext"
-        );
-
-
-    progressBar =
-        document.getElementById(
-            "musicPlayerProgress"
-        );
-
-
-    currentTimeDisplay =
-        document.getElementById(
-            "musicPlayerCurrentTime"
-        );
-
-
-    durationDisplay =
-        document.getElementById(
-            "musicPlayerDuration"
-        );
-
-
-    closeButton =
-        document.getElementById(
-            "musicPlayerClose"
-        );
-
+  closeButton = document.getElementById("musicPlayerClose");
 }
-
 
 // ========================================
 // LOAD SONGS
 // ========================================
 
 async function loadSongs() {
+  try {
+    const songsQuery = query(
+      collection(db, "songs"),
 
-    try {
+      orderBy("createdAt", "asc"),
+    );
 
-        const songsQuery =
-            query(
+    const snapshot = await getDocs(songsQuery);
 
-                collection(
-                    db,
-                    "songs"
-                ),
+    songs = [];
 
-                orderBy(
-                    "createdAt",
-                    "asc"
-                )
+    snapshot.forEach((songDocument) => {
+      const data = songDocument.data();
 
-            );
+      // Only active songs
 
+      if (data.active !== false) {
+        songs.push({
+          id: songDocument.id,
 
-        const snapshot =
-            await getDocs(
-                songsQuery
-            );
+          ...data,
+        });
+      }
+    });
 
+    restorePlayer();
+  } catch (error) {
+    console.error(
+      "Failed to load music:",
 
-        songs = [];
-
-
-        snapshot.forEach(
-            (songDocument) => {
-
-                const data =
-                    songDocument.data();
-
-
-                // Only active songs
-
-                if (
-                    data.active !== false
-                ) {
-
-                    songs.push({
-
-                        id:
-                            songDocument.id,
-
-                        ...data
-
-                    });
-
-                }
-
-            }
-        );
-
-
-        restorePlayer();
-
-
-    } catch (error) {
-
-        console.error(
-
-            "Failed to load music:",
-
-            error
-
-        );
-
-    }
-
+      error,
+    );
+  }
 }
-
 
 // ========================================
 // YOUTUBE VIDEO ID
 // ========================================
 
 function getYouTubeVideoId(url) {
+  if (!url) {
+    return null;
+  }
 
-    if (!url) {
-        return null;
+  try {
+    const parsedUrl = new URL(url);
+
+    // youtube.com/watch?v=VIDEO_ID
+
+    if (parsedUrl.hostname.includes("youtube.com")) {
+      const videoId = parsedUrl.searchParams.get("v");
+
+      if (videoId) {
+        return videoId;
+      }
+
+      // youtube.com/embed/VIDEO_ID
+
+      if (parsedUrl.pathname.startsWith("/embed/")) {
+        return parsedUrl.pathname.split("/embed/")[1].split("/")[0];
+      }
+
+      // youtube.com/shorts/VIDEO_ID
+
+      if (parsedUrl.pathname.startsWith("/shorts/")) {
+        return parsedUrl.pathname.split("/shorts/")[1].split("/")[0];
+      }
     }
 
+    // youtu.be/VIDEO_ID
 
-    try {
-
-        const parsedUrl =
-            new URL(url);
-
-
-        // youtube.com/watch?v=VIDEO_ID
-
-        if (
-            parsedUrl.hostname.includes(
-                "youtube.com"
-            )
-        ) {
-
-            const videoId =
-                parsedUrl.searchParams.get(
-                    "v"
-                );
-
-
-            if (videoId) {
-
-                return videoId;
-
-            }
-
-
-            // youtube.com/embed/VIDEO_ID
-
-            if (
-                parsedUrl.pathname.startsWith(
-                    "/embed/"
-                )
-            ) {
-
-                return parsedUrl.pathname
-                    .split("/embed/")[1]
-                    .split("/")[0];
-
-            }
-
-
-            // youtube.com/shorts/VIDEO_ID
-
-            if (
-                parsedUrl.pathname.startsWith(
-                    "/shorts/"
-                )
-            ) {
-
-                return parsedUrl.pathname
-                    .split("/shorts/")[1]
-                    .split("/")[0];
-
-            }
-
-        }
-
-
-        // youtu.be/VIDEO_ID
-
-        if (
-            parsedUrl.hostname.includes(
-                "youtu.be"
-            )
-        ) {
-
-            return parsedUrl.pathname
-                .substring(1)
-                .split("/")[0];
-
-        }
-
-
-        return null;
-
-
-    } catch {
-
-        return null;
-
+    if (parsedUrl.hostname.includes("youtu.be")) {
+      return parsedUrl.pathname.substring(1).split("/")[0];
     }
 
+    return null;
+  } catch {
+    return null;
+  }
 }
-
 
 // ========================================
 // PLAY SONG
 // ========================================
 
 function playSong(index) {
+  if (!songs[index]) {
+    console.error("Song index not found:", index);
 
-    if (
-        !songs[index]
-    ) {
+    return;
+  }
 
-        console.error(
-            "Song index not found:",
-            index
-        );
+  currentSongIndex = index;
 
-        return;
+  const song = songs[index];
 
+  const videoId = getYouTubeVideoId(song.youtubeUrl);
+
+  if (!videoId) {
+    console.error("Invalid YouTube URL:", song.youtubeUrl);
+
+    if (typeof Swal !== "undefined") {
+      Swal.fire({
+        icon: "error",
+
+        title: "Invalid YouTube Link",
+
+        text: "This song does not have a valid YouTube URL.",
+      });
     }
 
+    return;
+  }
 
-    currentSongIndex =
-        index;
+  playerTitle.textContent = song.title || "Unknown Song";
 
+  playerArtist.textContent = song.artist || "Unknown Artist";
 
-    const song =
-        songs[index];
+  playerContainer.classList.remove("hidden");
 
+  currentTime = 0;
 
-    const videoId =
-        getYouTubeVideoId(
-            song.youtubeUrl
-        );
+  progressBar.value = 0;
 
+  currentTimeDisplay.textContent = "0:00";
 
-    if (!videoId) {
+  durationDisplay.textContent = "0:00";
 
-        console.error(
-            "Invalid YouTube URL:",
-            song.youtubeUrl
-        );
-
-
-        if (
-            typeof Swal !==
-            "undefined"
-        ) {
-
-            Swal.fire({
-
-                icon:
-                    "error",
-
-                title:
-                    "Invalid YouTube Link",
-
-                text:
-                    "This song does not have a valid YouTube URL."
-
-            });
-
-        }
-
-
-        return;
-
-    }
-
-
-    playerTitle.textContent =
-        song.title ||
-        "Unknown Song";
-
-
-    playerArtist.textContent =
-        song.artist ||
-        "Unknown Artist";
-
-
-    playerContainer.classList.remove(
-        "hidden"
-    );
-
-
-    currentTime = 0;
-
-    progressBar.value = 0;
-
-    currentTimeDisplay.textContent =
-        "0:00";
-
-
-    durationDisplay.textContent =
-        "0:00";
-
-
-    /*
+  /*
         If YouTube player is already ready,
         immediately load and play the song.
     */
 
-    if (
-        playerReady &&
-        player
-    ) {
-
-        player.loadVideoById(
-            videoId
-        );
-
-    } else {
-
-        /*
+  if (playerReady && player) {
+    player.loadVideoById(videoId);
+  } else {
+    /*
             Player is not ready yet.
 
             Save selected song so that
@@ -703,343 +464,175 @@ function playSong(index) {
             it can be played.
         */
 
-        savePlayerState();
-
-    }
-
+    savePlayerState();
+  }
 }
-
 
 // ========================================
 // PLAY SONG BY ID
 // ========================================
 
-window.devtrackPlaySongById =
-    function(songId) {
+window.devtrackPlaySongById = function (songId) {
+  if (!songId) {
+    console.error("No song ID supplied.");
 
-        if (!songId) {
+    return;
+  }
 
-            console.error(
-                "No song ID supplied."
-            );
+  const index = songs.findIndex((song) => song.id === songId);
 
-            return;
+  if (index === -1) {
+    console.error("Song not found:", songId);
 
-        }
-
-
-        const index =
-            songs.findIndex(
-                song =>
-                    song.id === songId
-            );
-
-
-        if (
-            index === -1
-        ) {
-
-            console.error(
-                "Song not found:",
-                songId
-            );
-
-
-            /*
+    /*
                 Songs may still be loading.
                 Try loading them again.
             */
 
-            loadSongs();
+    loadSongs();
 
-            return;
+    return;
+  }
 
-        }
-
-
-        playSong(index);
-
-    };
-
+  playSong(index);
+};
 
 // ========================================
 // PLAY / PAUSE
 // ========================================
 
 function togglePlayPause() {
+  if (!playerReady || !player) {
+    return;
+  }
 
-    if (
-        !playerReady ||
-        !player
-    ) {
+  if (currentSongIndex < 0) {
+    return;
+  }
 
-        return;
-
-    }
-
-
-    if (
-        currentSongIndex < 0
-    ) {
-
-        return;
-
-    }
-
-
-    if (isPlaying) {
-
-        player.pauseVideo();
-
-    } else {
-
-        player.playVideo();
-
-    }
-
+  if (isPlaying) {
+    player.pauseVideo();
+  } else {
+    player.playVideo();
+  }
 }
-
 
 // ========================================
 // PREVIOUS
 // ========================================
 
 function playPrevious() {
+  if (!songs.length) {
+    return;
+  }
 
-    if (
-        !songs.length
-    ) {
+  let index = currentSongIndex - 1;
 
-        return;
+  if (index < 0) {
+    index = songs.length - 1;
+  }
 
-    }
-
-
-    let index =
-        currentSongIndex - 1;
-
-
-    if (
-        index < 0
-    ) {
-
-        index =
-            songs.length - 1;
-
-    }
-
-
-    playSong(index);
-
+  playSong(index);
 }
-
 
 // ========================================
 // NEXT
 // ========================================
 
 function playNext() {
+  if (!songs.length) {
+    return;
+  }
 
-    if (
-        !songs.length
-    ) {
+  let index = currentSongIndex + 1;
 
-        return;
+  if (index >= songs.length) {
+    index = 0;
+  }
 
-    }
-
-
-    let index =
-        currentSongIndex + 1;
-
-
-    if (
-        index >= songs.length
-    ) {
-
-        index = 0;
-
-    }
-
-
-    playSong(index);
-
+  playSong(index);
 }
-
 
 // ========================================
 // FORMAT TIME
 // ========================================
 
 function formatTime(seconds) {
+  if (!seconds || isNaN(seconds)) {
+    return "0:00";
+  }
 
-    if (
-        !seconds ||
-        isNaN(seconds)
-    ) {
+  const minutes = Math.floor(seconds / 60);
 
-        return "0:00";
+  const remainingSeconds = Math.floor(seconds % 60);
 
-    }
-
-
-    const minutes =
-        Math.floor(
-            seconds / 60
-        );
-
-
-    const remainingSeconds =
-        Math.floor(
-            seconds % 60
-        );
-
-
-    return `${minutes}:${String(
-        remainingSeconds
-    ).padStart(
-        2,
-        "0"
-    )}`;
-
+  return `${minutes}:${String(remainingSeconds).padStart(2, "0")}`;
 }
-
 
 // ========================================
 // UPDATE PLAYER UI
 // ========================================
 
 function updatePlayerUI() {
+  if (!playerReady || !player) {
+    return;
+  }
 
-    if (
-        !playerReady ||
-        !player
-    ) {
+  try {
+    currentTime = player.getCurrentTime() || 0;
 
-        return;
+    duration = player.getDuration() || 0;
 
+    currentTimeDisplay.textContent = formatTime(currentTime);
+
+    durationDisplay.textContent = formatTime(duration);
+
+    if (duration > 0) {
+      progressBar.value = (currentTime / duration) * 100;
     }
-
-
-    try {
-
-        currentTime =
-            player.getCurrentTime() ||
-            0;
-
-
-        duration =
-            player.getDuration() ||
-            0;
-
-
-        currentTimeDisplay.textContent =
-            formatTime(
-                currentTime
-            );
-
-
-        durationDisplay.textContent =
-            formatTime(
-                duration
-            );
-
-
-        if (
-            duration > 0
-        ) {
-
-            progressBar.value =
-                (
-                    currentTime /
-                    duration
-                ) * 100;
-
-        }
-
-
-    } catch {
-
-        // Ignore player errors
-
-    }
-
+  } catch {
+    // Ignore player errors
+  }
 }
-
 
 // ========================================
 // RESTORE PLAYER
 // ========================================
 
 function restorePlayer() {
+  const saved = getSavedState();
 
-    const saved =
-        getSavedState();
+  if (!saved) {
+    return;
+  }
 
+  const index = songs.findIndex((song) => song.id === saved.songId);
 
-    if (!saved) {
-        return;
-    }
+  if (index === -1) {
+    return;
+  }
 
+  currentSongIndex = index;
 
-    const index =
-        songs.findIndex(
-            song =>
-                song.id === saved.songId
-        );
+  const song = songs[index];
 
+  const videoId = getYouTubeVideoId(song.youtubeUrl);
 
-    if (index === -1) {
-        return;
-    }
+  if (!videoId) {
+    console.error("Invalid YouTube URL while restoring:", song.youtubeUrl);
 
+    return;
+  }
 
-    currentSongIndex =
-        index;
+  playerTitle.textContent = song.title || "Unknown Song";
 
+  playerArtist.textContent = song.artist || "Unknown Artist";
 
-    const song =
-        songs[index];
+  playerContainer.classList.remove("hidden");
 
+  currentTime = saved.currentTime || 0;
 
-    const videoId =
-        getYouTubeVideoId(
-            song.youtubeUrl
-        );
-
-
-    if (!videoId) {
-
-        console.error(
-            "Invalid YouTube URL while restoring:",
-            song.youtubeUrl
-        );
-
-        return;
-
-    }
-
-
-    playerTitle.textContent =
-        song.title ||
-        "Unknown Song";
-
-
-    playerArtist.textContent =
-        song.artist ||
-        "Unknown Artist";
-
-
-    playerContainer.classList.remove(
-        "hidden"
-    );
-
-
-    currentTime =
-        saved.currentTime || 0;
-
-
-    /*
+  /*
         The important part:
 
         Load the saved YouTube video
@@ -1047,563 +640,323 @@ function restorePlayer() {
         the YouTube API is ready.
     */
 
-    if (
-        playerReady &&
-        player
-    ) {
+  if (playerReady && player) {
+    player.cueVideoById({
+      videoId: videoId,
 
-        player.cueVideoById({
+      startSeconds: currentTime,
+    });
+  }
 
-            videoId:
-                videoId,
-
-            startSeconds:
-                currentTime
-
-        });
-
-    }
-
-
-    /*
+  /*
         Always restore the player
         in paused state after reload.
 
         User can press Play to continue.
     */
 
-    isPlaying =
-        false;
+  isPlaying = false;
 
-
-    updatePlayPauseIcon();
-
+  updatePlayPauseIcon();
 }
-
 
 // ========================================
 // PLAY/PAUSE ICON
 // ========================================
 
 function updatePlayPauseIcon() {
+  if (!playPauseIcon) {
+    return;
+  }
 
-    if (
-        !playPauseIcon
-    ) {
+  if (isPlaying) {
+    playPauseIcon.className = "bi bi-pause-fill";
 
-        return;
+    playPauseButton.title = "Pause";
+  } else {
+    playPauseIcon.className = "bi bi-play-fill";
 
-    }
-
-
-    if (
-        isPlaying
-    ) {
-
-        playPauseIcon.className =
-            "bi bi-pause-fill";
-
-
-        playPauseButton.title =
-            "Pause";
-
-    } else {
-
-        playPauseIcon.className =
-            "bi bi-play-fill";
-
-
-        playPauseButton.title =
-            "Play";
-
-    }
-
+    playPauseButton.title = "Play";
+  }
 }
-
 
 // ========================================
 // BUTTON EVENTS
 // ========================================
 
 function setupEvents() {
+  playPauseButton.addEventListener(
+    "click",
 
+    togglePlayPause,
+  );
 
-    playPauseButton.addEventListener(
+  previousButton.addEventListener(
+    "click",
 
-        "click",
+    playPrevious,
+  );
 
-        togglePlayPause
+  nextButton.addEventListener(
+    "click",
 
-    );
+    playNext,
+  );
 
+  closeButton.addEventListener(
+    "click",
 
-    previousButton.addEventListener(
+    () => {
+      if (playerReady && player) {
+        player.stopVideo();
+      }
 
-        "click",
+      isPlaying = false;
 
-        playPrevious
+      currentTime = 0;
 
-    );
+      duration = 0;
 
+      currentSongIndex = -1;
 
-    nextButton.addEventListener(
+      playerContainer.classList.add("hidden");
 
-        "click",
+      const storageKey = getPlayerStorageKey();
 
-        playNext
+      if (storageKey) {
+        localStorage.removeItem(storageKey);
+      }
 
-    );
+      updatePlayPauseIcon();
 
+      currentTimeDisplay.textContent = "0:00";
 
-    closeButton.addEventListener(
+      durationDisplay.textContent = "0:00";
 
-        "click",
+      progressBar.value = 0;
+    },
+  );
 
-        () => {
+  progressBar.addEventListener(
+    "input",
 
+    () => {
+      if (!playerReady || !player) {
+        return;
+      }
 
-            if (
-                playerReady &&
-                player
-            ) {
+      if (duration <= 0) {
+        return;
+      }
 
-                player.stopVideo();
+      const targetTime = (progressBar.value / 100) * duration;
 
-            }
+      player.seekTo(
+        targetTime,
 
-
-            isPlaying =
-                false;
-
-
-            currentTime =
-                0;
-
-
-            duration =
-                0;
-
-
-            currentSongIndex =
-                -1;
-
-
-            playerContainer.classList.add(
-                "hidden"
-            );
-
-
-            localStorage.removeItem(
-                PLAYER_STORAGE_KEY
-            );
-
-
-            updatePlayPauseIcon();
-
-
-            currentTimeDisplay.textContent =
-                "0:00";
-
-
-            durationDisplay.textContent =
-                "0:00";
-
-
-            progressBar.value =
-                0;
-
-        }
-
-    );
-
-
-    progressBar.addEventListener(
-
-        "input",
-
-        () => {
-
-
-            if (
-                !playerReady ||
-                !player
-            ) {
-
-                return;
-
-            }
-
-
-            if (
-                duration <= 0
-            ) {
-
-                return;
-
-            }
-
-
-            const targetTime =
-
-                (
-                    progressBar.value /
-                    100
-                ) * duration;
-
-
-            player.seekTo(
-
-                targetTime,
-
-                true
-
-            );
-
-        }
-
-    );
-
+        true,
+      );
+    },
+  );
 }
-
 
 // ========================================
 // SAVE STATE PERIODICALLY
 // ========================================
 
 setInterval(
+  () => {
+    if (playerReady && player && currentSongIndex >= 0) {
+      updatePlayerUI();
 
-    () => {
+      savePlayerState();
+    }
+  },
 
-
-        if (
-
-            playerReady &&
-            player &&
-            currentSongIndex >= 0
-
-        ) {
-
-            updatePlayerUI();
-
-            savePlayerState();
-
-        }
-
-    },
-
-    1000
-
+  1000,
 );
-
 
 // ========================================
 // PAGE LEAVE
 // ========================================
 
 window.addEventListener(
+  "beforeunload",
 
-    "beforeunload",
+  () => {
+    updatePlayerUI();
 
-    () => {
-
-        updatePlayerUI();
-
-        savePlayerState();
-
-    }
-
+    savePlayerState();
+  },
 );
-
 
 // ========================================
 // YOUTUBE API READY
 // ========================================
 
-window.onYouTubeIframeAPIReady =
-    function() {
+window.onYouTubeIframeAPIReady = function () {
+  player = new YT.Player(
+    "devtrackYoutubeHiddenPlayer",
 
+    {
+      height: "0",
 
-        player =
-            new YT.Player(
+      width: "0",
 
-                "devtrackYoutubeHiddenPlayer",
+      videoId: "",
 
-                {
+      playerVars: {
+        autoplay: 0,
 
-                    height:
-                        "0",
+        controls: 0,
 
-                    width:
-                        "0",
+        rel: 0,
 
-                    videoId:
-                        "",
+        playsinline: 1,
+      },
 
+      events: {
+        // ============================
+        // READY
+        // ============================
 
-                    playerVars: {
+        onReady: () => {
+          playerReady = true;
 
-                        autoplay:
-                            0,
-
-                        controls:
-                            0,
-
-                        rel:
-                            0,
-
-                        playsinline:
-                            1
-
-                    },
-
-
-                    events: {
-
-
-                        // ============================
-                        // READY
-                        // ============================
-
-                        onReady:
-                            () => {
-
-
-                                playerReady =
-                                    true;
-
-
-                                /*
+          /*
                                     If a song was already
                                     selected before the
                                     YouTube API became ready,
                                     load it now.
                                 */
 
-                                const saved =
-                                    getSavedState();
+          const saved = getSavedState();
 
+          if (saved && saved.songId) {
+            const index = songs.findIndex((song) => song.id === saved.songId);
 
-                                if (
-                                    saved &&
-                                    saved.songId
-                                ) {
+            if (index !== -1) {
+              currentSongIndex = index;
 
-                                    const index =
-                                        songs.findIndex(
-                                            song =>
-                                                song.id ===
-                                                saved.songId
-                                        );
+              const song = songs[index];
 
+              const videoId = getYouTubeVideoId(song.youtubeUrl);
 
-                                    if (
-                                        index !== -1
-                                    ) {
+              if (videoId) {
+                player.cueVideoById(videoId);
+              }
+            }
+          }
 
-                                        currentSongIndex =
-                                            index;
+          restorePlayer();
+        },
 
+        // ============================
+        // STATE CHANGE
+        // ============================
 
-                                        const song =
-                                            songs[index];
+        onStateChange: (event) => {
+          if (event.data === YT.PlayerState.PLAYING) {
+            isPlaying = true;
 
+            updatePlayPauseIcon();
+          }
 
-                                        const videoId =
-                                            getYouTubeVideoId(
-                                                song.youtubeUrl
-                                            );
+          if (event.data === YT.PlayerState.PAUSED) {
+            isPlaying = false;
 
+            updatePlayPauseIcon();
 
-                                        if (videoId) {
+            updatePlayerUI();
 
-                                            player.cueVideoById(
-                                                videoId
-                                            );
+            savePlayerState();
+          }
 
-                                        }
+          if (event.data === YT.PlayerState.ENDED) {
+            isPlaying = false;
 
-                                    }
+            updatePlayPauseIcon();
 
-                                }
-
-
-                                restorePlayer();
-
-                            },
-
-
-                        // ============================
-                        // STATE CHANGE
-                        // ============================
-
-                        onStateChange:
-                            (event) => {
-
-
-                                if (
-                                    event.data ===
-                                    YT.PlayerState.PLAYING
-                                ) {
-
-                                    isPlaying =
-                                        true;
-
-
-                                    updatePlayPauseIcon();
-
-                                }
-
-
-                                if (
-                                    event.data ===
-                                    YT.PlayerState.PAUSED
-                                ) {
-
-                                    isPlaying =
-                                        false;
-
-
-                                    updatePlayPauseIcon();
-
-
-                                    updatePlayerUI();
-
-
-                                    savePlayerState();
-
-                                }
-
-
-                                if (
-                                    event.data ===
-                                    YT.PlayerState.ENDED
-                                ) {
-
-                                    isPlaying =
-                                        false;
-
-
-                                    updatePlayPauseIcon();
-
-
-                                    playNext();
-
-                                }
-
-                            }
-
-                    }
-
-                }
-
-            );
-
-    };
-
+            playNext();
+          }
+        },
+      },
+    },
+  );
+};
 
 // ========================================
 // INITIALIZE
 // ========================================
 
 function initializeMusicPlayer() {
+  createPlayerUI();
 
-    createPlayerUI();
+  initializeElements();
 
+  setupEvents();
 
-    initializeElements();
+  // ========================================
+  // HIDDEN YOUTUBE PLAYER
+  // ========================================
 
+  const existingPlayer = document.getElementById("devtrackYoutubeHiddenPlayer");
 
-    setupEvents();
+  if (!existingPlayer) {
+    const hiddenPlayer = document.createElement("div");
 
+    hiddenPlayer.id = "devtrackYoutubeHiddenPlayer";
 
-    // ====================================
-    // HIDDEN YOUTUBE PLAYER
-    // ====================================
+    hiddenPlayer.style.position = "fixed";
 
-    const hiddenPlayer =
-        document.createElement(
-            "div"
-        );
+    hiddenPlayer.style.width = "1px";
 
+    hiddenPlayer.style.height = "1px";
 
-    hiddenPlayer.id =
-        "devtrackYoutubeHiddenPlayer";
+    hiddenPlayer.style.left = "-9999px";
 
+    hiddenPlayer.style.top = "-9999px";
 
-    hiddenPlayer.style.position =
-        "fixed";
+    document.body.appendChild(hiddenPlayer);
+  }
 
+  // ========================================
+  // LOAD YOUTUBE API
+  // ========================================
 
-    hiddenPlayer.style.width =
-        "1px";
+  if (!window.YT) {
+    const script = document.createElement("script");
 
+    script.src = "https://www.youtube.com/iframe_api";
 
-    hiddenPlayer.style.height =
-        "1px";
+    document.head.appendChild(script);
+  }
 
+  // ========================================
+  // WAIT FOR FIREBASE USER
+  // ========================================
 
-    hiddenPlayer.style.left =
-        "-9999px";
-
-
-    hiddenPlayer.style.top =
-        "-9999px";
-
-
-    document.body.appendChild(
-        hiddenPlayer
-    );
-
-
-    // ====================================
-    // LOAD YOUTUBE API
-    // ====================================
-
-    if (
-        !window.YT
-    ) {
-
-        const script =
-            document.createElement(
-                "script"
-            );
-
-
-        script.src =
-            "https://www.youtube.com/iframe_api";
-
-
-        document.head.appendChild(
-            script
-        );
-
+  auth.onAuthStateChanged((user) => {
+    if (!user) {
+      return;
     }
 
+    console.log("Music player initialized for user:", user.uid);
 
     loadSongs();
-
+  });
 }
-
 
 // ========================================
 // START
 // ========================================
 
-if (
-    document.readyState ===
-    "loading"
-) {
+if (document.readyState === "loading") {
+  document.addEventListener(
+    "DOMContentLoaded",
 
-    document.addEventListener(
-
-        "DOMContentLoaded",
-
-        initializeMusicPlayer
-
-    );
-
+    initializeMusicPlayer,
+  );
 } else {
-
-    initializeMusicPlayer();
-
+  initializeMusicPlayer();
 }

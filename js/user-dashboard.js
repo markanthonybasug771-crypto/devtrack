@@ -1,11 +1,9 @@
-import { auth, db, messaging } from "./firebase.js";
+import { auth, db } from "./firebase.js";
 
 import {
   onAuthStateChanged,
   signOut,
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-
-import { getToken } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-messaging.js";
 
 import {
   doc,
@@ -18,7 +16,6 @@ import {
   onSnapshot,
   serverTimestamp,
   setDoc,
-  arrayUnion,
   deleteDoc,
   updateDoc,
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
@@ -87,6 +84,8 @@ const devotionalForm = document.getElementById("devotionalForm");
 
 const devotionalFormat = document.getElementById("devotionalFormat");
 
+const devotionTitleInput = document.getElementById("devotionTitle");
+
 const devotionalDate = document.getElementById("devotionalDate");
 
 const soapFields = document.getElementById("soapFields");
@@ -96,6 +95,23 @@ const slapFields = document.getElementById("slapFields");
 const formatDescription = document.getElementById("formatDescription");
 
 const saveDevotionalButton = document.getElementById("saveDevotionalButton");
+
+// Keep long-form inputs fully visible while the user writes.
+function autoResizeTextarea(textarea) {
+  textarea.style.height = "auto";
+  textarea.style.height = `${Math.max(textarea.scrollHeight, textarea.offsetHeight)}px`;
+}
+
+document.querySelectorAll(".auto-expand-textarea").forEach((textarea) => {
+  textarea.addEventListener("input", () => autoResizeTextarea(textarea));
+  autoResizeTextarea(textarea);
+});
+
+document.querySelectorAll(".modal").forEach((modal) => {
+  modal.addEventListener("shown.bs.modal", () => {
+    modal.querySelectorAll(".auto-expand-textarea").forEach(autoResizeTextarea);
+  });
+});
 
 // ========================================
 // GLOBAL USER DATA
@@ -169,100 +185,6 @@ if (myDevotionalsButtons.length && myDevotionalsSection) {
 }
 
 // ========================================
-// ENABLE PUSH NOTIFICATIONS
-// ========================================
-
-async function enablePushNotifications(user) {
-  try {
-    // ========================================
-    // CHECK BROWSER SUPPORT
-    // ========================================
-
-    if (!("Notification" in window)) {
-      console.log("This browser does not support notifications.");
-
-      return;
-    }
-
-    // ========================================
-    // CHECK SERVICE WORKER SUPPORT
-    // ========================================
-
-    if (!("serviceWorker" in navigator)) {
-      console.log("Service workers are not supported.");
-
-      return;
-    }
-
-    // ========================================
-    // REQUEST PERMISSION
-    // ========================================
-
-    let permission = Notification.permission;
-
-    if (permission === "default") {
-      permission = await Notification.requestPermission();
-    }
-
-    // ========================================
-    // USER DENIED
-    // ========================================
-
-    if (permission !== "granted") {
-      console.log("Notification permission was not granted.");
-
-      return;
-    }
-
-    // ========================================
-    // REGISTER SERVICE WORKER
-    // ========================================
-
-    const registration = await navigator.serviceWorker.register(
-      "/firebase-messaging-sw.js",
-    );
-
-    console.log("Firebase Messaging Service Worker registered.", registration);
-
-    // ========================================
-    // GET FCM TOKEN
-    // ========================================
-
-    const token = await getToken(messaging, {
-      vapidKey: VAPID_KEY,
-
-      serviceWorkerRegistration: registration,
-    });
-
-    if (!token) {
-      console.log("No FCM token available.");
-
-      return;
-    }
-
-    console.log("FCM Token:", token);
-
-    // ========================================
-    // SAVE TOKEN TO USER DOCUMENT
-    // ========================================
-
-    await setDoc(
-      doc(db, "users", user.uid),
-      {
-        notificationTokens: arrayUnion(token),
-      },
-      {
-        merge: true,
-      },
-    );
-
-    console.log("FCM token saved successfully.");
-  } catch (error) {
-    console.error("Push notification setup error:", error);
-  }
-}
-
-// ========================================
 // CHECK AUTHENTICATION
 // ========================================
 
@@ -313,12 +235,6 @@ onAuthStateChanged(auth, async (user) => {
     // ========================================
 
     const gender = userData.gender || userData.Gender || "";
-
-    // ========================================
-    // ENABLE PUSH NOTIFICATIONS
-    // ========================================
-
-    await enablePushNotifications(user);
 
     // ========================================
     // LOAD PRAYER REQUESTS
@@ -800,25 +716,11 @@ function renderNoTodaysDevotion() {
 }
 
 // ========================================
-// RENDER FORMATTED DEVOTIONAL TEXT
+// ESCAPE DEVOTIONAL TEXT
 // ========================================
 //
-// This keeps the original line breaks and
-// makes numbered/bullet points look like
-// proper lists on the dashboard.
-//
-// Examples:
-//
-// 1. First point
-// 2. Second point
-//
-// • First point
-// • Second point
-//
-// a. First point
-// b. Second point
-//
-// Normal paragraphs are also preserved.
+// The CSS preserves the original line breaks
+// and spacing after the text is escaped.
 // ========================================
 
 function formatDevotionalText(text) {
@@ -826,168 +728,45 @@ function formatDevotionalText(text) {
     return "";
   }
 
+  let nextNumber = 1;
+
+  // Older shared devotions may have numbered points typed on one line, e.g.
+  // "First point 1. Next point". Render every numbered marker as a new
+  // visible line so it never runs together with the preceding sentence.
   const normalizedText = String(text)
-    .replace(/\r\n/g, "\n")
-    .replace(/\r/g, "\n");
+    .replace(/\r\n?/g, "\n")
+    .replace(
+      /(^|\n|[^\S\r\n]+)(\d+)\s*([.)])(?=\s)/g,
+      (match, separator, currentNumber, punctuation, offset, source) => {
+        const markerStart = offset + separator.length;
+        const currentLine = source.slice(
+          source.lastIndexOf("\n", markerStart - 1) + 1,
+          markerStart,
+        );
 
-  const lines = normalizedText.split("\n");
+        // Keep verse labels such as "(Verse 1)" as normal text.
+        const openParentheses = (currentLine.match(/\(/g) || []).length;
+        const closeParentheses = (currentLine.match(/\)/g) || []).length;
 
-  let html = "";
+        if (openParentheses > closeParentheses) {
+          return match;
+        }
 
-  let currentListType = null;
+        const lineStart = separator && separator !== "\n" ? "\n" : separator;
 
-  let currentListItems = [];
+        return `${lineStart}${nextNumber++}${punctuation}`;
+      },
+    );
 
-  // ========================================
-  // CLOSE CURRENT LIST
-  // ========================================
+  const escapedText = escapeHtml(normalizedText);
 
-  function closeList() {
-    if (!currentListType || !currentListItems.length) {
-      currentListType = null;
-
-      currentListItems = [];
-
-      return;
-    }
-
-    const tag = currentListType === "ordered" ? "ol" : "ul";
-
-    html += `
-      <${tag} class="devotion-content-list">
-        ${currentListItems
-          .map(
-            (item) => `
-              <li>
-                ${escapeHtml(item)}
-              </li>
-            `,
-          )
-          .join("")}
-      </${tag}>
-    `;
-
-    currentListType = null;
-
-    currentListItems = [];
-  }
-
-  // ========================================
-  // PROCESS EACH LINE
-  // ========================================
-
-  lines.forEach((rawLine) => {
-    const line = rawLine.trim();
-
-    // ========================================
-    // EMPTY LINE
-    // ========================================
-
-    if (!line) {
-      closeList();
-
-      html += `
-        <div class="devotion-content-spacer"></div>
-      `;
-
-      return;
-    }
-
-    // ========================================
-    // UNORDERED LIST
-    // ========================================
-
-    const unorderedMatch = line.match(/^\s*(?:[•*▪◦‣⁃]|[-–—])\s+(.*)$/);
-
-    if (unorderedMatch) {
-      if (currentListType === "ordered") {
-        closeList();
-      }
-
-      if (!currentListType) {
-        currentListType = "unordered";
-      }
-
-      currentListItems.push(unorderedMatch[1]);
-
-      return;
-    }
-
-    // ========================================
-    // ORDERED LIST
-    // Supports:
-    // 1. Text
-    // 1) Text
-    // 1 - Text
-    // 1 – Text
-    // 1 — Text
-    // 1: Text
-    // ========================================
-
-    const orderedMatch = line.match(/^\s*(\d+)\s*[.)\-–—:]\s+(.*)$/);
-
-    if (orderedMatch) {
-      if (currentListType === "unordered") {
-        closeList();
-      }
-
-      if (!currentListType) {
-        currentListType = "ordered";
-      }
-
-      currentListItems.push(orderedMatch[2]);
-
-      return;
-    }
-
-    // ========================================
-    // LETTERED LIST
-    // Supports:
-    // a. Text
-    // a) Text
-    // A. Text
-    // A) Text
-    // a - Text
-    // a – Text
-    // a — Text
-    // ========================================
-
-    const letteredMatch = line.match(/^\s*([a-zA-Z])\s*[.)\-–—:]\s+(.*)$/);
-
-    if (letteredMatch) {
-      if (currentListType === "unordered") {
-        closeList();
-      }
-
-      if (!currentListType) {
-        currentListType = "ordered";
-      }
-
-      currentListItems.push(letteredMatch[2]);
-
-      return;
-    }
-
-    // ========================================
-    // NORMAL TEXT / PARAGRAPH
-    // ========================================
-
-    closeList();
-
-    html += `
-      <div class="devotion-content-paragraph">
-        ${escapeHtml(line)}
-      </div>
-    `;
-  });
-
-  // ========================================
-  // CLOSE ANY REMAINING LIST
-  // ========================================
-
-  closeList();
-
-  return html;
+  return escapedText
+    .replace(/\n/g, "<br>")
+    .replace(
+      /(^|<br>)(\d+\s*[.)])(?=\s)/g,
+      (match, separator, marker) =>
+        `${separator}<strong>${marker}</strong>`,
+    );
 }
 
 // ========================================
@@ -1133,24 +912,10 @@ function renderTodaysDevotion(devotion) {
           </div>
 
           <h4 class="mb-0">
-            My Devotion
+            ${escapeHtml(getDevotionTitle(devotion))}
           </h4>
 
         </div>
-
-        <!-- SHARE BUTTON -->
-
-        <button
-          type="button"
-          class="btn btn-outline-secondary"
-          id="shareTodaysDevotion"
-        >
-
-          <i class="bi bi-share me-2"></i>
-
-          Share
-
-        </button>
 
       </div>
 
@@ -1176,7 +941,7 @@ function renderTodaysDevotion(devotion) {
           "
         >
 
-          ${escapeHtml(scripture)}
+          ${formatDevotionalText(scripture)}
 
         </div>
 
@@ -1239,6 +1004,24 @@ function renderTodaysDevotion(devotion) {
           ${prayer ? formatDevotionalText(prayer) : "No prayer entered."}
 
         </div>
+
+      </div>
+
+      <!-- SHARE BUTTON -->
+
+      <div class="d-flex justify-content-end mt-4 pt-3 border-top">
+
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          id="shareTodaysDevotion"
+        >
+
+          <i class="bi bi-share me-2"></i>
+
+          Share
+
+        </button>
 
       </div>
 
@@ -1318,6 +1101,8 @@ async function shareTodaysDevotion(devotion) {
 
     const sharedRef = await addDoc(collection(db, "sharedDevotions"), {
       userId: user.uid,
+
+      title: getDevotionTitle(devotion),
 
       format: format,
 
@@ -1630,12 +1415,26 @@ function loadPrayerRequests() {
 // ========================================
 
 function setupPrayerReactionButtons(prayerId, reactionContainer) {
-  reactionContainer.addEventListener("click", async (event) => {
+  if (!reactionContainer) {
+    return;
+  }
+
+  if (reactionContainer._prayerReactionClickHandler) {
+    reactionContainer.removeEventListener(
+      "click",
+      reactionContainer._prayerReactionClickHandler,
+    );
+  }
+
+  const handleReactionClick = async (event) => {
     const button = event.target.closest(".prayer-reaction-btn");
 
-    if (!button) {
+    if (!button || !reactionContainer.contains(button)) {
       return;
     }
+
+    event.preventDefault();
+    event.stopPropagation();
 
     const reactionType = button.dataset.reaction;
 
@@ -1643,8 +1442,12 @@ function setupPrayerReactionButtons(prayerId, reactionContainer) {
       return;
     }
 
-    await togglePrayerReaction(prayerId, reactionType);
-  });
+    await togglePrayerReaction(prayerId, reactionType, button);
+  };
+
+  reactionContainer._prayerReactionClickHandler = handleReactionClick;
+
+  reactionContainer.addEventListener("click", handleReactionClick);
 }
 
 // ========================================
@@ -1666,10 +1469,6 @@ function listenToPrayerReactions(prayerId, reactionContainer) {
 
       let currentUserReaction = null;
 
-      // ========================================
-      // COUNT REACTIONS
-      // ========================================
-
       snapshot.forEach((reactionDoc) => {
         const reactionData = reactionDoc.data();
 
@@ -1679,21 +1478,12 @@ function listenToPrayerReactions(prayerId, reactionContainer) {
           counts[reaction]++;
         }
 
-        // ========================================
-        // CURRENT USER REACTION
-        // ========================================
-
         if (auth.currentUser && reactionDoc.id === auth.currentUser.uid) {
           currentUserReaction = reaction;
         }
       });
 
       reactionContainer.dataset.currentReaction = currentUserReaction || "";
-
-      // ========================================
-      // RENDER
-      // ========================================
-
       renderPrayerReactions(reactionContainer, counts, currentUserReaction);
     },
     (error) => {
@@ -1821,7 +1611,11 @@ function renderPrayerReactions(reactionContainer, counts, currentUserReaction) {
 // TOGGLE PRAYER REACTION
 // ========================================
 
-async function togglePrayerReaction(prayerId, reactionType) {
+async function togglePrayerReaction(
+  prayerId,
+  reactionType,
+  clickedButton = null,
+) {
   const user = auth.currentUser;
 
   // ========================================
@@ -1829,6 +1623,21 @@ async function togglePrayerReaction(prayerId, reactionType) {
   // ========================================
 
   if (!user) {
+    if (typeof Swal !== "undefined") {
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "warning",
+        title: "Please login again.",
+        showConfirmButton: false,
+        timer: 1800,
+      });
+    }
+
+    return;
+  }
+
+  if (!Object.prototype.hasOwnProperty.call(prayerReactionTypes, reactionType)) {
     return;
   }
 
@@ -1844,6 +1653,10 @@ async function togglePrayerReaction(prayerId, reactionType) {
 
   prayerReactionProcessing.add(processingKey);
 
+  if (clickedButton) {
+    clickedButton.disabled = true;
+  }
+
   try {
     // ========================================
     // USER REACTION DOCUMENT
@@ -1857,19 +1670,14 @@ async function togglePrayerReaction(prayerId, reactionType) {
       user.uid,
     );
 
-    // ========================================
-    // GET CURRENT REACTION
-    // ========================================
+    const reactionContainer =
+      clickedButton?.closest(".prayer-reactions") ||
+      document.querySelector(
+        `.prayer-reactions[data-prayer-id="${CSS.escape(prayerId)}"]`,
+      );
 
-    const reactionContainer = document.querySelector(
-      `.prayer-reactions[data-prayer-id="${prayerId}"]`,
-    );
-
-    const currentReaction = reactionContainer?.dataset.currentReaction || "";
-
-    // ========================================
-    // REMOVE SAME REACTION
-    // ========================================
+    const currentReaction =
+      reactionContainer?.dataset.currentReaction || "";
 
     if (currentReaction === reactionType) {
       await deleteDoc(reactionRef);
@@ -1877,39 +1685,35 @@ async function togglePrayerReaction(prayerId, reactionType) {
       return;
     }
 
-    // ========================================
-    // ADD / CHANGE REACTION
-    // ========================================
+    await setDoc(
+      reactionRef,
+      {
+        reaction: reactionType,
+        updatedAt: serverTimestamp(),
+      },
+      { merge: true },
+    );
 
-    await setDoc(reactionRef, {
-      reaction: reactionType,
-
-      updatedAt: serverTimestamp(),
-    });
   } catch (error) {
     console.error("Prayer reaction error:", error);
-
-    // ========================================
-    // ERROR MESSAGE
-    // ========================================
 
     if (typeof Swal !== "undefined") {
       Swal.fire({
         toast: true,
-
         position: "top-end",
-
         icon: "error",
-
         title: "Unable to update reaction.",
-
+        text: error?.message || "Please try again.",
         showConfirmButton: false,
-
-        timer: 1800,
+        timer: 2200,
       });
     }
   } finally {
     prayerReactionProcessing.delete(processingKey);
+
+    if (clickedButton) {
+      clickedButton.disabled = false;
+    }
   }
 }
 
@@ -2106,6 +1910,10 @@ function escapeHtml(text) {
   div.textContent = String(text ?? "");
 
   return div.innerHTML;
+}
+
+function getDevotionTitle(devotion) {
+  return devotion?.title || devotion?.content?.title || "Untitled Devotion";
 }
 
 // ========================================
@@ -2330,6 +2138,8 @@ if (devotionalForm) {
 
     const format = devotionalFormat ? devotionalFormat.value : "";
 
+    const title = getInputValue("devotionTitle");
+
     if (!format) {
       Swal.fire({
         icon: "warning",
@@ -2338,6 +2148,17 @@ if (devotionalForm) {
 
         text: "Please select SOAP or SLAP.",
 
+        confirmButtonColor: "#6f4e37",
+      });
+
+      return;
+    }
+
+    if (!title) {
+      Swal.fire({
+        icon: "warning",
+        title: "Title Required",
+        text: "Please enter a title for your devotion.",
         confirmButtonColor: "#6f4e37",
       });
 
@@ -2489,6 +2310,8 @@ if (devotionalForm) {
         date: today,
 
         format: format,
+
+          title: title,
 
         content: content,
 

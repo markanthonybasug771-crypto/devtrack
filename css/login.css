@@ -851,3 +851,14 @@
     }
 
 }
+
+#forgotPasswordLink {
+  color: #6f4e37;
+  font-size: 14px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+#forgotPasswordLink:hover {
+  text-decoration: underline;
+}

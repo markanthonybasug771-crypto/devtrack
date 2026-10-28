@@ -5,17 +5,16 @@
 import { auth, db } from "./firebase.js";
 
 import {
-    collection,
-    addDoc,
-    getDocs,
-    deleteDoc,
-    updateDoc,
-    doc,
-    serverTimestamp,
-    query,
-    orderBy
+  collection,
+  addDoc,
+  getDocs,
+  deleteDoc,
+  updateDoc,
+  doc,
+  serverTimestamp,
+  query,
+  orderBy,
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-
 
 // ========================================
 // ELEMENTS
@@ -30,24 +29,19 @@ const addSongBtn = document.getElementById("addSongBtn");
 const adminSongList = document.getElementById("adminSongList");
 const adminSongCount = document.getElementById("adminSongCount");
 
-const adminPlayerCard =
-    document.getElementById("adminPlayerCard");
+const adminPlayerCard = document.getElementById("adminPlayerCard");
 
-const youtubePlayerContainer =
-    document.getElementById("youtubePlayerContainer");
+const youtubePlayerContainer = document.getElementById(
+  "youtubePlayerContainer",
+);
 
-const youtubePlayer =
-    document.getElementById("youtubePlayer");
+const youtubePlayer = document.getElementById("youtubePlayer");
 
-const nowPlayingTitle =
-    document.getElementById("nowPlayingTitle");
+const nowPlayingTitle = document.getElementById("nowPlayingTitle");
 
-const nowPlayingArtist =
-    document.getElementById("nowPlayingArtist");
+const nowPlayingArtist = document.getElementById("nowPlayingArtist");
 
-const closePlayerBtn =
-    document.getElementById("closePlayerBtn");
-
+const closePlayerBtn = document.getElementById("closePlayerBtn");
 
 // ========================================
 // SONG DATA
@@ -55,16 +49,13 @@ const closePlayerBtn =
 
 let songs = [];
 
-
 // ========================================
 // LOAD SONGS
 // ========================================
 
 async function loadSongs() {
-
-    try {
-
-        adminSongList.innerHTML = `
+  try {
+    adminSongList.innerHTML = `
             <div class="text-center py-5">
 
                 <div class="spinner-border"></div>
@@ -76,45 +67,28 @@ async function loadSongs() {
             </div>
         `;
 
+    const songsQuery = query(
+      collection(db, "songs"),
+      orderBy("createdAt", "desc"),
+    );
 
-        const songsQuery = query(
-            collection(db, "songs"),
-            orderBy("createdAt", "desc")
-        );
+    const snapshot = await getDocs(songsQuery);
 
+    songs = [];
 
-        const snapshot =
-            await getDocs(songsQuery);
+    snapshot.forEach((document) => {
+      songs.push({
+        id: document.id,
 
+        ...document.data(),
+      });
+    });
 
-        songs = [];
+    renderSongs();
+  } catch (error) {
+    console.error("Error loading songs:", error);
 
-
-        snapshot.forEach((document) => {
-
-            songs.push({
-
-                id: document.id,
-
-                ...document.data()
-
-            });
-
-        });
-
-
-        renderSongs();
-
-
-    } catch (error) {
-
-        console.error(
-            "Error loading songs:",
-            error
-        );
-
-
-        adminSongList.innerHTML = `
+    adminSongList.innerHTML = `
 
             <div class="alert alert-danger">
 
@@ -125,36 +99,24 @@ async function loadSongs() {
             </div>
 
         `;
-
-    }
-
+  }
 }
-
 
 // ========================================
 // RENDER SONGS
 // ========================================
 
 function renderSongs() {
+  adminSongList.innerHTML = "";
 
-    adminSongList.innerHTML = "";
+  if (adminSongCount) {
+    adminSongCount.textContent = `${songs.length} ${
+      songs.length === 1 ? "song" : "songs"
+    }`;
+  }
 
-
-    if (adminSongCount) {
-
-        adminSongCount.textContent =
-            `${songs.length} ${
-                songs.length === 1
-                    ? "song"
-                    : "songs"
-            }`;
-
-    }
-
-
-    if (songs.length === 0) {
-
-        adminSongList.innerHTML = `
+  if (songs.length === 0) {
+    adminSongList.innerHTML = `
 
             <div class="admin-playlist-empty">
 
@@ -176,22 +138,15 @@ function renderSongs() {
 
         `;
 
-        return;
+    return;
+  }
 
-    }
+  songs.forEach((song) => {
+    const card = document.createElement("div");
 
+    card.className = "admin-song-item";
 
-    songs.forEach((song) => {
-
-        const card =
-            document.createElement("div");
-
-
-        card.className =
-            "admin-song-item";
-
-
-        card.innerHTML = `
+    card.innerHTML = `
 
             <div class="admin-song-item-icon">
 
@@ -207,9 +162,7 @@ function renderSongs() {
                 </h6>
 
                 <p>
-                    ${escapeHtml(
-                        song.artist || "Unknown Artist"
-                    )}
+                    ${escapeHtml(song.artist || "Unknown Artist")}
                 </p>
 
             </div>
@@ -255,115 +208,76 @@ function renderSongs() {
 
         `;
 
-
-        adminSongList.appendChild(card);
-
-    });
-
+    adminSongList.appendChild(card);
+  });
 }
-
 
 // ========================================
 // ADD SONG
 // ========================================
 
 if (addSongForm) {
+  addSongForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
 
-    addSongForm.addEventListener(
-        "submit",
-        async (event) => {
+    const title = songTitle.value.trim();
 
-            event.preventDefault();
+    const artist = songArtist.value.trim();
 
+    const url = songUrl.value.trim();
 
-            const title =
-                songTitle.value.trim();
+    if (!title || !artist || !url) {
+      Swal.fire({
+        icon: "warning",
 
-            const artist =
-                songArtist.value.trim();
+        title: "Incomplete",
 
-            const url =
-                songUrl.value.trim();
+        text: "Please complete all fields.",
+      });
 
+      return;
+    }
 
-            if (!title || !artist || !url) {
+    // ====================================
+    // VALIDATE YOUTUBE URL
+    // ====================================
 
-                Swal.fire({
+    if (!isYouTubeUrl(url)) {
+      Swal.fire({
+        icon: "warning",
 
-                    icon: "warning",
+        title: "Invalid YouTube link",
 
-                    title: "Incomplete",
+        text: "Please enter a valid YouTube URL.",
+      });
 
-                    text:
-                        "Please complete all fields."
+      return;
+    }
 
-                });
+    // ====================================
+    // CHECK ADMIN LOGIN
+    // ====================================
 
-                return;
+    const currentUser = auth.currentUser;
 
-            }
+    if (!currentUser) {
+      Swal.fire({
+        icon: "warning",
 
+        title: "Not Logged In",
 
-            // ====================================
-            // VALIDATE YOUTUBE URL
-            // ====================================
+        text: "Please login as administrator first.",
+      });
 
-            if (!isYouTubeUrl(url)) {
+      return;
+    }
 
-                Swal.fire({
+    console.log("Adding song as:", currentUser.email);
 
-                    icon: "warning",
+    try {
+      addSongBtn.disabled = true;
 
-                    title: "Invalid YouTube link",
-
-                    text:
-                        "Please enter a valid YouTube URL."
-
-                });
-
-                return;
-
-            }
-
-
-            // ====================================
-            // CHECK ADMIN LOGIN
-            // ====================================
-
-            const currentUser =
-                auth.currentUser;
-
-
-            if (!currentUser) {
-
-                Swal.fire({
-
-                    icon: "warning",
-
-                    title: "Not Logged In",
-
-                    text:
-                        "Please login as administrator first."
-
-                });
-
-                return;
-
-            }
-
-
-            console.log(
-                "Adding song as:",
-                currentUser.email
-            );
-
-
-            try {
-
-                addSongBtn.disabled = true;
-
-
-                addSongBtn.innerHTML = `
+      addSongBtn.innerHTML = `
 
                     <span
                         class="spinner-border spinner-border-sm me-2"
@@ -373,105 +287,72 @@ if (addSongForm) {
 
                 `;
 
+      // ====================================
+      // SONG DATA
+      // ====================================
 
-                // ====================================
-                // SONG DATA
-                // ====================================
+      const songData = {
+        title: title,
 
-                const songData = {
+        artist: artist,
 
-                    title: title,
+        youtubeUrl: url,
 
-                    artist: artist,
+        active: true,
 
-                    youtubeUrl: url,
+        createdAt: serverTimestamp(),
 
-                    active: true,
+        addedBy: currentUser.uid,
 
-                    createdAt:
-                        serverTimestamp(),
+        addedByEmail: currentUser.email || "",
+      };
 
-                    addedBy:
-                        currentUser.uid,
+      console.log("Song data:", songData);
 
-                    addedByEmail:
-                        currentUser.email || ""
+      // ====================================
+      // SAVE TO FIRESTORE
+      // ====================================
 
-                };
+      const songRef = await addDoc(collection(db, "songs"), songData);
 
+      console.log("Song successfully added:", songRef.id);
 
-                console.log(
-                    "Song data:",
-                    songData
-                );
+      // ====================================
+      // RESET FORM
+      // ====================================
 
+      addSongForm.reset();
 
-                // ====================================
-                // SAVE TO FIRESTORE
-                // ====================================
+      // ====================================
+      // RELOAD SONGS
+      // ====================================
 
-                const songRef =
-                    await addDoc(
-                        collection(db, "songs"),
-                        songData
-                    );
+      await loadSongs();
 
+      // ====================================
+      // SUCCESS
+      // ====================================
 
-                console.log(
-                    "Song successfully added:",
-                    songRef.id
-                );
+      Swal.fire({
+        icon: "success",
 
+        title: "Song Added!",
 
-                // ====================================
-                // RESET FORM
-                // ====================================
+        text: `${title} has been added to the worship collection.`,
 
-                addSongForm.reset();
+        timer: 1800,
 
+        showConfirmButton: false,
+      });
+    } catch (error) {
+      console.error("FIRESTORE ADD SONG ERROR:", error);
 
-                // ====================================
-                // RELOAD SONGS
-                // ====================================
+      Swal.fire({
+        icon: "error",
 
-                await loadSongs();
+        title: "Failed to add song",
 
-
-                // ====================================
-                // SUCCESS
-                // ====================================
-
-                Swal.fire({
-
-                    icon: "success",
-
-                    title: "Song Added!",
-
-                    text:
-                        `${title} has been added to the worship collection.`,
-
-                    timer: 1800,
-
-                    showConfirmButton: false
-
-                });
-
-
-            } catch (error) {
-
-                console.error(
-                    "FIRESTORE ADD SONG ERROR:",
-                    error
-                );
-
-
-                Swal.fire({
-
-                    icon: "error",
-
-                    title: "Failed to add song",
-
-                    html: `
+        html: `
 
                         <p>
                             The song could not be saved.
@@ -479,208 +360,121 @@ if (addSongForm) {
 
                         <small class="text-muted">
                             ${escapeHtml(
-                                error.message ||
-                                "Unknown Firestore error."
+                              error.message || "Unknown Firestore error.",
                             )}
                         </small>
 
-                    `
+                    `,
+      });
+    } finally {
+      addSongBtn.disabled = false;
 
-                });
-
-            } finally {
-
-                addSongBtn.disabled = false;
-
-
-                addSongBtn.innerHTML = `
+      addSongBtn.innerHTML = `
 
                     <i class="bi bi-plus-lg me-2"></i>
 
                     Add Song
 
                 `;
-
-            }
-
-        }
-    );
-
+    }
+  });
 }
-
 
 // ========================================
 // PLAY SONG
 // ========================================
 
-document.addEventListener(
-    "click",
-    (event) => {
+document.addEventListener("click", (event) => {
+  const button = event.target.closest(".play-song-btn");
 
-        const button =
-            event.target.closest(
-                ".play-song-btn"
-            );
+  if (!button) {
+    return;
+  }
 
+  const songId = button.dataset.id;
 
-        if (!button) {
-            return;
-        }
+  const song = songs.find((item) => item.id === songId);
 
+  if (!song) {
+    return;
+  }
 
-        const songId =
-            button.dataset.id;
-
-
-        const song =
-            songs.find(
-                item =>
-                    item.id === songId
-            );
-
-
-        if (!song) {
-            return;
-        }
-
-
-        playSong(song);
-
-    }
-);
-
+  playSong(song);
+});
 
 // ========================================
 // PLAY SONG FUNCTION
 // ========================================
 
 function playSong(song) {
+  const videoId = getYouTubeVideoId(song.youtubeUrl);
 
-    const videoId =
-        getYouTubeVideoId(
-            song.youtubeUrl
-        );
+  if (!videoId) {
+    Swal.fire({
+      icon: "error",
 
+      title: "Invalid YouTube link",
 
-    if (!videoId) {
-
-        Swal.fire({
-
-            icon: "error",
-
-            title: "Invalid YouTube link",
-
-            text:
-                "This song does not have a valid YouTube URL."
-
-        });
-
-        return;
-
-    }
-
-
-    nowPlayingTitle.textContent =
-        song.title;
-
-
-    nowPlayingArtist.textContent =
-        song.artist ||
-        "Unknown Artist";
-
-
-    adminPlayerCard.classList.remove(
-        "d-none"
-    );
-
-
-    youtubePlayerContainer.classList.remove(
-        "d-none"
-    );
-
-
-    youtubePlayer.src =
-        `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
-
-
-    youtubePlayerContainer.scrollIntoView({
-
-        behavior: "smooth",
-
-        block: "center"
-
+      text: "This song does not have a valid YouTube URL.",
     });
 
-}
+    return;
+  }
 
+  nowPlayingTitle.textContent = song.title;
+
+  nowPlayingArtist.textContent = song.artist || "Unknown Artist";
+
+  adminPlayerCard.classList.remove("d-none");
+
+  youtubePlayerContainer.classList.remove("d-none");
+
+  youtubePlayer.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+
+  youtubePlayerContainer.scrollIntoView({
+    behavior: "smooth",
+
+    block: "center",
+  });
+}
 
 // ========================================
 // CLOSE PLAYER
 // ========================================
 
 if (closePlayerBtn) {
+  closePlayerBtn.addEventListener("click", () => {
+    youtubePlayer.src = "";
 
-    closePlayerBtn.addEventListener(
-        "click",
-        () => {
+    youtubePlayerContainer.classList.add("d-none");
 
-            youtubePlayer.src = "";
-
-
-            youtubePlayerContainer.classList.add(
-                "d-none"
-            );
-
-
-            adminPlayerCard.classList.add(
-                "d-none"
-            );
-
-        }
-    );
-
+    adminPlayerCard.classList.add("d-none");
+  });
 }
 
 // ========================================
 // EDIT SONG
 // ========================================
 
-document.addEventListener(
-    "click",
-    async (event) => {
+document.addEventListener("click", async (event) => {
+  const button = event.target.closest(".edit-song-btn");
 
-        const button =
-            event.target.closest(
-                ".edit-song-btn"
-            );
+  if (!button) {
+    return;
+  }
 
-        if (!button) {
-            return;
-        }
+  const songId = button.dataset.id;
 
+  const song = songs.find((item) => item.id === songId);
 
-        const songId =
-            button.dataset.id;
+  if (!song) {
+    return;
+  }
 
+  const result = await Swal.fire({
+    title: "Edit Song",
 
-        const song =
-            songs.find(
-                item =>
-                    item.id === songId
-            );
-
-
-        if (!song) {
-            return;
-        }
-
-
-        const result =
-            await Swal.fire({
-
-                title: "Edit Song",
-
-                html: `
+    html: `
 
                     <div class="text-start">
 
@@ -691,9 +485,7 @@ document.addEventListener(
                         <input
                             id="editSongTitle"
                             class="form-control mb-3"
-                            value="${escapeHtml(
-                                song.title || ""
-                            )}"
+                            value="${escapeHtml(song.title || "")}"
                         >
 
 
@@ -704,9 +496,7 @@ document.addEventListener(
                         <input
                             id="editSongArtist"
                             class="form-control mb-3"
-                            value="${escapeHtml(
-                                song.artist || ""
-                            )}"
+                            value="${escapeHtml(song.artist || "")}"
                         >
 
 
@@ -717,265 +507,142 @@ document.addEventListener(
                         <input
                             id="editSongUrl"
                             class="form-control"
-                            value="${escapeHtml(
-                                song.youtubeUrl || ""
-                            )}"
+                            value="${escapeHtml(song.youtubeUrl || "")}"
                         >
 
                     </div>
 
                 `,
 
-                showCancelButton: true,
+    showCancelButton: true,
 
-                confirmButtonText:
-                    "Save Changes",
+    confirmButtonText: "Save Changes",
 
-                cancelButtonText:
-                    "Cancel",
+    cancelButtonText: "Cancel",
 
-                confirmButtonColor:
-                    "#6f4e37",
+    confirmButtonColor: "#6f4e37",
 
-                focusConfirm: false,
+    focusConfirm: false,
 
-                preConfirm: () => {
+    preConfirm: () => {
+      const title = document.getElementById("editSongTitle").value.trim();
 
-                    const title =
-                        document
-                            .getElementById(
-                                "editSongTitle"
-                            )
-                            .value
-                            .trim();
+      const artist = document.getElementById("editSongArtist").value.trim();
 
+      const url = document.getElementById("editSongUrl").value.trim();
 
-                    const artist =
-                        document
-                            .getElementById(
-                                "editSongArtist"
-                            )
-                            .value
-                            .trim();
+      if (!title || !artist || !url) {
+        Swal.showValidationMessage("Please complete all fields.");
 
+        return false;
+      }
 
-                    const url =
-                        document
-                            .getElementById(
-                                "editSongUrl"
-                            )
-                            .value
-                            .trim();
+      if (!isYouTubeUrl(url)) {
+        Swal.showValidationMessage("Please enter a valid YouTube URL.");
 
+        return false;
+      }
 
-                    if (
-                        !title ||
-                        !artist ||
-                        !url
-                    ) {
+      return {
+        title,
+        artist,
+        url,
+      };
+    },
+  });
 
-                        Swal.showValidationMessage(
-                            "Please complete all fields."
-                        );
+  if (!result.isConfirmed || !result.value) {
+    return;
+  }
 
-                        return false;
+  try {
+    const { title, artist, url } = result.value;
 
-                    }
+    await updateDoc(
+      doc(db, "songs", songId),
 
+      {
+        title: title,
 
-                    if (
-                        !isYouTubeUrl(url)
-                    ) {
+        artist: artist,
 
-                        Swal.showValidationMessage(
-                            "Please enter a valid YouTube URL."
-                        );
+        youtubeUrl: url,
 
-                        return false;
+        updatedAt: serverTimestamp(),
 
-                    }
+        updatedBy: auth.currentUser?.uid || "",
+      },
+    );
 
+    // Update local data
 
-                    return {
-                        title,
-                        artist,
-                        url
-                    };
+    songs = songs.map((item) => {
+      if (item.id === songId) {
+        return {
+          ...item,
 
-                }
+          title: title,
 
-            });
+          artist: artist,
 
+          youtubeUrl: url,
+        };
+      }
 
-        if (
-            !result.isConfirmed ||
-            !result.value
-        ) {
-            return;
-        }
+      return item;
+    });
 
+    renderSongs();
 
-        try {
+    Swal.fire({
+      icon: "success",
 
-            const {
-                title,
-                artist,
-                url
-            } = result.value;
+      title: "Song Updated!",
 
+      text: "The song details have been updated.",
 
-            await updateDoc(
+      timer: 1600,
 
-                doc(
-                    db,
-                    "songs",
-                    songId
-                ),
+      showConfirmButton: false,
+    });
+  } catch (error) {
+    console.error("EDIT SONG ERROR:", error);
 
-                {
+    Swal.fire({
+      icon: "error",
 
-                    title:
-                        title,
+      title: "Update Failed",
 
-                    artist:
-                        artist,
-
-                    youtubeUrl:
-                        url,
-
-                    updatedAt:
-                        serverTimestamp(),
-
-                    updatedBy:
-                        auth.currentUser?.uid || ""
-
-                }
-
-            );
-
-
-            // Update local data
-
-            songs =
-                songs.map(
-                    item => {
-
-                        if (
-                            item.id === songId
-                        ) {
-
-                            return {
-
-                                ...item,
-
-                                title:
-                                    title,
-
-                                artist:
-                                    artist,
-
-                                youtubeUrl:
-                                    url
-
-                            };
-
-                        }
-
-
-                        return item;
-
-                    }
-                );
-
-
-            renderSongs();
-
-
-            Swal.fire({
-
-                icon: "success",
-
-                title: "Song Updated!",
-
-                text:
-                    "The song details have been updated.",
-
-                timer: 1600,
-
-                showConfirmButton: false
-
-            });
-
-
-        } catch (error) {
-
-            console.error(
-                "EDIT SONG ERROR:",
-                error
-            );
-
-
-            Swal.fire({
-
-                icon: "error",
-
-                title: "Update Failed",
-
-                text:
-                    error.message ||
-                    "The song could not be updated."
-
-            });
-
-        }
-
-    }
-);
-
+      text: error.message || "The song could not be updated.",
+    });
+  }
+});
 
 // ========================================
 // DELETE SONG
 // ========================================
 
-document.addEventListener(
-    "click",
-    async (event) => {
+document.addEventListener("click", async (event) => {
+  const button = event.target.closest(".delete-song-btn");
 
-        const button =
-            event.target.closest(
-                ".delete-song-btn"
-            );
+  if (!button) {
+    return;
+  }
 
+  const songId = button.dataset.id;
 
-        if (!button) {
-            return;
-        }
+  const song = songs.find((item) => item.id === songId);
 
+  if (!song) {
+    return;
+  }
 
-        const songId =
-            button.dataset.id;
+  const result = await Swal.fire({
+    icon: "warning",
 
+    title: "Delete Song?",
 
-        const song =
-            songs.find(
-                item =>
-                    item.id === songId
-            );
-
-
-        if (!song) {
-            return;
-        }
-
-
-        const result =
-            await Swal.fire({
-
-                icon: "warning",
-
-                title: "Delete Song?",
-
-                html: `
+    html: `
 
                     Are you sure you want to delete
 
@@ -985,194 +652,104 @@ document.addEventListener(
 
                 `,
 
-                showCancelButton: true,
+    showCancelButton: true,
 
-                confirmButtonText:
-                    "Yes, Delete",
+    confirmButtonText: "Yes, Delete",
 
-                cancelButtonText:
-                    "Cancel",
+    cancelButtonText: "Cancel",
 
-                confirmButtonColor:
-                    "#dc3545"
+    confirmButtonColor: "#dc3545",
+  });
 
-            });
+  if (!result.isConfirmed) {
+    return;
+  }
 
+  try {
+    await deleteDoc(doc(db, "songs", songId));
 
-        if (!result.isConfirmed) {
-            return;
-        }
+    songs = songs.filter((item) => item.id !== songId);
 
+    renderSongs();
 
-        try {
+    Swal.fire({
+      icon: "success",
 
-            await deleteDoc(
+      title: "Deleted!",
 
-                doc(
-                    db,
-                    "songs",
-                    songId
-                )
+      text: "The song has been removed.",
 
-            );
+      timer: 1500,
 
+      showConfirmButton: false,
+    });
+  } catch (error) {
+    console.error("Error deleting song:", error);
 
-            songs =
-                songs.filter(
-                    item =>
-                        item.id !== songId
-                );
+    Swal.fire({
+      icon: "error",
 
+      title: "Delete Failed",
 
-            renderSongs();
-
-
-            Swal.fire({
-
-                icon: "success",
-
-                title: "Deleted!",
-
-                text:
-                    "The song has been removed.",
-
-                timer: 1500,
-
-                showConfirmButton: false
-
-            });
-
-
-        } catch (error) {
-
-            console.error(
-                "Error deleting song:",
-                error
-            );
-
-
-            Swal.fire({
-
-                icon: "error",
-
-                title: "Delete Failed",
-
-                text:
-                    error.message ||
-                    "The song could not be deleted."
-
-            });
-
-        }
-
-    }
-);
-
+      text: error.message || "The song could not be deleted.",
+    });
+  }
+});
 
 // ========================================
 // YOUTUBE URL VALIDATION
 // ========================================
 
 function isYouTubeUrl(url) {
+  try {
+    const parsedUrl = new URL(url);
 
-    try {
-
-        const parsedUrl =
-            new URL(url);
-
-
-        return (
-
-            parsedUrl.hostname.includes(
-                "youtube.com"
-            ) ||
-
-            parsedUrl.hostname.includes(
-                "youtu.be"
-            )
-
-        );
-
-    } catch {
-
-        return false;
-
-    }
-
+    return (
+      parsedUrl.hostname.includes("youtube.com") ||
+      parsedUrl.hostname.includes("youtu.be")
+    );
+  } catch {
+    return false;
+  }
 }
-
 
 // ========================================
 // GET YOUTUBE VIDEO ID
 // ========================================
 
 function getYouTubeVideoId(url) {
+  try {
+    const parsedUrl = new URL(url);
 
-    try {
+    // youtube.com/watch?v=XXXX
 
-        const parsedUrl =
-            new URL(url);
-
-
-        // youtube.com/watch?v=XXXX
-
-        if (
-            parsedUrl.hostname.includes(
-                "youtube.com"
-            )
-        ) {
-
-            return parsedUrl.searchParams.get(
-                "v"
-            );
-
-        }
-
-
-        // youtu.be/XXXX
-
-        if (
-            parsedUrl.hostname.includes(
-                "youtu.be"
-            )
-        ) {
-
-            return parsedUrl.pathname.substring(
-                1
-            );
-
-        }
-
-
-        return null;
-
-    } catch {
-
-        return null;
-
+    if (parsedUrl.hostname.includes("youtube.com")) {
+      return parsedUrl.searchParams.get("v");
     }
 
-}
+    // youtu.be/XXXX
 
+    if (parsedUrl.hostname.includes("youtu.be")) {
+      return parsedUrl.pathname.substring(1);
+    }
+
+    return null;
+  } catch {
+    return null;
+  }
+}
 
 // ========================================
 // ESCAPE HTML
 // ========================================
 
 function escapeHtml(value) {
+  const div = document.createElement("div");
 
-    const div =
-        document.createElement("div");
+  div.textContent = value ?? "";
 
-
-    div.textContent =
-        value ?? "";
-
-
-    return div.innerHTML;
-
+  return div.innerHTML;
 }
-
 
 // ========================================
 // INITIAL LOAD
